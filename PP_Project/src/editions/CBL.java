@@ -1,17 +1,22 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Nome: Carolina Bonito Queiroga De Almeida
+ * Número: 8180091 
+ * Turna: LSIRCT1
+ *
+ * Nome: David Leandro Spencer Conceição dos Santos
+ * Número: 8220651
+ * Turna: LSIRCT1
  */
 package editions;
 
 import Exceptions.AlreadyExistsInArray;
-import editions.Contracts.Manage;
+
 
 /**
  *
  * @author David Santos
  */
-public class CBL implements Manage {
+public class CBL  {
 
     private static final int initialSize = 5;
     private int numberOfEditions;
@@ -44,7 +49,7 @@ public class CBL implements Manage {
         return false;
     }
 
-    @Override
+  
     public void addEdition(Edition edition) throws Exception {
         if (edition == null) {
             throw new NullPointerException("Null edition!");
@@ -58,32 +63,6 @@ public class CBL implements Manage {
         editionList[numberOfEditions++] = edition;
     }
 
-    @Override
-    public Edition removeEdition(int index) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Edition getEdition(int index) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void setActiveEdition(int index) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Edition[] getIncompletedEditions() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Project[] getIncompletedProjects() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public int getNumberOfEditions() {
         return this.numberOfEditions;
     }

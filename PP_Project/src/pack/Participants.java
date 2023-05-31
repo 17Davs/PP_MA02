@@ -1,3 +1,12 @@
+/*
+ * Nome: Carolina Bonito Queiroga De Almeida
+ * Número: 8180091 
+ * Turna: LSIRCT1
+ *
+ * Nome: David Leandro Spencer Conceição dos Santos
+ * Número: 8220651
+ * Turna: LSIRCT1
+ */
 package pack;
 
 import java.util.Objects;
@@ -5,10 +14,6 @@ import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.Participant;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 /**
  *
  * @author David Santos
