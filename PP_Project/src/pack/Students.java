@@ -32,7 +32,6 @@ public class Students extends Participants implements Student {
         return number;
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -47,7 +46,6 @@ public class Students extends Participants implements Student {
         final Students other = (Students) obj;
         return this.number == other.number;
     }
-    
-    
+     
     
 }

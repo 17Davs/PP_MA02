@@ -9,6 +9,7 @@
  */
 package pack;
 
+import java.util.Objects;
 import ma02_resources.participants.Contact;
 
 /**
@@ -56,20 +57,40 @@ public class Contacts implements Contact {
     public String getPhone() {
         return phone;
     }
-    
-    
-    /**
-     * Comparação de contactos  pelo número de telefone (perguntar stor)
-     * @param o
-     * @return 
-     */
+
+
     @Override
-     public boolean equals(Object o){
-        if (this == o) return true;
-        if (o == null || !(o instanceof Contact)) return false;
-        Contact c = (Contact) o;
-        return this.getPhone().equals(c.getPhone());
-     }
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Contacts other = (Contacts) obj;
+        if (!Objects.equals(this.street, other.street)) {
+            return false;
+        }
+        if (!Objects.equals(this.city, other.city)) {
+            return false;
+        }
+        if (!Objects.equals(this.state, other.state)) {
+            return false;
+        }
+        if (!Objects.equals(this.zipCode, other.zipCode)) {
+            return false;
+        }
+        if (!Objects.equals(this.country, other.country)) {
+            return false;
+        }
+        return Objects.equals(this.phone, other.phone);
+    }
+    
+   
+     
     
     
 }

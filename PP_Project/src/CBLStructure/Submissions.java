@@ -7,7 +7,7 @@
  * Número: 8220651
  * Turna: LSIRCT1
  */
-package editions;
+package CBLStructure;
 
 import java.time.LocalDateTime;
 import ma02_resources.participants.Student;
@@ -48,8 +48,7 @@ public class Submissions implements Submission {
     public int compareTo(Submission sbmsn) {
         if (this == sbmsn) {
             return 0;
-        }
-        
+        } 
         return date.compareTo(sbmsn.getDate());
     }
 

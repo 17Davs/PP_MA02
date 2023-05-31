@@ -9,7 +9,6 @@
  */
 package pack;
 
-import java.util.Objects;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.Participant;
@@ -74,13 +73,8 @@ public class Participants implements Participant {
             return false;
         }
         final Participants other = (Participants) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        return this.contact.equals(other.contact);
+        
+        return this.email.equals(other.email);
     }
 
     

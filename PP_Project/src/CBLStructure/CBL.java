@@ -7,7 +7,7 @@
  * Número: 8220651
  * Turna: LSIRCT1
  */
-package editions;
+package CBLStructure;
 
 import Exceptions.AlreadyExistsInArray;
 

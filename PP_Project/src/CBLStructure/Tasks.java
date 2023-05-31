@@ -7,7 +7,7 @@
  * Número: 8220651
  * Turna: LSIRCT1
  */
-package editions;
+package CBLStructure;
 
 import java.time.LocalDate;
 import ma02_resources.project.Submission;

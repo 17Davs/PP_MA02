@@ -7,13 +7,14 @@
  * Número: 8220651
  * Turna: LSIRCT1
  */
-package editions;
+package CBLStructure;
 
 import Exceptions.AlreadyExistsInArray;
 import ma02_resources.participants.Facilitator;
 import pack.*;
 import ma02_resources.participants.Participant;
 import ma02_resources.project.Project;
+import ma02_resources.project.Submission;
 import ma02_resources.project.Task;
 import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
 import ma02_resources.project.exceptions.IllegalNumberOfTasks;
@@ -34,9 +35,31 @@ public class Projects implements Project {
     private Task tasks[];
     private Participant participants[];
     private String[] tags;
-    
-    
 
+    public Projects(String name, String description, int maximumNumberOfTasks, int maximumNumberOfStudents, 
+            int maximumNumberOfPartners, int maximumNumberOfFacilitators, long maximumNumberOfParticipants) {
+        this.name = name;
+        this.description = description;
+        this.maximumNumberOfTasks = maximumNumberOfTasks;
+        this.maximumNumberOfStudents = maximumNumberOfStudents;
+        this.maximumNumberOfPartners = maximumNumberOfPartners;
+        this.maximumNumberOfFacilitators = maximumNumberOfFacilitators;
+        this.maximumNumberOfParticipants = maximumNumberOfParticipants;
+        this.numberOfFacilitators = numberOfStudents = numberOfPartners = 
+                numberOfParticipants = numberOfTags = numberOfTasks = 0;
+        this.tasks = new Task[maximumNumberOfTasks];
+        this.participants = new Participant[(int)maximumNumberOfParticipants];
+        this.tags = new String[2];
+        
+    }
+
+    
+    
+    
+    
+    
+    
+    
     @Override
     public String getName() {
         return name;
@@ -109,9 +132,18 @@ public class Projects implements Project {
         return numberOfParticipants;
     }
 
+    private boolean hasParticipant(Participant p) {
+        for (Participant participant : participants) {
+            if (participant.equals(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void addParticipant(Participant p) throws IllegalNumberOfParticipantType, ParticipantAlreadyInProject {
-       
+
         if (p instanceof Facilitator) {
             if (numberOfFacilitators == maximumNumberOfFacilitators) {
                 throw new IllegalNumberOfParticipantType("Maximum ammount of Facilitators for Project!");
@@ -125,8 +157,8 @@ public class Projects implements Project {
                 throw new IllegalNumberOfParticipantType("Maximum ammount of Partners for Project!");
             }
         }
-        //TAG (ASK WHAT IT IS)
-        if (hasTag(p.getName())) {
+
+        if (hasParticipant(p)) {
             throw new ParticipantAlreadyInProject("Participant already exists in Project!");
         }
 
@@ -142,7 +174,6 @@ public class Projects implements Project {
 
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -155,11 +186,9 @@ public class Projects implements Project {
             return false;
         }
         final Projects other = (Projects) obj;
-        
+
         return this.name.equals(other.name);
     }
-
-    
 
     @Override
     public Participant removeParticipant(String string) {
@@ -171,15 +200,17 @@ public class Projects implements Project {
                 pos = i;
                 deleted = participants[i];
             } else {
-            i++;
+                i++;
             }
         }
-        
-        for (i = pos; i < numberOfParticipants; i++){
-            participants[i] = participants[i+1];
+        if (pos == -1) {
+            return null;
+        }
+        for (i = pos; i < numberOfParticipants; i++) {
+            participants[i] = participants[i + 1];
         }
         participants[--numberOfParticipants] = null;
-        
+
         if (deleted instanceof Facilitator) {
             numberOfFacilitators--;
         } else if (deleted instanceof Students) {
@@ -187,16 +218,17 @@ public class Projects implements Project {
         } else if (deleted instanceof Partners) {
             numberOfPartners--;
         }
-        
+
         return deleted;
+
     }
 
     @Override
     public Participant getParticipant(String string) {
         Participant p = null;
-        
-        for(int i =0; i < numberOfParticipants; i++) {
-            
+
+        for (int i = 0; i < numberOfParticipants; i++) {
+
             if (participants[i].getEmail().equals(string)) {
                 p = participants[i];
                 return p;
@@ -205,42 +237,44 @@ public class Projects implements Project {
         return p;
     }
 ///////////////////////////////////////////////////
-    private void reallocTags(){
+
+    private void reallocTags() {
         String[] temp = new String[tags.length * 2];
-        int i=0;
-        for (String t : tags){
+        int i = 0;
+        for (String t : tags) {
             temp[i++] = t;
         }
         tags = temp;
     }
-    
-    public void addTags(String t) throws AlreadyExistsInArray{
+
+    public void addTags(String t) throws AlreadyExistsInArray {
         if (t == null) {
             throw new IllegalArgumentException("Null argument");
         }
-        
-        if (hasTag(t)) throw new AlreadyExistsInArray("Tag already exists");
-        
-        if (numberOfTags == tags.length){
+
+        if (hasTag(t)) {
+            throw new AlreadyExistsInArray("Tag already exists");
+        }
+
+        if (numberOfTags == tags.length) {
             reallocTags();
         }
         tags[numberOfTags++] = t;
-        
+
     }
-    
-      
+
     @Override
     public String[] getTags() {
         String[] temp = null;
-        int i=0;
-        for (String s : tags){
+        int i = 0;
+        for (String s : tags) {
             temp[i++] = s;
         }
         return temp;
     }
 
     @Override
-    public boolean hasTag(String string) {       
+    public boolean hasTag(String string) {
         for (String s : tags) {
             if (s.equals(string)) {
                 return true;
@@ -249,33 +283,35 @@ public class Projects implements Project {
         return false;
     }
 //////////////////////////////////////////
-    private boolean hasTask(Task task){
-        for (Task t : tasks){
-            if (t.equals(task))
+
+    private boolean hasTask(Task task) {
+        for (Task t : tasks) {
+            if (t.equals(task)) {
                 return true;
+            }
         }
         return false;
     }
-    
+
     @Override
     public void addTask(Task task) throws IllegalNumberOfTasks, TaskAlreadyInProject {
-        if (numberOfTasks == maximumNumberOfTasks){
+        if (numberOfTasks == maximumNumberOfTasks) {
             throw new IllegalNumberOfTasks("Maximum ammount of Task reached in project!");
         }
-        if (hasTask(task)){
+        if (hasTask(task)) {
             throw new TaskAlreadyInProject("Task already exists in Project!");
         }
-        
-        tasks[numberOfTasks++] = task; 
+
+        tasks[numberOfTasks++] = task;
 
     }
 
     @Override
-    public Task getTask(String string) { 
+    public Task getTask(String string) {
         Task t = null;
-        
-        for (int i=0; i<numberOfTasks;i++){
-            if (tasks[i].getTitle().equals(string)){
+
+        for (int i = 0; i < numberOfTasks; i++) {
+            if (tasks[i].getTitle().equals(string)) {
                 t = tasks[i];
                 return t;
             }
@@ -285,7 +321,15 @@ public class Projects implements Project {
 
     @Override
     public boolean isCompleted() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (this.numberOfTasks != this.maximumNumberOfTasks) {
+            return false;
+        }
+        for (Task t : tasks) {
+            if (t.getNumberOfSubmissions() < 1) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
