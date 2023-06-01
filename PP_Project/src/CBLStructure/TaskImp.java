@@ -17,14 +17,14 @@ import ma02_resources.project.Task;
  *
  * @author David Santos
  */
-public class Tasks implements Task {
+public class TaskImp implements Task {
 
     private String title, description;
     private LocalDate start, end;
     private int duration, numberOfSubmissions;
     private Submission submissions[];
 
-    public Tasks(String title, String description, LocalDate start, LocalDate end, int duration) {
+    public TaskImp(String title, String description, LocalDate start, LocalDate end, int duration) {
         this.title = title;
         this.description = description;
         this.start = start;
@@ -132,11 +132,11 @@ public class Tasks implements Task {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Task)) {
             return false;
         }
-        final Tasks other = (Tasks) obj;
-        return this.title.equals(other.title);
+        final Task other = (Task) obj;
+        return this.title.equals(other.getTitle());
 
     }
 

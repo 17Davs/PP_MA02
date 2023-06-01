@@ -16,10 +16,10 @@ import ma02_resources.participants.Contact;
  *
  * @author David Santos
  */
-public class Contacts implements Contact {
+public class ContactImp implements Contact {
     private String street, city, state, zipCode, country, phone;
 
-    public Contacts(String street, String city, String state, String zipCode, String country, String phone) {
+    public ContactImp(String street, String city, String state, String zipCode, String country, String phone) {
         this.street = street;
         this.city = city;
         this.state = state;
@@ -67,26 +67,26 @@ public class Contacts implements Contact {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Contact)) {
             return false;
         }
-        final Contacts other = (Contacts) obj;
-        if (!Objects.equals(this.street, other.street)) {
+        final Contact other = (Contact) obj;
+        if (!this.street.equals(other.getStreet())) {
             return false;
         }
-        if (!Objects.equals(this.city, other.city)) {
+        if (!this.city.equals(other.getCity())) {
             return false;
         }
-        if (!Objects.equals(this.state, other.state)) {
+        if (!this.state.equals(other.getState())) {
             return false;
         }
-        if (!Objects.equals(this.zipCode, other.zipCode)) {
+        if (!this.zipCode.equals(other.getZipCode())) {
             return false;
         }
-        if (!Objects.equals(this.country, other.country)) {
+        if (!this.country.equals(other.getCountry())) {
             return false;
         }
-        return Objects.equals(this.phone, other.phone);
+        return this.phone.equals(other.getPhone());
     }
     
    

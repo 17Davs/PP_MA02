@@ -18,11 +18,11 @@ import ma02_resources.participants.Student;
  *
  * @author David Santos
  */
-public class Students extends Participants implements Student {
+public class StudentImp extends ParticipantImp implements Student {
     
     private int number;
 
-    public Students(int number, String name, String email, Contact contact, Instituition instituition) {
+    public StudentImp(int number, String name, String email, Contact contact, Instituition instituition) {
         super(name, email, contact, instituition);
         this.number = number;
     }
@@ -40,11 +40,11 @@ public class Students extends Participants implements Student {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Student)) {
             return false;
         }
-        final Students other = (Students) obj;
-        return this.number == other.number;
+        final Student other = (Student) obj;
+        return this.number == other.getNumber();
     }
      
     

@@ -19,11 +19,11 @@ import ma02_resources.participants.Instituition;
  *
  * @author David Santos
  */
-public class Facilitators extends Participants implements Facilitator {
+public class FacilitatorImp extends ParticipantImp implements Facilitator {
 
     private String areaOfExpertise;
 
-    public Facilitators(String areaOfExpertise, String name, String email, Contact contact, Instituition instituition) {
+    public FacilitatorImp(String areaOfExpertise, String name, String email, Contact contact, Instituition instituition) {
         super(name, email, contact, instituition);
         this.areaOfExpertise = areaOfExpertise;
     }

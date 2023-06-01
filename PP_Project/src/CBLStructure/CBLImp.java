@@ -10,24 +10,25 @@
 package CBLStructure;
 
 import Exceptions.AlreadyExistsInArray;
+import ma02_resources.project.Edition;
 
 
 /**
  *
  * @author David Santos
  */
-public class CBL  {
+public class CBLImp  {
 
     private static final int initialSize = 5;
     private int numberOfEditions;
     private Edition editionList[];
 
-    public CBL(int size) {
+    public CBLImp(int size) {
         this.editionList = new Edition[size];
         numberOfEditions = 0;
     }
 
-    public CBL() {
+    public CBLImp() {
         this.editionList = new Edition[initialSize];
         numberOfEditions = 0;
     }

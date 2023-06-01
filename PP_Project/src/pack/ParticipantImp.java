@@ -17,13 +17,13 @@ import ma02_resources.participants.Participant;
  *
  * @author David Santos
  */
-public class Participants implements Participant {
+public class ParticipantImp implements Participant {
 
     private String name, email;
     private Contact contact;
     private Instituition instituition;
 
-    public Participants(String name, String email, Contact contact, Instituition instituition) {
+    public ParticipantImp(String name, String email, Contact contact, Instituition instituition) {
         this.name = name;
         this.email = email;
         this.contact = contact;
@@ -69,12 +69,12 @@ public class Participants implements Participant {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Participant)) {
             return false;
         }
-        final Participants other = (Participants) obj;
+        final Participant other = (Participant) obj;
         
-        return this.email.equals(other.email);
+        return this.email.equals(other.getEmail());
     }
 
     

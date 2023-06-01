@@ -9,7 +9,6 @@
  */
 package pack;
 
-import java.util.Objects;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.InstituitionType;
@@ -20,13 +19,13 @@ import ma02_resources.participants.InstituitionType;
  *
  * @author David Santos
  */
-public class Instituitions implements Instituition {
+public class InstituitionImp implements Instituition {
 
     private String name, email, website, description;
     private Contact contact;
     private InstituitionType type;
 
-    public Instituitions(String name, String email, String website, String description, Contact contact, InstituitionType type) {
+    public InstituitionImp(String name, String email, String website, String description, Contact contact, InstituitionType type) {
         this.name = name;
         this.email = email;
         this.website = website;
@@ -99,11 +98,11 @@ public class Instituitions implements Instituition {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Instituition)) {
             return false;
         }
-        final Instituitions other = (Instituitions) obj;
-        return this.name.equals(other.name);
+        final Instituition other = (Instituition) obj;
+        return this.name.equals(other.getName());
     }
 
     

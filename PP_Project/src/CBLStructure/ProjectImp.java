@@ -11,21 +11,22 @@ package CBLStructure;
 
 import Exceptions.AlreadyExistsInArray;
 import ma02_resources.participants.Facilitator;
-import pack.*;
 import ma02_resources.participants.Participant;
+import ma02_resources.participants.Partner;
+import ma02_resources.participants.Student;
 import ma02_resources.project.Project;
-import ma02_resources.project.Submission;
 import ma02_resources.project.Task;
 import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
 import ma02_resources.project.exceptions.IllegalNumberOfTasks;
 import ma02_resources.project.exceptions.ParticipantAlreadyInProject;
 import ma02_resources.project.exceptions.TaskAlreadyInProject;
 
+
 /**
  *
  * @author David Santos
  */
-public class Projects implements Project {
+public class ProjectImp implements Project {
 
     private String name, description;
     private int numberOfFacilitators, numberOfStudents, numberOfPartners, numberOfParticipants,
@@ -36,7 +37,7 @@ public class Projects implements Project {
     private Participant participants[];
     private String[] tags;
 
-    public Projects(String name, String description, int maximumNumberOfTasks, int maximumNumberOfStudents, 
+    public ProjectImp(String name, String description, int maximumNumberOfTasks, int maximumNumberOfStudents, 
             int maximumNumberOfPartners, int maximumNumberOfFacilitators, long maximumNumberOfParticipants) {
         this.name = name;
         this.description = description;
@@ -51,14 +52,7 @@ public class Projects implements Project {
         this.participants = new Participant[(int)maximumNumberOfParticipants];
         this.tags = new String[2];
         
-    }
-
-    
-    
-    
-    
-    
-    
+    } 
     
     @Override
     public String getName() {
@@ -148,11 +142,11 @@ public class Projects implements Project {
             if (numberOfFacilitators == maximumNumberOfFacilitators) {
                 throw new IllegalNumberOfParticipantType("Maximum ammount of Facilitators for Project!");
             }
-        } else if (p instanceof Students) {
+        } else if (p instanceof Student) {
             if (numberOfStudents == maximumNumberOfStudents) {
                 throw new IllegalNumberOfParticipantType("Maximum ammount of Students for Project!");
             }
-        } else if (p instanceof Partners) {
+        } else if (p instanceof Partner) {
             if (numberOfPartners == maximumNumberOfPartners) {
                 throw new IllegalNumberOfParticipantType("Maximum ammount of Partners for Project!");
             }
@@ -166,9 +160,9 @@ public class Projects implements Project {
 
         if (p instanceof Facilitator) {
             numberOfFacilitators++;
-        } else if (p instanceof Students) {
+        } else if (p instanceof Student) {
             numberOfStudents++;
-        } else if (p instanceof Partners) {
+        } else if (p instanceof Partner) {
             numberOfPartners++;
         }
 
@@ -182,12 +176,12 @@ public class Projects implements Project {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Project)) {
             return false;
         }
-        final Projects other = (Projects) obj;
+        final Project other = (Project) obj;
 
-        return this.name.equals(other.name);
+        return this.name.equals(other.getName());
     }
 
     @Override
@@ -213,9 +207,9 @@ public class Projects implements Project {
 
         if (deleted instanceof Facilitator) {
             numberOfFacilitators--;
-        } else if (deleted instanceof Students) {
+        } else if (deleted instanceof Student) {
             numberOfStudents--;
-        } else if (deleted instanceof Partners) {
+        } else if (deleted instanceof Partner) {
             numberOfPartners--;
         }
 

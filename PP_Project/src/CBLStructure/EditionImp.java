@@ -18,19 +18,19 @@ import ma02_resources.project.Project;
  *
  * @author David Santos
  */
-public class Edition {
+public class EditionImp {
 
     private static final int initialSize = 5;
     private static int idCounter = 0;
     private int id; 
     private Project projects[];
 
-    public Edition() {
+    public EditionImp() {
         this.id = ++idCounter;
         this.projects = new Project[initialSize];
     }
 
-    public Edition(int size) {
+    public EditionImp(int size) {
         this.id = ++idCounter;
         this.projects = new Project[size];
     }

@@ -17,13 +17,13 @@ import ma02_resources.project.Submission;
  *
  * @author David Santos
  */
-public class Submissions implements Submission {
+public class SubmissionImp implements Submission {
 
     private LocalDateTime date;
     private Student student;
     private String text;
 
-    public Submissions(Student student, String text) {
+    public SubmissionImp(Student student, String text) {
         this.date = LocalDateTime.now();
         this.student = student;
         this.text = text;
