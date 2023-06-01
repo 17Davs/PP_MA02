@@ -10,6 +10,8 @@
 package CBLStructure;
 
 import Exceptions.AlreadyExistsInArray;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import ma02_resources.participants.Facilitator;
 import ma02_resources.participants.Participant;
 import ma02_resources.participants.Partner;
@@ -20,7 +22,6 @@ import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
 import ma02_resources.project.exceptions.IllegalNumberOfTasks;
 import ma02_resources.project.exceptions.ParticipantAlreadyInProject;
 import ma02_resources.project.exceptions.TaskAlreadyInProject;
-
 
 /**
  *
@@ -37,7 +38,7 @@ public class ProjectImp implements Project {
     private Participant participants[];
     private String[] tags;
 
-    public ProjectImp(String name, String description, int maximumNumberOfTasks, int maximumNumberOfStudents, 
+    public ProjectImp(String name, String description, int maximumNumberOfTasks, int maximumNumberOfStudents,
             int maximumNumberOfPartners, int maximumNumberOfFacilitators, long maximumNumberOfParticipants) {
         this.name = name;
         this.description = description;
@@ -46,14 +47,43 @@ public class ProjectImp implements Project {
         this.maximumNumberOfPartners = maximumNumberOfPartners;
         this.maximumNumberOfFacilitators = maximumNumberOfFacilitators;
         this.maximumNumberOfParticipants = maximumNumberOfParticipants;
-        this.numberOfFacilitators = numberOfStudents = numberOfPartners = 
-                numberOfParticipants = numberOfTags = numberOfTasks = 0;
+        this.numberOfFacilitators = numberOfStudents = numberOfPartners
+                = numberOfParticipants = numberOfTags = numberOfTasks = 0;
         this.tasks = new Task[maximumNumberOfTasks];
-        this.participants = new Participant[(int)maximumNumberOfParticipants];
+        this.participants = new Participant[(int) maximumNumberOfParticipants];
         this.tags = new String[2];
-        
-    } 
-    
+
+    }
+
+    public ProjectImp(String name, String description, int numberOfFacilitators, int numberOfStudents, int numberOfPartners, int taskArraySize, String[] tags) {
+        this.name = name;
+        this.description = description;
+        this.numberOfFacilitators = numberOfFacilitators;
+        this.numberOfStudents = numberOfStudents;
+        this.numberOfPartners = numberOfPartners;
+        this.numberOfParticipants = numberOfFacilitators + numberOfStudents + numberOfPartners;
+        this.numberOfTasks = 0;
+        this.numberOfTags = 0;
+
+        //The maximums variables need to be crreated. At the time they are being
+        //  created using the given numbers + value (to never be 0)
+        this.maximumNumberOfTasks = taskArraySize;
+        this.maximumNumberOfStudents = 10 * numberOfStudents + 1;
+        this.maximumNumberOfPartners = 2 * numberOfPartners + 1;
+        this.maximumNumberOfFacilitators = 2*numberOfFacilitators + 3;
+        this.maximumNumberOfParticipants = this.maximumNumberOfStudents + this.maximumNumberOfPartners + this.maximumNumberOfFacilitators ;
+
+        this.tasks = new Task[maximumNumberOfTasks];
+        this.participants = new Participant[(int) maximumNumberOfParticipants];
+        this.tags = new String[2];
+
+        for (int i = 0; i < tags.length; i++) {
+            try {
+                this.addTags(tags[i]);
+            } catch (AlreadyExistsInArray Ignored) { }
+        }
+    }
+
     @Override
     public String getName() {
         return name;
