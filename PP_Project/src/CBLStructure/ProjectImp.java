@@ -10,6 +10,7 @@
 package CBLStructure;
 
 import Exceptions.AlreadyExistsInArray;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ma02_resources.participants.Facilitator;
@@ -52,16 +53,16 @@ public class ProjectImp implements Project {
         this.tasks = new Task[maximumNumberOfTasks];
         this.participants = new Participant[(int) maximumNumberOfParticipants];
         this.tags = new String[2];
-
     }
 
     public ProjectImp(String name, String description, int numberOfFacilitators, int numberOfStudents, int numberOfPartners, int taskArraySize, String[] tags) {
+        
         this.name = name;
         this.description = description;
-        this.numberOfFacilitators = numberOfFacilitators;
-        this.numberOfStudents = numberOfStudents;
-        this.numberOfPartners = numberOfPartners;
-        this.numberOfParticipants = numberOfFacilitators + numberOfStudents + numberOfPartners;
+        this.numberOfFacilitators = 0;
+        this.numberOfStudents = 0;
+        this.numberOfPartners = 0;
+        this.numberOfParticipants = 0;
         this.numberOfTasks = 0;
         this.numberOfTags = 0;
 
@@ -70,18 +71,22 @@ public class ProjectImp implements Project {
         this.maximumNumberOfTasks = taskArraySize;
         this.maximumNumberOfStudents = 10 * numberOfStudents + 1;
         this.maximumNumberOfPartners = 2 * numberOfPartners + 1;
-        this.maximumNumberOfFacilitators = 2*numberOfFacilitators + 3;
-        this.maximumNumberOfParticipants = this.maximumNumberOfStudents + this.maximumNumberOfPartners + this.maximumNumberOfFacilitators ;
+        this.maximumNumberOfFacilitators = 2 * numberOfFacilitators + 3;
+        this.maximumNumberOfParticipants = this.maximumNumberOfStudents + this.maximumNumberOfPartners + this.maximumNumberOfFacilitators;
 
         this.tasks = new Task[maximumNumberOfTasks];
         this.participants = new Participant[(int) maximumNumberOfParticipants];
         this.tags = new String[2];
 
-        for (int i = 0; i < tags.length; i++) {
+        for (String tag : tags) {
             try {
-                this.addTags(tags[i]);
-            } catch (AlreadyExistsInArray Ignored) { }
+                this.addTags(tag);
+            
+            } catch (AlreadyExistsInArray e){
+                
+            }
         }
+
     }
 
     @Override
@@ -219,7 +224,7 @@ public class ProjectImp implements Project {
         Participant deleted = null;
         int pos = -1, i = 0;
         while (pos == -1 && i < numberOfParticipants) {
-            //assuming name as TAg
+
             if (participants[i].getEmail().equals(string)) {
                 pos = i;
                 deleted = participants[i];
@@ -228,7 +233,7 @@ public class ProjectImp implements Project {
             }
         }
         if (pos == -1) {
-            return null;
+            throw new IllegalArgumentException("No Participant found!");
         }
         for (i = pos; i < numberOfParticipants; i++) {
             participants[i] = participants[i + 1];
@@ -257,6 +262,9 @@ public class ProjectImp implements Project {
                 p = participants[i];
                 return p;
             }
+        }
+        if (p == null) {
+            throw new IllegalArgumentException("No Participant found!");
         }
         return p;
     }
@@ -340,7 +348,8 @@ public class ProjectImp implements Project {
                 return t;
             }
         }
-        return t;
+        throw new IllegalArgumentException("No task found!");
+
     }
 
     @Override
@@ -355,5 +364,22 @@ public class ProjectImp implements Project {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ProjectImp{" + "name=" + name + ", description=" + description + 
+                ", numberOfFacilitators=" + numberOfFacilitators + 
+                ", numberOfStudents=" + numberOfStudents + ", numberOfPartners=" 
+                + numberOfPartners + ", numberOfParticipants=" + numberOfParticipants 
+                + ", numberOfTasks=" + numberOfTasks + ", maximumNumberOfTasks="
+                + maximumNumberOfTasks + ", maximumNumberOfStudents=" 
+                + maximumNumberOfStudents + ", maximumNumberOfPartners=" + 
+                maximumNumberOfPartners + ", maximumNumberOfFacilitators=" + 
+                maximumNumberOfFacilitators + ", numberOfTags=" + numberOfTags + 
+                ", maximumNumberOfParticipants=" + maximumNumberOfParticipants + 
+                ", tasks=" + Arrays.toString(tasks) + ", participants=" + Arrays.toString(participants) + ", tags="
+                + Arrays.toString(tags) + '}';
+    }
+    
 
 }

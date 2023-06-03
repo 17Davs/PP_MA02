@@ -140,4 +140,11 @@ public class TaskImp implements Task {
 
     }
 
+    @Override
+    public String toString() {
+        return "Task {" + "title=" + title + ", description=" + description + ", start=" + start + ", end=" + end + ", duration=" + duration + ", numberOfSubmissions=" + numberOfSubmissions ;
+    }
+    
+    
+
 }
