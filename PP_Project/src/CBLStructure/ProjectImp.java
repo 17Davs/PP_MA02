@@ -163,7 +163,7 @@ public class ProjectImp implements Project {
 
     private boolean hasParticipant(Participant p) {
         for (Participant participant : participants) {
-            if (participant.equals(p)) {
+            if (participant != null && participant.equals(p)) {
                 return true;
             }
         }
@@ -308,7 +308,7 @@ public class ProjectImp implements Project {
     @Override
     public boolean hasTag(String string) {
         for (String s : tags) {
-            if (s.equals(string)) {
+            if (s != null && s.equals(string)) {
                 return true;
             }
         }
@@ -318,7 +318,7 @@ public class ProjectImp implements Project {
 
     private boolean hasTask(Task task) {
         for (Task t : tasks) {
-            if (t.equals(task)) {
+            if (t != null && t.equals(task)) {
                 return true;
             }
         }

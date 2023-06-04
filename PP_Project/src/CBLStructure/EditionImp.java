@@ -101,7 +101,7 @@ public class EditionImp implements Edition {
    
     private boolean hasProject(Project pj) {
         for (Project p : projects) {
-            if (p.equals(pj)) {
+            if (p != null && p.equals(pj)) {
                 return true;
             }
         }

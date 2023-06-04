@@ -10,6 +10,8 @@
 package CBLStructure;
 
 import Exceptions.EditionAlreadyInCBL;
+import java.util.Arrays;
+import ma02_resources.participants.Participant;
 import ma02_resources.project.Edition;
 import ma02_resources.project.Project;
 import ma02_resources.project.Status;
@@ -64,7 +66,7 @@ public class CBLImp implements CBL {
      */
     private boolean hasEdition(Edition edition) {
         for (Edition e : editions) {
-            if (e.equals(edition)) {
+            if (e != null && e.equals(edition)) {
                 return true;
             }
         }
@@ -196,7 +198,8 @@ public class CBLImp implements CBL {
      * This method returns all the editions that have projects with missing
      * submissions on tasks.
      *
-     * @return An array of editions with uncompelted projects.
+     * @return An array of editions with uncompelted projects
+     * @throws NullPointerException - if None of the editions are uncompleted
      */
     @Override
     public Edition[] uncompletedEditions() {
@@ -231,4 +234,47 @@ public class CBLImp implements CBL {
         return uncompletedEditions;
     }
 
+    @Override
+    public String simpleToString() {
+        return "CBL {" + "numberOfEditions=" + numberOfEditions + ", editions=" + Arrays.toString(editions) + '}';
+    }
+
+    @Override
+    public Edition[] getEditionsByParticipant(Participant p) {
+        int counter = 0;
+
+        Edition[] temp = new Edition[numberOfEditions];
+        boolean hasP = false;
+        for (int i = 0; i < numberOfEditions; i++) {
+            hasP = false;
+            for (Project project : editions[i].getProjects()) {
+                if (!hasP) {
+                    try {
+                        Participant participant = project.getParticipant(p.getEmail());
+                        if (participant != null) {
+                            hasP = true;
+                        }
+
+                    } catch (IllegalArgumentException e) {
+                    }
+                }
+            }
+            if (hasP) {
+                temp[counter++] = editions[i];
+            }
+        }
+        if (counter == 0) {
+            throw new NullPointerException("User does not participate in any of the editions");
+        }
+        //limit the array to just the not null posicions
+        if (counter != numberOfEditions) {
+            Edition[] editionsByParticipant = new Edition[counter];
+            int i = 0;
+            for (Edition e : temp) {
+                editionsByParticipant[i++] = e;
+            }
+            return editionsByParticipant;
+        }
+        return temp;
+    }
 }

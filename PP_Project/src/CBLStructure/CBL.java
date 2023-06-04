@@ -5,6 +5,7 @@
 package CBLStructure;
 
 import Exceptions.EditionAlreadyInCBL;
+import ma02_resources.participants.Participant;
 import ma02_resources.project.Edition;
 
 /**
@@ -18,4 +19,7 @@ public interface CBL {
     public void activateEdition(String name);
     public Edition[] uncompletedEditions();
     public int getNumberOfEditions();
+    public String simpleToString();
+    public Edition[] getEditionsByParticipant(Participant p);
 }
+

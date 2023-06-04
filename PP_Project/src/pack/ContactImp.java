@@ -9,7 +9,7 @@
  */
 package pack;
 
-import java.util.Objects;
+
 import ma02_resources.participants.Contact;
 
 /**
