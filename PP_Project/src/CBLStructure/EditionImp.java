@@ -98,7 +98,7 @@ public class EditionImp implements Edition {
         return end;
     }
 
-    // use project equals not viable for this situation unless we create a Project temp obj with that name
+   
     private boolean hasProject(Project pj) {
         for (Project p : projects) {
             if (p.equals(pj)) {
@@ -175,7 +175,7 @@ public class EditionImp implements Edition {
     /**
      * This method removes a project from the edition. The project is identified by its name.
      * @param string The name of the project.
-     * @throws if the project name is null or empty, or if the project does not exist.
+     * @throws IllegalArgumentException - if the project name is null or empty, or if the project does not exist.
      */
     @Override
     public void removeProject(String string) {
