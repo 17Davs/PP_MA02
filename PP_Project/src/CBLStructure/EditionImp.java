@@ -15,6 +15,7 @@ import java.io.Reader;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ma02_resources.participants.Participant;
@@ -268,6 +269,22 @@ public class EditionImp implements Edition {
         return temp;   
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Edition)) {
+            return false;
+        }
+        final Edition other = (Edition) obj;
+        return this.name.equals(other.getName());
+    }
+    
+    
     @Override
     public String toString() {
         return "EditionImp{" + "name=" + name + ", start=" + start + ", end=" + end + status.toString() + ", numberOfProjects=" + numberOfProjects + ", projects=" + Arrays.toString(projects) + '}';
