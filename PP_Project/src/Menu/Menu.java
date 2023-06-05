@@ -7,6 +7,9 @@ package Menu;
 import CBLStructure.CBL;
 import CBLStructure.CBLImp;
 import Exceptions.AlreadyExistsInArray;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,12 +38,12 @@ public class Menu {
     private CBL cbl;
     private ParticipantsManager pm;
     private Participant loggedInParticipant;
-    private Scanner scanner;
+    private BufferedReader reader;
 
     public Menu(CBL cbl, ParticipantsManager pm) {
         this.cbl = cbl;
         this.pm = pm;
-        this.scanner = new Scanner(System.in);
+        this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
     public void start() {
@@ -52,7 +55,12 @@ public class Menu {
             System.out.println("3. Log in as Administrator");
             System.out.println("4. Exit");
             System.out.print("Option: ");
-            option = scanner.nextInt();
+            try {
+                option = Integer.parseInt(reader.readLine());
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+                continue;
+            }
             switch (option) {
                 case 1:
                     if (login()) {
@@ -60,13 +68,13 @@ public class Menu {
                     }
                     break;
                 case 2:
-                    //register();
+                    register();
                     break;
-
                 case 3:
                     if (loginAdmin()) {
                         // showAdminMenu();
                     }
+                    break;
                 case 4:
                     break;
                 default:
@@ -75,26 +83,26 @@ public class Menu {
             }
 
         } while (option != 4);
-
     }
-//fazer com do while
+
     private boolean login() {
         int counter = 0;
         System.out.println("===== Login =====");
-        System.out.print("Email: ");
-        scanner.nextLine();
-        String email = scanner.nextLine();
-        try {
-            loggedInParticipant = pm.getParticipant(email);
-            System.out.println("Login successful. Welcome, " + loggedInParticipant.getName() + "!");
-            return true;
-        } catch (IllegalArgumentException e) {
-            System.out.println("User not found");
-            if (++counter < 3) {
-                login();
-            } 
-            return false;
-        }
+        do {
+            System.out.print("Email: ");
+            try {
+                String email = reader.readLine();
+                loggedInParticipant = pm.getParticipant(email);
+                System.out.println("Login successful. Welcome, " + loggedInParticipant.getName() + "!");
+                return true;
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("User not found\n");
+            }
+        } while (++counter < 3);
+
+        return false;
     }
 
     private boolean loginAdmin() {
@@ -102,31 +110,97 @@ public class Menu {
 
         System.out.println("===== Login =====");
         System.out.print("Email: ");
-        scanner.nextLine();
-        String email = scanner.nextLine();
-        if (email.equals(USERNAME)) {
-            do {
-                System.out.print("Password: ");
-                String password = scanner.nextLine();
-                if (!password.equals(PASSWORD)) {
-                    System.out.println("Login Failed!");
-                } else {
-                return true;
-                }
-            } while (++counter < 3);
-                
-        } else {
-            System.out.println("Login Failed!");
+        try {
+            String email = reader.readLine();
+            if (email.equals(USERNAME)) {
+                do {
+                    System.out.print("Password: ");
+                    String password = reader.readLine();
+                    if (!password.equals(PASSWORD)) {
+                        System.out.println("Login Failed!\n");
+                    } else {
+                        return true;
+                    }
+                } while (++counter < 3);
+            } else {
+                System.out.println("Login Failed!");
                 return false;
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading input.");
         }
+        return false;
+    }
+
+    private boolean register() {
+        int option = 0;
+        do {
+            System.out.println("=== Register ===");
+            System.out.println("1. As a Student");
+            System.out.println("2. As a Facilitator");
+            System.out.println("3. As a Partner");
+            System.out.println("4. Back");
+            try {
+                option = Integer.parseInt(reader.readLine());
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+                continue;
+            }
+        } while (option != 4 && option != 1 && option != 2 && option != 3);
+
+        if (option == 4) {
+            return false;
+        }
+
+        try {
+            System.out.println("Name: ");
+            String name = reader.readLine();
+            System.out.println("Email: ");
+            String email = reader.readLine();
+            System.out.println("Street: ");
+            String street = reader.readLine();
+            System.out.println("City: ");
+            String city = reader.readLine();
+            System.out.println("State: ");
+            String state = reader.readLine();
+            System.out.println("ZipCode: ");
+            String zipCode = reader.readLine();
+            System.out.println("Country: ");
+            String country = reader.readLine();
+            System.out.println("Phone: ");
+            String phone = reader.readLine();
+            Contact contact = new ContactImp(street, city, state, zipCode, country, phone);
+            //apresentar instituições do manager de instituições ainda não criado
+            Instituition instituition =null;
+            Participant newParticipant = new ParticipantImp(name, email,  contact, instituition);
+        } catch (IOException e) {
+            System.out.println("Error reading input.");
+        }
+
+        switch (option) {
+            case 1:
+                
+                //return registerStudent(newParticipant);
+                break;
+            case 2:
+                // Handle registering as a facilitator
+                //return registerFacilitator(newParticipant);
+                break;
+            case 3:
+                // Handle registering as a partner
+                //return registerPartners(newParticipant);
+                break;
+                
+        }
+
         return false;
     }
 
     private void showEditionsMenu() {
         System.out.println("===== Editions Menu =====");
         System.out.println("Select an edition:");
-        try {
 
+        try {
             Edition[] editions = cbl.getEditionsByParticipant(loggedInParticipant);
 
             for (int i = 0; i < editions.length; i++) {
@@ -134,22 +208,26 @@ public class Menu {
             }
 
             System.out.print("Enter the number of the edition: ");
-            int editionNumber = scanner.nextInt();
-            scanner.nextLine();
+            try {
+                int editionNumber = Integer.parseInt(reader.readLine());
 
-            // Verifique se o número da edição é válido
-            if (editionNumber >= 1 && editionNumber <= editions.length) {
-                Edition selectedEdition = editions[editionNumber - 1];
-                showProjectsMenu(selectedEdition);
-            } else {
-                System.out.println("Invalid selection. Please try again.");
+                // Verifique se o número da edição é válido
+                if (editionNumber >= 1 && editionNumber <= editions.length) {
+                    Edition selectedEdition = editions[editionNumber - 1];
+                    showProjectsMenu(selectedEdition);
+                } else {
+                    System.out.println("Invalid selection. Please try again.");
+                    showEditionsMenu();
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
                 showEditionsMenu();
             }
         } catch (NullPointerException e) {
             System.out.println(e.getMessage());
-
+        } catch (IOException e) {
+            System.out.println("Error reading input.");
         }
-
     }
 
     private void showProjectsMenu(Edition edition) {
@@ -163,16 +241,22 @@ public class Menu {
         }
 
         System.out.print("Enter the number of the project: ");
-        int projectNumber = scanner.nextInt();
-        scanner.nextLine(); // Limpar a nova linha pendente
+        try {
+            int projectNumber = Integer.parseInt(reader.readLine());
 
-        // Verifique se o número do projeto é válido
-        if (projectNumber >= 1 && projectNumber <= projects.length) {
-            Project selectedProject = projects[projectNumber - 1];
-            showProjectDetails(selectedProject);
-        } else {
-            System.out.println("Invalid selection. Please try again.");
+            // Verifique se o número do projeto é válido
+            if (projectNumber >= 1 && projectNumber <= projects.length) {
+                Project selectedProject = projects[projectNumber - 1];
+                showProjectDetails(selectedProject);
+            } else {
+                System.out.println("Invalid selection. Please try again.");
+                showProjectsMenu(edition);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
             showProjectsMenu(edition);
+        } catch (IOException e) {
+            System.out.println("Error reading input.");
         }
     }
 
@@ -197,14 +281,22 @@ public class Menu {
         }
 
         System.out.print("Enter the number of the task: ");
-        int taskNumber = scanner.nextInt();
-        scanner.nextLine(); // Limpar a nova linha pendente
+        try {
+            int taskNumber = Integer.parseInt(reader.readLine());
 
-        // Verifique se o número do projeto é válido
-        if (taskNumber >= 1 && taskNumber <= tasks.length) {
-            Task selectedTask = tasks[taskNumber - 1];
-            // showTaskDetails(selectedTask);
-
+            // Verifique se o número da tarefa é válido
+            if (taskNumber >= 1 && taskNumber <= tasks.length) {
+                Task selectedTask = tasks[taskNumber - 1];
+                // showTaskDetails(selectedTask);
+            } else {
+                System.out.println("Invalid selection. Please try again.");
+                showProjectDetails(project);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            showProjectDetails(project);
+        } catch (IOException e) {
+            System.out.println("Error reading input.");
         }
     }
 
