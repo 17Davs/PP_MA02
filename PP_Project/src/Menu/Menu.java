@@ -10,14 +10,12 @@ import Exceptions.AlreadyExistsInArray;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.InstituitionType;
 import ma02_resources.participants.Participant;
 import ma02_resources.participants.Student;
+import ma02_resources.participants.Facilitator;
 import ma02_resources.project.Edition;
 import ma02_resources.project.Project;
 import ma02_resources.project.Task;
@@ -26,6 +24,9 @@ import pack.InstituitionImp;
 import pack.ParticipantImp;
 import pack.ParticipantsManager;
 import pack.StudentImp;
+import pack.FacilitatorImp;
+import pack.PartnerImp;
+import ma02_resources.participants.Partner;
 
 /**
  *
@@ -146,7 +147,7 @@ public class Menu {
                 System.out.println("Error reading input.");
                 continue;
             }
-        } while (option != 4 && option != 1 && option != 2 && option != 3);
+        } while (option > 4 || option < 1);
 
         if (option == 4) {
             return false;
@@ -169,40 +170,113 @@ public class Menu {
             String country = reader.readLine();
             System.out.println("Phone: ");
             String phone = reader.readLine();
+
             Contact contact = new ContactImp(street, city, state, zipCode, country, phone);
+
             //apresentar instituições do manager de instituições ainda não criado
-            Instituition instituition =null;
-            Participant newParticipant = new ParticipantImp(name, email,  contact, instituition);
+            Instituition instituition = null;
+            Participant newParticipant = new ParticipantImp(name, email, contact, instituition);
+
+            switch (option) {
+                case 1:
+                    return registerStudent(newParticipant);
+                case 2:
+                    // Handle registering as a facilitator
+                    return registerFacilitator(newParticipant);
+                case 3:
+                    // Handle registering as a partner
+                    return registerPartner(newParticipant);
+            }
         } catch (IOException e) {
             System.out.println("Error reading input.");
+            
         }
-
-        switch (option) {
-            case 1:
-                
-                //return registerStudent(newParticipant);
-                break;
-            case 2:
-                // Handle registering as a facilitator
-                //return registerFacilitator(newParticipant);
-                break;
-            case 3:
-                // Handle registering as a partner
-                //return registerPartners(newParticipant);
-                break;
-                
-        }
-
         return false;
+    }
+
+    private boolean registerStudent(Participant participant) {
+        try {
+            //number problem -> can be same number if done like this
+            //get missing variables
+            System.out.println("Number: ");
+            int number = Integer.parseInt(reader.readLine());
+            //create student
+            Student newStudent = new StudentImp(number, participant.getName(),
+                    participant.getEmail(), participant.getContact(),
+                    participant.getInstituition());
+            //add to participant Manager array
+            pm.addParticipant(newStudent);
+
+            return true;
+
+        } catch (IOException ex) {
+            System.out.println("Error reading input.");
+            return false;
+        } catch (AlreadyExistsInArray ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
+    }
+
+    private boolean registerFacilitator(Participant participant) {
+        try {
+
+            //get missing variables
+            System.out.println("Area Of Expertise: ");
+            String areaOfExpertise = reader.readLine();
+
+            //create facilitator
+            Facilitator newFacilitator = new FacilitatorImp(areaOfExpertise,
+                    participant.getName(), participant.getEmail(),
+                    participant.getContact(), participant.getInstituition());
+
+            //add newFacilitator to participant manager
+            pm.addParticipant(newFacilitator);
+
+            return true;
+        } catch (IOException ex) {
+            System.out.println("Error reading input.");
+            return false;
+        } catch (AlreadyExistsInArray ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
+    }
+
+    private boolean registerPartner(Participant participant) {
+        try {
+
+            //get missing variables
+            System.out.println("Vat: ");
+            String vat = reader.readLine();
+            System.out.println("WebSite: ");
+            String website = reader.readLine();
+
+            //create partner
+            Partner newPartner = new PartnerImp(vat, website,
+                    participant.getName(), participant.getEmail(),
+                    participant.getContact(), participant.getInstituition());
+
+            //add newPartner to participant manager
+            pm.addParticipant(newPartner);
+
+            return true;
+
+        } catch (IOException ex) {
+            System.out.println("Error reading input.");
+            return false;
+        } catch (AlreadyExistsInArray ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
     }
 
     private void showEditionsMenu() {
         System.out.println("===== Editions Menu =====");
         System.out.println("Select an edition:");
-
         try {
             Edition[] editions = cbl.getEditionsByParticipant(loggedInParticipant);
-
+            System.out.println("== Your Editions == ");
             for (int i = 0; i < editions.length; i++) {
                 System.out.println((i + 1) + ". " + editions[i].getName());
             }
