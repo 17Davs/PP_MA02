@@ -6,6 +6,7 @@ package Menu;
 
 import CBLStructure.CBL;
 import CBLStructure.CBLImp;
+import CBLStructure.SubmissionImp;
 import Exceptions.AlreadyExistsInArray;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -138,6 +139,7 @@ public class Menu {
     }
 
     private boolean register() {
+
         int option = 0;
         do {
             System.out.println("=== Register ===");
@@ -157,21 +159,21 @@ public class Menu {
         }
 
         try {
-            System.out.println("Name: ");
+            System.out.print("\nName: ");
             String name = reader.readLine();
-            System.out.println("Email: ");
+            System.out.print("\nEmail: ");
             String email = reader.readLine();
-            System.out.println("Street: ");
+            System.out.print("\nStreet: ");
             String street = reader.readLine();
-            System.out.println("City: ");
+            System.out.print("\nCity: ");
             String city = reader.readLine();
-            System.out.println("State: ");
+            System.out.print("\nState: ");
             String state = reader.readLine();
-            System.out.println("ZipCode: ");
+            System.out.print("\nZipCode: ");
             String zipCode = reader.readLine();
-            System.out.println("Country: ");
+            System.out.print("\nCountry: ");
             String country = reader.readLine();
-            System.out.println("Phone: ");
+            System.out.print("\nPhone: ");
             String phone = reader.readLine();
 
             Contact contact = new ContactImp(street, city, state, zipCode, country, phone);
@@ -189,10 +191,10 @@ public class Menu {
                 case 3:
                     // Handle registering as a partner
                     return registerPartner(newParticipant);
+
             }
         } catch (IOException e) {
             System.out.println("Error reading input.");
-
         }
         return false;
     }
@@ -219,7 +221,7 @@ public class Menu {
         try {
 
             //get missing variables
-            System.out.println("Area Of Expertise: ");
+            System.out.print("\nArea Of Expertise: ");
             String areaOfExpertise = reader.readLine();
 
             //create facilitator
@@ -244,9 +246,9 @@ public class Menu {
         try {
 
             //get missing variables
-            System.out.println("Vat: ");
+            System.out.print("\nVat: ");
             String vat = reader.readLine();
-            System.out.println("WebSite: ");
+            System.out.print("\nWebSite: ");
             String website = reader.readLine();
 
             //create partner
@@ -269,136 +271,266 @@ public class Menu {
     }
 
     private void showMyEditionsMenu() {
-        System.out.println("===== Editions Menu =====");
-        // System.out.println("Select an edition:");
-        try {
-            Edition[] editions = cbl.getEditionsByParticipant(loggedInParticipant);
-            System.out.println("== Your Editions == ");
-            int i = 0;
-            for (i = 0; i < editions.length; i++) {
-                System.out.println((i + 1) + ". " + editions[i].getName() + "("
-                        + editions[i].getStatus().toString() + ")"
-                );
-            }
-            System.out.println((i + 1) + ". Back");
-            System.out.print("Enter the number of the edition: ");
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("===== Editions Menu =====");
+            // System.out.println("Select an edition:");
             try {
-                int editionNumber = Integer.parseInt(reader.readLine());
+                Edition[] editions = cbl.getEditionsByParticipant(loggedInParticipant);
+                System.out.println("== Your Editions == ");
+                int i = 0;
+                for (i = 0; i < editions.length; i++) {
+                    System.out.println((i + 1) + ". " + editions[i].getName() + "("
+                            + editions[i].getStatus().toString() + ")"
+                    );
+                }
+                System.out.println((i + 1) + ". Back");
+                System.out.print("Enter the number of the edition: ");
+                try {
+                    int editionNumber = Integer.parseInt(reader.readLine());
 
-                // check if it's valid
-                if (editionNumber >= 1 && editionNumber <= editions.length) {
-                    Edition selectedEdition = editions[editionNumber - 1];
-                    showProjectsMenu(selectedEdition);
-                } else if (editionNumber == i + 1) {
+                    // check if it's valid
+                    if (editionNumber >= 1 && editionNumber <= editions.length) {
+                        Edition selectedEdition = editions[editionNumber - 1];
+                        showProjectsMenu(selectedEdition);
+                    } else if (editionNumber == i + 1) {
 
-                } else {
-                    System.out.println("Invalid selection. Please try again.");
+                    } else {
+                        System.out.println("Invalid selection. Please try again.");
+                        showMyEditionsMenu();
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number.");
                     showMyEditionsMenu();
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
-                showMyEditionsMenu();
+            } catch (NullPointerException e) {
+                System.out.println(e.getMessage());
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
             }
-        } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println("Error reading input.");
         }
     }
 
     private void showProjectsMenu(Edition edition) {
-        System.out.println("===== Projects Menu =====");
-        System.out.println("Edition: " + edition.getName() + "("
-                + edition.getStatus().toString() + ")");
-        System.out.println("Select a project:");
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("===== Projects Menu =====");
+            System.out.println("Edition: " + edition.getName() + "("
+                    + edition.getStatus().toString() + ")");
+            System.out.println("Select a project:");
 
-        Project[] projects = edition.getProjects();
-        int i = 0;
-        for (i = 0; i < projects.length; i++) {
-            System.out.println((i + 1) + ". " + projects[i].getName());
-        }
-        System.out.println((i + 1) + ". Back");
-        System.out.print("Enter the number of the project: ");
-        try {
-            int projectNumber = Integer.parseInt(reader.readLine());
-
-            // Verifique se o número do projeto é válido
-            if (projectNumber >= 1 && projectNumber <= projects.length) {
-                Project selectedProject = projects[projectNumber - 1];
-                showProjectDetails(selectedProject);
-            } else if (projectNumber == i + 1) {
-
-            } else {
-                System.out.println("Invalid selection. Please try again.");
-                showProjectsMenu(edition);
+            Project[] projects = edition.getProjects();
+            int i = 0;
+            for (i = 0; i < projects.length; i++) {
+                System.out.println((i + 1) + ". " + projects[i].getName());
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a number.");
-            showProjectsMenu(edition);
-        } catch (IOException e) {
-            System.out.println("Error reading input.");
+            System.out.println((i + 1) + ". Back");
+            System.out.print("Enter the number of the project: ");
+            try {
+                int projectNumber = Integer.parseInt(reader.readLine());
+
+                // Verifique se o número do projeto é válido
+                if (projectNumber >= 1 && projectNumber <= projects.length) {
+                    Project selectedProject = projects[projectNumber - 1];
+                    showProjectDetails(selectedProject);
+                } else if (projectNumber == i + 1) {
+                    exit = true;
+                } else {
+                    System.out.println("Invalid selection. Please try again.");
+                    showProjectsMenu(edition);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                showProjectsMenu(edition);
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
         }
     }
 
     private void showProjectDetails(Project project) {
-        System.out.println("===== Project Details =====");
-        System.out.println("Project: " + project.getName());
-        System.out.println("Description: " + project.getDescription());
-        System.out.println("Tags: ");
-        String[] tags = project.getTags();
-        for (String s : tags) {
-            System.out.print(s + " ");
-        }
-        System.out.println("Status: " + (project.isCompleted() ? "Completed" : "Incomplete"));
-        System.out.println("Participants: " + project.getNumberOfParticipants() + "/" + project.getMaximumNumberOfParticipants());
-        System.out.println(" -- Facilitators: " + project.getNumberOfFacilitators() + "/" + project.getMaximumNumberOfFacilitators());
-        System.out.println(" -- Students: " + project.getNumberOfStudents() + "/" + project.getMaximumNumberOfStudents());
-        System.out.println(" -- Partners: " + project.getNumberOfPartners() + "/" + project.getMaximumNumberOfPartners());
-        System.out.println(" Tasks: " + project.getNumberOfTasks() + "/" + project.getMaximumNumberOfTasks());
-        
-        Task[] tasks = project.getTasks();
-        int i = 0;
-        for (i = 0; i < tasks.length; i++) {
-            System.out.println((i + 1) + ". " + tasks[i].getTitle());
-        }
-        System.out.println((i+1) + ". Back");
-        System.out.print("Enter the number of the task: ");
-        try {
-            int taskNumber = Integer.parseInt(reader.readLine());
+        boolean exit = false;
+        while (!exit) {
 
-            // Verifique se o número da tarefa é válido
-            if (taskNumber >= 1 && taskNumber <= tasks.length) {
-                Task selectedTask = tasks[taskNumber - 1];
-                // showTaskDetails(selectedTask);
-            } else if (taskNumber == (i+1)){
-                
-            } else {
-                System.out.println("Invalid selection. Please try again.");
-                showProjectDetails(project);
+            System.out.println("===== Project Details =====");
+            System.out.println("Project: " + project.getName());
+            System.out.println("Description: " + project.getDescription());
+            System.out.println("Tags: ");
+            String[] tags = project.getTags();
+            for (String s : tags) {
+                System.out.print(s + " ");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a number.");
-            showProjectDetails(project);
-        } catch (IOException e) {
-            System.out.println("Error reading input.");
+            System.out.println("Status: " + (project.isCompleted() ? "Completed" : "Incomplete"));
+            System.out.println("Participants: " + project.getNumberOfParticipants() + "/" + project.getMaximumNumberOfParticipants());
+            System.out.println(" -- Facilitators: " + project.getNumberOfFacilitators() + "/" + project.getMaximumNumberOfFacilitators());
+            System.out.println(" -- Students: " + project.getNumberOfStudents() + "/" + project.getMaximumNumberOfStudents());
+            System.out.println(" -- Partners: " + project.getNumberOfPartners() + "/" + project.getMaximumNumberOfPartners());
+            System.out.println(" Tasks: " + project.getNumberOfTasks() + "/" + project.getMaximumNumberOfTasks());
+
+            Task[] tasks = project.getTasks();
+            int i = 0;
+            for (i = 0; i < tasks.length; i++) {
+                System.out.println((i + 1) + ". " + tasks[i].getTitle());
+            }
+            System.out.println((i + 1) + ". Back");
+            System.out.print("Enter the number of the task: ");
+            try {
+                int taskNumber = Integer.parseInt(reader.readLine());
+
+                // Verifique se o número da tarefa é válido
+                if (taskNumber >= 1 && taskNumber <= tasks.length) {
+                    Task selectedTask = tasks[taskNumber - 1];
+                    showTaskDetails(selectedTask);
+                } else if (taskNumber == (i + 1)) {
+                    exit = true;
+                } else {
+                    System.out.println("Invalid selection. Please try again.");
+                    showProjectDetails(project);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                showProjectDetails(project);
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
         }
     }
-    
-    private void showTaskDetails(Task task){
-        System.out.println("=== Task Details ===");
-        System.out.println("Title: " + task.getTitle());
-        System.out.println("Description: " + task.getDescription());
-        System.out.println("Started: " + task.getStart().toString());
-        System.out.println("End: " + task.getEnd().toString());
-        System.out.println("Numer of submissions: " + task.getNumberOfSubmissions());
-        Submission[] submissions = task.getSubmissions();
-        int i = 0;
-        for (i = 0; i < submissions.length; i++) {
-            System.out.println((i + 1) + ". " + submissions[i].getText());
+
+    private void showTaskDetails(Task task) {
+        boolean isStudent = false, exit = false;
+        if (loggedInParticipant instanceof Student) {
+            isStudent = true;
         }
-        System.out.println((i+1) + ". Back");
-        System.out.print("Enter the number of the task: ");
-        
+        while (!exit) {
+
+            System.out.println("=== Task Details ===");
+            System.out.println("Title: " + task.getTitle());
+            System.out.println("Description: " + task.getDescription());
+            System.out.println("Started: " + task.getStart().toString());
+            System.out.println("End: " + task.getEnd().toString());
+            System.out.println("Numer of submissions: " + task.getNumberOfSubmissions());
+
+            System.out.println("\nSelect an option:");
+            System.out.println("1. List Submissions");
+
+            if (isStudent) {
+                System.out.println("2. Add submission");
+                System.out.println("3. Back");
+            } else {
+                System.out.println("2. Back");
+            }
+            int option = 0;
+            try {
+                if (isStudent) {
+                    do {
+                        System.out.print("\nOption: ");
+                        option = Integer.parseInt(reader.readLine());
+                    } while (option < 1 || option > 3);
+
+                } else {
+                    do {
+                        System.out.print("\nOption: ");
+                        option = Integer.parseInt(reader.readLine());
+                    } while (option < 1 || option > 2);
+                }
+                if (option == 1) {
+                    listSubmissions(task);
+                    // if option 2 && student, then allow to submit 
+                } else if (option == 2 && isStudent) {
+                    if (submitWork(task)){
+                        System.out.println("Success submitting work!");
+                    } else {
+                        System.out.println("Failed to submit work!");
+                    }
+                    //if not student, option 2 to exit or if student and option 3 exit
+                } else {
+                    exit = true;
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                showTaskDetails(task);
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private void listSubmissions(Task task) {
+        boolean exit = false;
+        while (!exit) {
+
+            Submission[] submissions = task.getSubmissions();
+            int i = 0;
+            for (i = 0; i < submissions.length; i++) {
+                System.out.println((i + 1) + ". " + submissions[i].getText());
+            }
+            System.out.println((i + 1) + ". Back");
+            System.out.print("\nSelect a submission: ");
+            try {
+                int submissionNumber = Integer.parseInt(reader.readLine());
+
+                // Verifique se o número da tarefa é válido
+                if (submissionNumber >= 1 && submissionNumber <= submissions.length) {
+                    Submission selectedSubmission = submissions[submissionNumber - 1];
+                    showSubmissionDetails(selectedSubmission);
+                } else if (submissionNumber == (i + 1)) {
+                    exit = true;
+                } else {
+                    System.out.println("Invalid selection. Please try again.");
+                    listSubmissions(task);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                listSubmissions(task);
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private void showSubmissionDetails(Submission submission) {
+        boolean exit = false;
+
+        while (!exit) {
+            System.out.println("== Submission ==");
+            System.out.println("Student: " + submission.getStudent().getName() + "(" + submission.getStudent().getEmail() + ")");
+            System.out.println("Text: " + submission.getText());
+            System.out.println("Date: " + submission.getDate().toString());
+
+            System.out.println("\n 1. Back");
+            try {
+                int option = Integer.parseInt(reader.readLine());
+                if (option == 1) {
+                    exit = true;
+                } else {
+                    System.out.println("Invalid selection. Please try again.");
+                    showSubmissionDetails(submission);
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                showSubmissionDetails(submission);
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private boolean submitWork(Task task) {
+        System.out.println("=== Submit Work ===");
+        System.out.println("Student: " + loggedInParticipant.getEmail());
+        try {
+            System.out.print("Enter the text: ");
+            String text = reader.readLine();
+
+            Submission newSubmission = new SubmissionImp((Student) loggedInParticipant, text);
+            System.out.println("Date of Submission: " + newSubmission.getDate().toString());
+            return true;
+        } catch (IOException e) {
+            System.out.println("Error reading input.");
+            return false;
+        }
     }
 
     public static void main(String[] args) {
