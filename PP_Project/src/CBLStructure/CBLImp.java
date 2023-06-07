@@ -27,6 +27,11 @@ import org.json.simple.JSONObject;
  */
 public class CBLImp implements CBL {
 
+    /**
+     * 
+     * @param numberOfEditions Variable that defines how many editions have been made
+     * @param editions[] List of editions
+     */
     private int numberOfEditions;
     private Edition editions[];
 
@@ -49,10 +54,12 @@ public class CBLImp implements CBL {
     }
 
     /**
-     * This method expands the lenght of the editions array by creating another
-     * array with twice the lenght of the edition list, copying all the editions
+     * This method expands the length of the editions array by creating another
+     * array with twice the length of the edition list, copying all the editions
      * of the editions array to the temporary array and finally make the
      * editions array the temporary array
+     * 
+     * @param temp Temporary variable that saves a new list with double the size 
      */
     private void realloc() {
         Edition temp[] = new Edition[editions.length * 2];
@@ -79,11 +86,11 @@ public class CBLImp implements CBL {
     }
 
     /**
-     * This metohd adds an edition to the CBL if it doesn't already exists.
+     * This method adds an edition to the CBL if it doesn't already exist.
      *
      * @param edition The edition to be added.
      * @throws Exceptions.EditionAlreadyInCBL - if the edition already exists.
-     * @throw IllegalArgumentException - if the given edition's name is null or
+     * @throws IllegalArgumentException - if the given edition's name is null or
      * empty.
      */
     @Override
@@ -213,8 +220,8 @@ public class CBLImp implements CBL {
      * This method returns all the editions that have projects with missing
      * submissions on tasks.
      *
-     * @return An array of editions with uncompelted projects
-     * @throws NullPointerException - if None of the editions are uncompleted
+     * @return An array of editions with incomplete projects
+     * @throws NullPointerException - if None of the editions are incomplete
      */
     @Override
     public Edition[] uncompletedEditions() {
@@ -253,6 +260,15 @@ public class CBLImp implements CBL {
 //    public String simpleToString() {
 //        return "CBL {" + "numberOfEditions=" + numberOfEditions + ", editions=" + Arrays.toString(editions) + '}';
 //    }
+
+
+    /**
+     * This method returns a list of editions in which the participant is part of.
+     *       
+     * @param p Participant to be searched
+     * @return An array of editions by participant
+     * @throws NullPointerException -If it doesn't find a participant 
+     */
     @Override
     public Edition[] getEditionsByParticipant(Participant p) throws NullPointerException {
         int counter = 0;
@@ -280,7 +296,7 @@ public class CBLImp implements CBL {
         if (counter == 0) {
             throw new NullPointerException("User does not participate in any of the editions");
         }
-        //limit the array to just the not null posicions
+        //limit the array to just the not null positions
         if (counter != numberOfEditions) {
             Edition[] editionsByParticipant = new Edition[counter];
 
