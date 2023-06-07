@@ -18,6 +18,10 @@ public class ParticipantsManager {
         participantsList = new Participant[10];
     }
 
+    public int getParticipantsCounter() {
+        return participantsCounter;
+    }
+
     private void realloc() {
         Participant[] temp = new Participant[participantsList.length * 2];
         int i = 0;
@@ -36,16 +40,16 @@ public class ParticipantsManager {
         return false;
     }
     
-    public int findParticipant(Participant p) {
-        int i=0;
-        for (Participant participant : participantsList) {
-            if (participant.equals(p)) {
-                return i;
-            }
-            i++;
-        }
-        return -1;
-    }
+//    public int findParticipant(Participant p) {
+//        int i=0;
+//        for (Participant participant : participantsList) {
+//            if (participant.equals(p)) {
+//                return i;
+//            }
+//            i++;
+//        }
+//        return -1;
+//    }
 
     public void addParticipant(Participant p) throws AlreadyExistsInArray {
 
