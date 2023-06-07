@@ -19,7 +19,7 @@ public interface CBL {
     public void activateEdition(String name);
     public Edition[] uncompletedEditions();
     public int getNumberOfEditions();
-    public String simpleToString();
+    //public String simpleToString();
     public Edition[] getEditionsByParticipant(Participant p);
 }
 

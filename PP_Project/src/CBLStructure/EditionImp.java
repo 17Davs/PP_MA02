@@ -15,14 +15,12 @@ import java.io.Reader;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ma02_resources.participants.Participant;
 import ma02_resources.project.Edition;
 import ma02_resources.project.Project;
 import ma02_resources.project.Status;
-import ma02_resources.project.Task;
 import ma02_resources.project.exceptions.IllegalNumberOfTasks;
 import ma02_resources.project.exceptions.TaskAlreadyInProject;
 import org.json.simple.JSONArray;
@@ -49,19 +47,11 @@ public class EditionImp implements Edition {
         this.start = start;
         this.end = end;
         projectTemplate = defaultProjectTemplate;
-        status = Status.ACTIVE;
+        status = Status.INACTIVE;
         projects = new Project[5];
         numberOfProjects = 0;
     }
-     public EditionImp(String name, String projectTemplate,LocalDate start, LocalDate end) {
-        this.name = name;
-        this.start = start;
-        this.end = end;
-        this.projectTemplate = projectTemplate ;
-        status = Status.ACTIVE;
-        projects = new Project[5];
-        numberOfProjects = 0;
-    }
+
 
     @Override
     public String getName() {
@@ -98,7 +88,6 @@ public class EditionImp implements Edition {
         return end;
     }
 
-   
     private boolean hasProject(Project pj) {
         for (Project p : projects) {
             if (p != null && p.equals(pj)) {
@@ -109,8 +98,9 @@ public class EditionImp implements Edition {
     }
 
     /**
-     * This metohd adds a project to the edition. The project is created from the template.
-     * 
+     * This metohd adds a project to the edition. The project is created from
+     * the template.
+     *
      * @param name The name of the Project
      * @param description The description of the project
      * @param tags the tags for the project
@@ -173,19 +163,25 @@ public class EditionImp implements Edition {
     }
 
     /**
-     * This method removes a project from the edition. The project is identified by its name.
+     * This method removes a project from the edition. The project is identified
+     * by its name.
+     *
      * @param string The name of the project.
-     * @throws IllegalArgumentException - if the project name is null or empty, or if the project does not exist.
+     * @throws IllegalArgumentException - if the project name is null or empty,
+     * or if the project does not exist.
      */
     @Override
     public void removeProject(String string) {
         if (string == null) {
             throw new IllegalArgumentException("Null argument!");
         }
+        Project project = new ProjectImp(string, null, 0, 0, 0, 0, null);
+
         int pos = -1, i = 0;
+
         while (pos == -1 && i < numberOfProjects) {
 
-            if (projects[i].getName().equals(string)) {
+            if (projects[i].equals(project)) {
                 pos = i;
             } else {
                 i++;
@@ -203,11 +199,11 @@ public class EditionImp implements Edition {
 
     @Override
     public Project getProject(String string) {
-        Project p = null;
+        Project p = new ProjectImp(string, null, 0, 0, 0, 0, null);
+
         for (int i = 0; i < numberOfProjects; i++) {
-            if (projects[i].getName().equals(string)) {
-                p = projects[i];
-                return p;
+            if (projects[i].equals(p)) {
+                return projects[i];
             }
         }
 
@@ -228,11 +224,23 @@ public class EditionImp implements Edition {
     @Override
     public Project[] getProjectsByTag(String string) {
         Project[] temp = new Project[this.numberOfProjects];
-        int i = 0;
-        for (Project p : projects) {
-            if (p.hasTag(string)) {
-                temp[i++] = p;
+        int counter = 0;
+        for (int i = 0; i<numberOfProjects;i++) {
+            if (projects[i].hasTag(string)) {
+                temp[counter++] = projects[i];
             }
+        }
+        if (counter == 0) {
+            return temp;
+        }
+
+        if (counter != numberOfProjects) {
+            Project[] trimmedTemp = new Project[counter];
+            
+            for (int i = 0; i < counter; i++) {
+                trimmedTemp[i] = temp[i];
+            }
+            return trimmedTemp;
         }
         return temp;
     }
@@ -241,32 +249,47 @@ public class EditionImp implements Edition {
     public Project[] getProjectsOf(String string) {
         Project[] temp = new Project[this.numberOfProjects];
         Participant participant;
-        int i = 0;
-        for (Project p : projects) {
+
+        int counter = 0;
+        for (int i = 0; i < numberOfProjects; i++) {
             try {
-                p.getParticipant(string);
+                projects[i].getParticipant(string);
                 //if it didnt throw an exception, the project will be added to the array that will be later returned
-                temp[i++] = p;
+                temp[counter++] = projects[i];
             } catch (IllegalArgumentException ignored) {
             }
+        }
+
+        if (counter == 0) {
+            return temp;
+        }
+
+        if (counter != numberOfProjects) {
+            Project[] trimmedTemp = new Project[counter];
+         
+            for (int i = 0; i < counter; i++) {
+                trimmedTemp[i] = temp[i];
+            }
+            return trimmedTemp;
         }
         return temp;
 
     }
-    
+
     /**
      * This method returns all the uncompleted projects of the edition
+     *
      * @return an array of uncompleted projects
      */
-    public Project[] getUncompletedProjects(){
+    public Project[] getUncompletedProjects() {
         Project[] temp = new Project[this.numberOfProjects];
         int i = 0;
-        for (Project p : projects){
-            if (!p.isCompleted()){
+        for (Project p : projects) {
+            if (!p.isCompleted()) {
                 temp[i++] = p;
             }
         }
-        return temp;   
+        return temp;
     }
 
     @Override
@@ -283,8 +306,7 @@ public class EditionImp implements Edition {
         final Edition other = (Edition) obj;
         return this.name.equals(other.getName());
     }
-    
-    
+
     @Override
     public String toString() {
         return "EditionImp{" + "name=" + name + ", start=" + start + ", end=" + end + status.toString() + ", numberOfProjects=" + numberOfProjects + ", projects=" + Arrays.toString(projects) + '}';

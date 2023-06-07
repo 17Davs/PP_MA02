@@ -10,6 +10,7 @@
 package CBLStructure;
 
 import Exceptions.EditionAlreadyInCBL;
+import java.time.LocalDate;
 import java.util.Arrays;
 import ma02_resources.participants.Participant;
 import ma02_resources.project.Edition;
@@ -167,8 +168,10 @@ public class CBLImp implements CBL {
      * @param name The name of the edition to be activated
      */
     @Override
-    public void activateEdition(String name) {
+    public void activateEdition(String name) throws IllegalArgumentException {
         int pos = -1, i = 0;
+        
+        Edition edition = new EditionImp(name, null,null);
         //try to find the active
         for (Edition e : editions) {
             if (e.getStatus() == Status.ACTIVE) {
@@ -181,15 +184,23 @@ public class CBLImp implements CBL {
         //check and try to find edition with name, 
         //if found, activate it and inactivate previously active edition found
         while (!complete && i < numberOfEditions) {
-            if (editions[i].getName().equals(name)) {
+            if (editions[i].equals(edition)) {
                 if (pos != -1) {
-                    editions[pos].setStatus(Status.INACTIVE);
+                    //closed if end Date not happened yet and cancelled if end date not happened
+                    if (editions[pos].getEnd().compareTo(LocalDate.now()) <= 0){
+                        editions[pos].setStatus(Status.CLOSED);
+                    } else {
+                        editions[pos].setStatus(Status.CANCELED);
+                    }                
                 }
                 editions[i].setStatus(Status.ACTIVE);
 
                 complete = true;
             }
             i++;
+        }
+        if (!complete){
+            throw new IllegalArgumentException("No edition found!");
         }
 
     }
@@ -225,22 +236,22 @@ public class CBLImp implements CBL {
         //limit the array to just the not null posicions
         if (counter != numberOfEditions) {
             Edition[] trimmedUncompleted = new Edition[counter];
-            int i = 0;
-            for (Edition e : uncompletedEditions) {
-                trimmedUncompleted[i++] = e;
+
+            for (int i = 0; i < counter; i++) {
+                trimmedUncompleted[i] = uncompletedEditions[i];
             }
             return trimmedUncompleted;
         }
         return uncompletedEditions;
     }
 
-    @Override
-    public String simpleToString() {
-        return "CBL {" + "numberOfEditions=" + numberOfEditions + ", editions=" + Arrays.toString(editions) + '}';
-    }
+//    @Override
+//    public String simpleToString() {
+//        return "CBL {" + "numberOfEditions=" + numberOfEditions + ", editions=" + Arrays.toString(editions) + '}';
+//    }
 
     @Override
-    public Edition[] getEditionsByParticipant(Participant p) {
+    public Edition[] getEditionsByParticipant(Participant p) throws NullPointerException {
         int counter = 0;
 
         Edition[] temp = new Edition[numberOfEditions];
@@ -269,9 +280,9 @@ public class CBLImp implements CBL {
         //limit the array to just the not null posicions
         if (counter != numberOfEditions) {
             Edition[] editionsByParticipant = new Edition[counter];
-            int i = 0;
-            for (Edition e : temp) {
-                editionsByParticipant[i++] = e;
+
+            for (int i = 0; i < counter; i++) {
+                editionsByParticipant[i] = temp[i];
             }
             return editionsByParticipant;
         }
