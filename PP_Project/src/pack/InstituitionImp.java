@@ -12,8 +12,7 @@ package pack;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.InstituitionType;
-
-
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -105,5 +104,16 @@ public class InstituitionImp implements Instituition {
         return this.name.equals(other.getName());
     }
 
-    
+    public String toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("email", email);
+        jsonObject.put("website", website);
+        jsonObject.put("description", description);
+        jsonObject.put("contact", ((ContactImp)contact).toJson());
+        jsonObject.put("type", type.toString());
+
+        return jsonObject.toJSONString();
+    }
+
 }

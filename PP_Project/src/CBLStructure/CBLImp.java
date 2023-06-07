@@ -10,12 +10,16 @@
 package CBLStructure;
 
 import Exceptions.EditionAlreadyInCBL;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import ma02_resources.participants.Participant;
 import ma02_resources.project.Edition;
 import ma02_resources.project.Project;
 import ma02_resources.project.Status;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -170,8 +174,8 @@ public class CBLImp implements CBL {
     @Override
     public void activateEdition(String name) throws IllegalArgumentException {
         int pos = -1, i = 0;
-        
-        Edition edition = new EditionImp(name, null,null);
+
+        Edition edition = new EditionImp(name, null, null);
         //try to find the active
         for (Edition e : editions) {
             if (e.getStatus() == Status.ACTIVE) {
@@ -187,11 +191,11 @@ public class CBLImp implements CBL {
             if (editions[i].equals(edition)) {
                 if (pos != -1) {
                     //closed if end Date not happened yet and cancelled if end date not happened
-                    if (editions[pos].getEnd().compareTo(LocalDate.now()) <= 0){
+                    if (editions[pos].getEnd().compareTo(LocalDate.now()) <= 0) {
                         editions[pos].setStatus(Status.CLOSED);
                     } else {
                         editions[pos].setStatus(Status.CANCELED);
-                    }                
+                    }
                 }
                 editions[i].setStatus(Status.ACTIVE);
 
@@ -199,7 +203,7 @@ public class CBLImp implements CBL {
             }
             i++;
         }
-        if (!complete){
+        if (!complete) {
             throw new IllegalArgumentException("No edition found!");
         }
 
@@ -249,7 +253,6 @@ public class CBLImp implements CBL {
 //    public String simpleToString() {
 //        return "CBL {" + "numberOfEditions=" + numberOfEditions + ", editions=" + Arrays.toString(editions) + '}';
 //    }
-
     @Override
     public Edition[] getEditionsByParticipant(Participant p) throws NullPointerException {
         int counter = 0;
@@ -287,5 +290,28 @@ public class CBLImp implements CBL {
             return editionsByParticipant;
         }
         return temp;
+    }
+
+    public boolean export(String filePath) {
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("numberOfEditions", numberOfEditions);
+
+        JSONArray editionsArray = new JSONArray();
+
+        for (int i = 0; i < numberOfEditions; i++) {
+            editionsArray.add(((EditionImp)editions[i]).toJson());
+        }
+
+        jsonObject.put("editions", editionsArray);
+
+        try ( FileWriter fileWriter = new FileWriter(filePath)) {
+            fileWriter.write(jsonObject.toJSONString());
+            //System.out.println("Exported to JSON file: " + filePath);
+        } catch (IOException e) {
+            e.getMessage();
+            return false;
+        }
+        return true;
     }
 }

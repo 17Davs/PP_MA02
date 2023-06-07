@@ -12,6 +12,7 @@ package pack;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.Participant;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -29,7 +30,7 @@ public class ParticipantImp implements Participant {
         this.contact = contact;
         this.instituition = instituition;
     }
-    
+
     @Override
     public void setContact(Contact contact) {
         this.contact = contact;
@@ -60,7 +61,6 @@ public class ParticipantImp implements Participant {
         return this.instituition;
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -73,9 +73,18 @@ public class ParticipantImp implements Participant {
             return false;
         }
         final Participant other = (Participant) obj;
-        
+
         return this.email.equals(other.getEmail());
     }
 
-    
+    public String toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("email", email);
+        jsonObject.put("contact", ((ContactImp)contact).toJson());
+        jsonObject.put("instituition", ((InstituitionImp)instituition).toJson());
+
+        return jsonObject.toJSONString();
+    }
+
 }

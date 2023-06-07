@@ -11,6 +11,7 @@ package pack;
 
 
 import ma02_resources.participants.Contact;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -89,7 +90,17 @@ public class ContactImp implements Contact {
         return this.phone.equals(other.getPhone());
     }
     
-   
+   public String toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("street", street);
+        jsonObject.put("city", city);
+        jsonObject.put("state", state);
+        jsonObject.put("zipCode", zipCode);
+        jsonObject.put("country", country);
+        jsonObject.put("phone", phone);
+
+        return jsonObject.toJSONString();
+    }
      
     
     

@@ -24,6 +24,8 @@ import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
 import ma02_resources.project.exceptions.IllegalNumberOfTasks;
 import ma02_resources.project.exceptions.ParticipantAlreadyInProject;
 import ma02_resources.project.exceptions.TaskAlreadyInProject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import pack.ParticipantImp;
 
 /**
@@ -426,6 +428,63 @@ public class ProjectImp implements Project {
         return true;
     }
 
+    /*
+    this.name = name;
+        this.description = description;
+
+        this.numberOfFacilitators = this.numberOfStudents = this.numberOfPartners
+                = this.numberOfParticipants = this.numberOfTasks = this.numberOfTags = 0;
+
+        //The limits variables need to be created based  on the arguments
+        this.maximumNumberOfTasks = taskArraySize;
+        this.maximumNumberOfStudents = numberOfStudents;
+        this.maximumNumberOfPartners = numberOfPartners;
+        this.maximumNumberOfFacilitators = numberOfFacilitators;
+        this.maximumNumberOfParticipants = this.maximumNumberOfStudents + this.maximumNumberOfPartners + this.maximumNumberOfFacilitators;
+
+    */
+    public String toJson() {
+        JSONObject jsonObject = new JSONObject();
+        
+        jsonObject.put("name", name);
+        jsonObject.put("description", description);
+        jsonObject.put("numberOfFacilitators", numberOfFacilitators);
+        jsonObject.put("numberOfStudents", numberOfStudents);
+        jsonObject.put("numberOfPartners", numberOfPartners);
+        jsonObject.put("numberOfParticipants", numberOfParticipants);
+        jsonObject.put("numberOfTasks", numberOfTasks);
+        jsonObject.put("numberOfTags", numberOfTags);
+       
+
+        jsonObject.put("maximumNumberOfFacilitators", maximumNumberOfFacilitators);
+        jsonObject.put("maximumNumberOfStudents", maximumNumberOfStudents);
+        jsonObject.put("maximumNumberOfPartners", maximumNumberOfPartners);
+        jsonObject.put("maximumNumberOfParticipants", maximumNumberOfParticipants);
+        jsonObject.put("maximumNumberOfTasks", maximumNumberOfTasks);
+        
+        
+        JSONArray tasksArray = new JSONArray();
+        for (int i=0; i<numberOfTasks;i++) {
+            tasksArray.add(((TaskImp)tasks[i]).toJson());
+        }
+        jsonObject.put("tasks", tasksArray);
+
+        JSONArray participantsArray = new JSONArray();
+        for (int i=0; i< numberOfParticipants;i++) {
+            participantsArray.add(((ParticipantImp)participants[i]).toJson());
+        }
+        jsonObject.put("participants", participantsArray);
+
+        JSONArray tagsArray = new JSONArray();
+        for (int i=0; i<numberOfTags;i++) {
+            tagsArray.add(tags[i]);
+        }
+        jsonObject.put("tags", tagsArray);
+
+        return jsonObject.toJSONString();
+    }
+    
+    
      //to do
     @Override
     public String toString() {

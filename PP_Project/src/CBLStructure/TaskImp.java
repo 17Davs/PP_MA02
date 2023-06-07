@@ -12,6 +12,8 @@ package CBLStructure;
 import java.time.LocalDate;
 import ma02_resources.project.Submission;
 import ma02_resources.project.Task;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -140,6 +142,25 @@ public class TaskImp implements Task {
 
     }
 
+      public String toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("title", title);
+        jsonObject.put("description", description);
+        jsonObject.put("start", start.toString());
+        jsonObject.put("end", end.toString());
+        jsonObject.put("duration", duration);
+        jsonObject.put("numberOfSubmissions", numberOfSubmissions);
+
+        JSONArray submissionsArray = new JSONArray();
+        for (int i=0; i<numberOfSubmissions; i++) {
+            submissionsArray.add(((SubmissionImp)submissions[i]).toJson());
+        }
+        jsonObject.put("submissions", submissionsArray);
+
+        return jsonObject.toJSONString();
+    }
+    
+    
     @Override
     public String toString() {
         return "Task {" + "title=" + title + ", description=" + description + ", start=" + start + ", end=" + end + ", duration=" + duration + ", numberOfSubmissions=" + numberOfSubmissions ;

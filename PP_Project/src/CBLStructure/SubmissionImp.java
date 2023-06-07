@@ -12,6 +12,9 @@ package CBLStructure;
 import java.time.LocalDateTime;
 import ma02_resources.participants.Student;
 import ma02_resources.project.Submission;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import pack.StudentImp;
 
 /**
  *
@@ -48,9 +51,17 @@ public class SubmissionImp implements Submission {
     public int compareTo(Submission sbmsn) {
         if (this == sbmsn) {
             return 0;
-        } 
+        }
         return date.compareTo(sbmsn.getDate());
     }
 
+    public String toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("text", text);
+        jsonObject.put("date", date.toString());
+        jsonObject.put("student", ((StudentImp)student).toJson());
+
+        return jsonObject.toJSONString();
+    }
 
 }

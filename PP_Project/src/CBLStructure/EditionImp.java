@@ -52,7 +52,6 @@ public class EditionImp implements Edition {
         numberOfProjects = 0;
     }
 
-
     @Override
     public String getName() {
         return name;
@@ -225,7 +224,7 @@ public class EditionImp implements Edition {
     public Project[] getProjectsByTag(String string) {
         Project[] temp = new Project[this.numberOfProjects];
         int counter = 0;
-        for (int i = 0; i<numberOfProjects;i++) {
+        for (int i = 0; i < numberOfProjects; i++) {
             if (projects[i].hasTag(string)) {
                 temp[counter++] = projects[i];
             }
@@ -236,7 +235,7 @@ public class EditionImp implements Edition {
 
         if (counter != numberOfProjects) {
             Project[] trimmedTemp = new Project[counter];
-            
+
             for (int i = 0; i < counter; i++) {
                 trimmedTemp[i] = temp[i];
             }
@@ -266,7 +265,7 @@ public class EditionImp implements Edition {
 
         if (counter != numberOfProjects) {
             Project[] trimmedTemp = new Project[counter];
-         
+
             for (int i = 0; i < counter; i++) {
                 trimmedTemp[i] = temp[i];
             }
@@ -305,6 +304,24 @@ public class EditionImp implements Edition {
         }
         final Edition other = (Edition) obj;
         return this.name.equals(other.getName());
+    }
+
+    public String toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("start", start.toString());
+        jsonObject.put("end", end.toString());
+        jsonObject.put("status", status.toString());
+        jsonObject.put("numberOfProjects", numberOfProjects);
+        jsonObject.put("projectTemplate", projectTemplate);
+
+        JSONArray projectsArray = new JSONArray();
+        for (int i=0; i<numberOfProjects; i++) {
+            projectsArray.add(((ProjectImp)projects[i]).toJson());
+        }
+        jsonObject.put("projects", projectsArray);
+
+        return jsonObject.toJSONString();
     }
 
     @Override
