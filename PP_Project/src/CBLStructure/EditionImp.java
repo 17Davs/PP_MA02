@@ -198,7 +198,8 @@ public class EditionImp implements Edition {
 
     @Override
     public Project getProject(String string) {
-        Project p = new ProjectImp(string, null, 0, 0, 0, 0, null);
+        String[] tags = {"null"};
+        Project p = new ProjectImp(string, null, 0, 0, 0, 0, tags);
 
         for (int i = 0; i < numberOfProjects; i++) {
             if (projects[i].equals(p)) {

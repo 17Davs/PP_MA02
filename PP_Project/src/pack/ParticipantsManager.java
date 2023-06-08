@@ -1,4 +1,12 @@
-
+/*
+ * Nome: Carolina Bonito Queiroga De Almeida
+ * Número: 8180091 
+ * Turna: LSIRCT1
+ *
+ * Nome: David Leandro Spencer Conceição dos Santos
+ * Número: 8220651
+ * Turna: LSIRCT1
+ */
 package pack;
 
 import Exceptions.AlreadyExistsInArray;
