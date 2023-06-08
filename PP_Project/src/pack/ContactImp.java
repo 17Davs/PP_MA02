@@ -90,7 +90,7 @@ public class ContactImp implements Contact {
         return this.phone.equals(other.getPhone());
     }
     
-   public String toJson() {
+   public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("street", street);
         jsonObject.put("city", city);
@@ -99,7 +99,7 @@ public class ContactImp implements Contact {
         jsonObject.put("country", country);
         jsonObject.put("phone", phone);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
      
     

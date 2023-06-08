@@ -28,8 +28,9 @@ import org.json.simple.JSONObject;
 public class CBLImp implements CBL {
 
     /**
-     * 
-     * @param numberOfEditions Variable that defines how many editions have been made
+     *
+     * @param numberOfEditions Variable that defines how many editions have been
+     * made
      * @param editions[] List of editions
      */
     private int numberOfEditions;
@@ -58,8 +59,8 @@ public class CBLImp implements CBL {
      * array with twice the length of the edition list, copying all the editions
      * of the editions array to the temporary array and finally make the
      * editions array the temporary array
-     * 
-     * @param temp Temporary variable that saves a new list with double the size 
+     *
+     * @param temp Temporary variable that saves a new list with double the size
      */
     private void realloc() {
         Edition temp[] = new Edition[editions.length * 2];
@@ -260,14 +261,13 @@ public class CBLImp implements CBL {
 //    public String simpleToString() {
 //        return "CBL {" + "numberOfEditions=" + numberOfEditions + ", editions=" + Arrays.toString(editions) + '}';
 //    }
-
-
     /**
-     * This method returns a list of editions in which the participant is part of.
-     *       
+     * This method returns a list of editions in which the participant is part
+     * of.
+     *
      * @param p Participant to be searched
      * @return An array of editions by participant
-     * @throws NullPointerException -If it doesn't find a participant 
+     * @throws NullPointerException -If it doesn't find a participant
      */
     @Override
     public Edition[] getEditionsByParticipant(Participant p) throws NullPointerException {
@@ -316,7 +316,7 @@ public class CBLImp implements CBL {
         JSONArray editionsArray = new JSONArray();
 
         for (int i = 0; i < numberOfEditions; i++) {
-            editionsArray.add(((EditionImp)editions[i]).toJson());
+            editionsArray.add(((EditionImp) editions[i]).toJsonObj());
         }
 
         jsonObject.put("editions", editionsArray);
@@ -330,4 +330,46 @@ public class CBLImp implements CBL {
         }
         return true;
     }
+
+//    public boolean exportNew(String filePath) {
+//        JSONObject jsonObject = new JSONObject();
+//
+//        jsonObject.put("numberOfEditions", numberOfEditions);
+//
+//        JSONArray editionsArray = new JSONArray();
+//
+//        for (int i = 0; i < numberOfEditions; i++) {
+//            editionsArray.add(((EditionImp) editions[i]).toJson());
+//            
+//            JSONObject projectObject = new JSONObject();
+//            
+//            projectObject.put("name", editions[i].getName());
+//            projectObject.put("start", editions[i].getStart().toString());
+//            projectObject.put("end", editions[i].getEnd().toString());
+//            projectObject.put("status", editions[i].getStatus().toString());
+//            projectObject.put("numberOfProjects", editions[i].getNumberOfProjects());
+//            projectObject.put("projectTemplate", editions[i].getProjectTemplate());
+//
+//            JSONArray projectsArray = new JSONArray();
+//            
+//            for (int j = 0; j < editions[i].getNumberOfProjects(); j++) {
+//                //projectsArray.add(((ProjectImp) projects[j]).toJson());
+//                
+//                
+//                
+//            }
+//            jsonObject.put("projects", projectsArray);
+//        }
+//
+//        jsonObject.put("editions", editionsArray);
+//
+//        try ( FileWriter fileWriter = new FileWriter(filePath)) {
+//            fileWriter.write(jsonObject.toJSONString());
+//            //System.out.println("Exported to JSON file: " + filePath);
+//        } catch (IOException e) {
+//            e.getMessage();
+//            return false;
+//        }
+//        return true;
+//    }
 }

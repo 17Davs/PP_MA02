@@ -12,6 +12,7 @@ package pack;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Facilitator;
 import ma02_resources.participants.Instituition;
+import org.json.simple.JSONObject;
 
 
 
@@ -38,5 +39,14 @@ public class FacilitatorImp extends ParticipantImp implements Facilitator {
         this.areaOfExpertise = string;
     }
 
+    public JSONObject toJsonObj() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", super.getName());
+        jsonObject.put("email", super.getEmail());
+        jsonObject.put("contact", ((ContactImp) super.getContact()).toJsonObj());
+        jsonObject.put("instituition", ((InstituitionImp) super.getInstituition()).toJsonObj());
+        jsonObject.put("areaOfExpertise", areaOfExpertise);
+        return jsonObject;
+    }
     
 }

@@ -55,13 +55,13 @@ public class SubmissionImp implements Submission {
         return date.compareTo(sbmsn.getDate());
     }
 
-    public String toJson() {
+    public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("text", text);
         jsonObject.put("date", date.toString());
-        jsonObject.put("student", ((StudentImp)student).toJson());
+        jsonObject.put("student", ((StudentImp)student).toJsonObj());
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
 }
