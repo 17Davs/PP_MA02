@@ -33,6 +33,17 @@ import org.json.simple.parser.JSONParser;
  */
 public class EditionImp implements Edition {
 
+    /**
+     * 
+     * @param name Edition name
+     * @param start Edition's start date 
+     * @param end Edition's end date 
+     * @param status Edition's status
+     * @param numberOfProjects Variable that defines how many Editions are in a list
+     * @param projectTemplate 
+     * @param defaultProjectTemplate
+     * @param projects[] List of Editions
+     */
     //private static final int initialSize = 5;
     private String name;
     private LocalDate start, end;
@@ -42,6 +53,13 @@ public class EditionImp implements Edition {
     private static final String defaultProjectTemplate = "src/Files/project_template.json";
     private Project projects[];
 
+    /**
+     * This is the constructor method for Edition.
+     * 
+     * @param name Edition name
+     * @param start Edition's start date 
+     * @param end Edition's end date 
+     */
     public EditionImp(String name, LocalDate start, LocalDate end) {
         this.name = name;
         this.start = start;
@@ -97,7 +115,7 @@ public class EditionImp implements Edition {
     }
 
     /**
-     * This metohd adds a project to the edition. The project is created from
+     * This method adds a project to the edition. The project is created from
      * the template.
      *
      * @param name The name of the Project
@@ -196,6 +214,12 @@ public class EditionImp implements Edition {
 
     }
 
+    /**
+     * This method  
+     * 
+     * @param string
+     * @return 
+     */
     @Override
     public Project getProject(String string) {
         Project p = new ProjectImp(string, null, 0, 0, 0, 0, null);
@@ -210,6 +234,10 @@ public class EditionImp implements Edition {
 
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     @Override
     public Project[] getProjects() {
         Project temp[] = new Project[numberOfProjects];
@@ -220,6 +248,10 @@ public class EditionImp implements Edition {
         return temp;
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     @Override
     public Project[] getProjectsByTag(String string) {
         Project[] temp = new Project[this.numberOfProjects];
@@ -244,6 +276,10 @@ public class EditionImp implements Edition {
         return temp;
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     @Override
     public Project[] getProjectsOf(String string) {
         Project[] temp = new Project[this.numberOfProjects];
