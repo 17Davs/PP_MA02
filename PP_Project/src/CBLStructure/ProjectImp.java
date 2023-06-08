@@ -471,7 +471,7 @@ public class ProjectImp implements Project {
         this.maximumNumberOfParticipants = this.maximumNumberOfStudents + this.maximumNumberOfPartners + this.maximumNumberOfFacilitators;
 
     */
-    public String toJson() {
+    public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         
         jsonObject.put("name", name);
@@ -493,13 +493,13 @@ public class ProjectImp implements Project {
         
         JSONArray tasksArray = new JSONArray();
         for (int i=0; i<numberOfTasks;i++) {
-            tasksArray.add(((TaskImp)tasks[i]).toJson());
+            tasksArray.add(((TaskImp)tasks[i]).toJsonObj());
         }
         jsonObject.put("tasks", tasksArray);
 
         JSONArray participantsArray = new JSONArray();
         for (int i=0; i< numberOfParticipants;i++) {
-            participantsArray.add(((ParticipantImp)participants[i]).toJson());
+            participantsArray.add(((ParticipantImp)participants[i]).toJsonObj());
         }
         jsonObject.put("participants", participantsArray);
 
@@ -509,7 +509,7 @@ public class ProjectImp implements Project {
         }
         jsonObject.put("tags", tagsArray);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
     
     

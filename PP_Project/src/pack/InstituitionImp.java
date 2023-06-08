@@ -104,16 +104,16 @@ public class InstituitionImp implements Instituition {
         return this.name.equals(other.getName());
     }
 
-    public String toJson() {
+    public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("email", email);
         jsonObject.put("website", website);
         jsonObject.put("description", description);
-        jsonObject.put("contact", ((ContactImp)contact).toJson());
+        jsonObject.put("contact", ((ContactImp)contact).toJsonObj());
         jsonObject.put("type", type.toString());
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
 }

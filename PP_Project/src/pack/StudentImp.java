@@ -12,13 +12,14 @@ package pack;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.Student;
-
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author David Santos
  */
 public class StudentImp extends ParticipantImp implements Student {
+
     private static int counter = 0;
     private int number;
 
@@ -31,6 +32,16 @@ public class StudentImp extends ParticipantImp implements Student {
     public int getNumber() {
         return number;
     }
-     
-    
+
+    public JSONObject toJsonObj() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", super.getName());
+        jsonObject.put("email", super.getEmail());
+        jsonObject.put("contact", ((ContactImp) super.getContact()).toJsonObj());
+        jsonObject.put("instituition", ((InstituitionImp) super.getInstituition()).toJsonObj());
+        jsonObject.put("number", number);
+
+        return jsonObject;
+    }
+
 }

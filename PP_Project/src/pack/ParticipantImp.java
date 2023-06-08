@@ -10,8 +10,10 @@
 package pack;
 
 import ma02_resources.participants.Contact;
+import ma02_resources.participants.Facilitator;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.Participant;
+import ma02_resources.participants.Student;
 import org.json.simple.JSONObject;
 
 /**
@@ -77,14 +79,14 @@ public class ParticipantImp implements Participant {
         return this.email.equals(other.getEmail());
     }
 
-    public String toJson() {
+    public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("email", email);
-        jsonObject.put("contact", ((ContactImp)contact).toJson());
-        jsonObject.put("instituition", ((InstituitionImp)instituition).toJson());
+        jsonObject.put("contact", ((ContactImp) contact).toJsonObj());
+        jsonObject.put("instituition", ((InstituitionImp) instituition).toJsonObj());
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
 }

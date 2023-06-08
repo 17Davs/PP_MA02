@@ -1,6 +1,11 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
+ * Nome: Carolina Bonito Queiroga De Almeida
+ * Número: 8180091 
+ * Turna: LSIRCT1
+ *
+ * Nome: David Leandro Spencer Conceição dos Santos
+ * Número: 8220651
+ * Turna: LSIRCT1
  */
 package CBLStructure;
 
@@ -21,5 +26,6 @@ public interface CBL {
     public int getNumberOfEditions();
     //public String simpleToString();
     public Edition[] getEditionsByParticipant(Participant p);
+    public boolean export(String filePath);
 }
 

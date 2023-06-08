@@ -142,7 +142,7 @@ public class TaskImp implements Task {
 
     }
 
-      public String toJson() {
+      public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("title", title);
         jsonObject.put("description", description);
@@ -153,11 +153,11 @@ public class TaskImp implements Task {
 
         JSONArray submissionsArray = new JSONArray();
         for (int i=0; i<numberOfSubmissions; i++) {
-            submissionsArray.add(((SubmissionImp)submissions[i]).toJson());
+            submissionsArray.add(((SubmissionImp)submissions[i]).toJsonObj());
         }
         jsonObject.put("submissions", submissionsArray);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
     
     

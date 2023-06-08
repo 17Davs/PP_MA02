@@ -222,7 +222,8 @@ public class EditionImp implements Edition {
      */
     @Override
     public Project getProject(String string) {
-        Project p = new ProjectImp(string, null, 0, 0, 0, 0, null);
+        String[] tags = {"null"};
+        Project p = new ProjectImp(string, null, 0, 0, 0, 0, tags);
 
         for (int i = 0; i < numberOfProjects; i++) {
             if (projects[i].equals(p)) {
@@ -342,7 +343,24 @@ public class EditionImp implements Edition {
         return this.name.equals(other.getName());
     }
 
-    public String toJson() {
+//    public String toJson() {
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("name", name);
+//        jsonObject.put("start", start.toString());
+//        jsonObject.put("end", end.toString());
+//        jsonObject.put("status", status.toString());
+//        jsonObject.put("numberOfProjects", numberOfProjects);
+//        jsonObject.put("projectTemplate", projectTemplate);
+//
+//        JSONArray projectsArray = new JSONArray();
+//        for (int i=0; i<numberOfProjects; i++) {
+//            projectsArray.add(((ProjectImp)projects[i]).toJson());
+//        }
+//        jsonObject.put("projects", projectsArray);
+//
+//        return jsonObject.toJSONString();
+//    }
+     public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("start", start.toString());
@@ -353,11 +371,11 @@ public class EditionImp implements Edition {
 
         JSONArray projectsArray = new JSONArray();
         for (int i=0; i<numberOfProjects; i++) {
-            projectsArray.add(((ProjectImp)projects[i]).toJson());
+            projectsArray.add(((ProjectImp)projects[i]).toJsonObj());
         }
         jsonObject.put("projects", projectsArray);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     @Override

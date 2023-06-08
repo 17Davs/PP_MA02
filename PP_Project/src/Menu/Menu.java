@@ -1,16 +1,28 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Nome: Carolina Bonito Queiroga De Almeida
+ * Número: 8180091 
+ * Turna: LSIRCT1
+ *
+ * Nome: David Leandro Spencer Conceição dos Santos
+ * Número: 8220651
+ * Turna: LSIRCT1
  */
 package Menu;
 
 import CBLStructure.CBL;
 import CBLStructure.CBLImp;
+import CBLStructure.EditionImp;
 import CBLStructure.SubmissionImp;
 import Exceptions.AlreadyExistsInArray;
+import Exceptions.EditionAlreadyInCBL;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.InstituitionType;
@@ -30,11 +42,9 @@ import pack.PartnerImp;
 import ma02_resources.participants.Partner;
 import ma02_resources.project.Status;
 import ma02_resources.project.Submission;
+import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
+import ma02_resources.project.exceptions.ParticipantAlreadyInProject;
 
-/**
- *
- * @author David Santos
- */
 public class Menu {
 
     private static final String USERNAME = "admin";
@@ -57,6 +67,7 @@ public class Menu {
             System.out.println("1. Log in");
             System.out.println("2. Register");
             System.out.println("3. Log in as Administrator");
+
             System.out.println("4. Exit");
             System.out.print("Option: ");
             try {
@@ -437,7 +448,7 @@ public class Menu {
                     listSubmissions(task);
                     // if option 2 && student, then allow to submit 
                 } else if (option == 2 && isStudent) {
-                    if (submitWork(task)){
+                    if (submitWork(task)) {
                         System.out.println("Success submitting work!");
                     } else {
                         System.out.println("Failed to submit work!");
@@ -534,20 +545,51 @@ public class Menu {
     }
 
     public static void main(String[] args) {
-        // Crie uma instância da classe CBL e adicione participantes, edições, projetos, etc.
-        ParticipantsManager pm = new ParticipantsManager();
-        CBL cbl = new CBLImp();
-
-        Contact c = new ContactImp("Street", "city", "state", "zipCode", "country", "phone");
-        Instituition estg = new InstituitionImp("ESTG", "estg@estg.ipp.pt", "estg.ipp.pt", "Escola de Tecnologia e Gestão de Felgueiras", c, InstituitionType.UNIVERSITY);
-        Student p1 = new StudentImp("David Santos", "david@estg.ipp.pt", c, estg);
         try {
-            pm.addParticipant(p1);
-        } catch (AlreadyExistsInArray ex) {
-            System.out.println(ex.toString());
+            // Crie uma instância da classe CBL e adicione participantes, edições, projetos, etc.
+            ParticipantsManager pm = new ParticipantsManager();
+            CBL cbl = new CBLImp();
+
+            Contact c = new ContactImp("Street", "city", "state", "zipCode", "country", "phone");
+            Instituition estg = new InstituitionImp("ESTG", "estg@estg.ipp.pt", "estg.ipp.pt", "Escola de Tecnologia e Gestão de Felgueiras", c, InstituitionType.UNIVERSITY);
+            Student p1 = new StudentImp("David Santos", "david@estg.ipp.pt", c, estg);
+            try {
+                cbl.addEdition(new EditionImp("Test edition", LocalDate.of(2023, Month.MARCH, 13), LocalDate.of(2023, Month.JUNE, 17)));
+            } catch (EditionAlreadyInCBL ex) {
+                System.out.println(ex.getMessage());
+            }
+            String[] tags = {"java","teste"};
+            cbl.getEdition("Test edition").addProject("Project test", "testando projeto", tags);
+            cbl.getEdition("Test edition").getProject("Project test").addParticipant(p1);
+            try {
+                pm.addParticipant(p1);
+            } catch (AlreadyExistsInArray ex) {
+                System.out.println(ex.toString());
+            }
+            // Create menu and import data
+
+//        if(cbl.import("src/Files/cbl.json")){
+//        System.out.println("Success importing program data");
+//    } else {
+//             System.out.println("Error importing program data");
+//            }
+            Menu menu = new Menu(cbl, pm);
+            menu.start();
+//export data before close program
+
+            if (cbl.export("src/Files/cbl.json")) {
+                System.out.println("Success exporting program data");
+            } else {
+                System.out.println("Error exporting program data");
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalNumberOfParticipantType ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParticipantAlreadyInProject ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
         }
-        // Crie uma instância da classe Menu e inicie o menu
-        Menu menu = new Menu(cbl, pm);
-        menu.start();
     }
 }
