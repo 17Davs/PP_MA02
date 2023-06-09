@@ -38,8 +38,8 @@ public class CBLImp implements CBL {
      * made
      * @param editions[] List of editions
      */
-    private int numberOfEditions;
-    private Edition editions[];
+    private static int numberOfEditions;
+    private static Edition editions[];
 
     /**
      * This is the Constructor of the CBL.
@@ -272,7 +272,7 @@ public class CBLImp implements CBL {
      *
      * @param p Participant to be searched
      * @return An array of editions by participant
-     * @throws NullPointerException -If it doesn't find a participant
+     * @throws NullPointerException -If it doesn't find any editions
      */
     @Override
     public Edition[] getEditionsByParticipant(Participant p) throws NullPointerException {
@@ -354,7 +354,7 @@ public class CBLImp implements CBL {
                 try {
                     this.addEdition(EditionImp.fromJsonObj(editionJson));
                 } catch (EditionAlreadyInCBL ex) {
-                    System.out.println("existeeeeee");
+                    
                 }
             }
 

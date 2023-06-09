@@ -266,12 +266,21 @@ public class EditionImp implements Edition {
      */
     @Override
     public Project[] getProjects() {
+        int counter=0;
         Project temp[] = new Project[numberOfProjects];
 
         for (int i = 0; i < numberOfProjects; i++) {
-            temp[i] = projects[i];
+            temp[counter++] = projects[i];
         }
-        return temp;
+        if (counter == numberOfProjects){
+            return temp;
+        }
+        
+        Project trimmedTemp[] = new Project[counter];
+        for (int i = 0; i < counter; i++){
+            trimmedTemp[i] = temp[i];
+        }
+        return trimmedTemp;
     }
 
     /**
@@ -409,22 +418,20 @@ public class EditionImp implements Edition {
         LocalDate start = LocalDate.parse((String) jsonObject.get("start"));
         LocalDate end = LocalDate.parse((String) jsonObject.get("end"));
         Status status = Status.valueOf(((String) jsonObject.get("status")).toUpperCase());
-        int numberOfProjects = ((Long) jsonObject.get("numberOfProjects")).intValue();
         String projectTemplate = (String) jsonObject.get("projectTemplate");
 
         EditionImp edition = new EditionImp(name, start, end, status, projectTemplate);
 
         JSONArray projectsArray = (JSONArray) jsonObject.get("projects");
-        //Project[] projects = new Project[projectsArray.size()];
 
         for (int i = 0; i < projectsArray.size(); i++) {
-            try{
-                
-              JSONObject projectJson = (JSONObject) projectsArray.get(i);
-           
-            edition.addProjectFormImport(ProjectImp.fromJsonObj(projectJson));
-            }catch (IllegalArgumentException e){
-                System.out.println("aqui");
+            try {
+
+                JSONObject projectJson = (JSONObject) projectsArray.get(i);
+
+                edition.addProjectFormImport(ProjectImp.fromJsonObj(projectJson));
+            } catch (IllegalArgumentException e) {
+
             }
         }
 
@@ -432,19 +439,47 @@ public class EditionImp implements Edition {
 
     }
 
-    
-    private void addProjectFormImport(Project p){
-        if (p == null){ throw new IllegalArgumentException();}
+    private void addProjectFormImport(Project p) {
+        if (p == null) {
+            throw new IllegalArgumentException();
+        }
         if (hasProject(p)) {
-                throw new IllegalArgumentException("Project already exists");
-            }
+            throw new IllegalArgumentException("Project already exists");
+        }
         if (numberOfProjects == projects.length) {
             reallocProjects();
         }
-        
+
         projects[numberOfProjects++] = p;
     }
-    
+
+    public Project[] getProjectsByParticipant(Participant p) {
+        int counter = 0;
+
+        Project[] temp = new Project[numberOfProjects];
+
+        for (int i = 0; i < numberOfProjects; i++) {
+
+            try {
+                Participant participant = projects[i].getParticipant(p.getEmail());
+
+                temp[counter++] = projects[i];
+
+            } catch (IllegalArgumentException e) {
+            }
+        }
+        //limit the array to just the not null positions
+        if (counter != numberOfProjects) {
+            Project[] projectsByParticipant = new Project[counter];
+
+            for (int i = 0; i < counter; i++) {
+                projectsByParticipant[i] = temp[i];
+            }
+            return projectsByParticipant;
+        }
+        return temp;
+    }
+
     @Override
     public String toString() {
         return "EditionImp{" + "name=" + name + ", start=" + start + ", end=" + end + status.toString() + ", numberOfProjects=" + numberOfProjects + ", projects=" + Arrays.toString(projects) + '}';

@@ -15,14 +15,10 @@ import CBLStructure.EditionImp;
 import CBLStructure.SubmissionImp;
 import Exceptions.AlreadyExistsInArray;
 import Exceptions.EditionAlreadyInCBL;
+import Managers.InstituitionsManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.InstituitionType;
@@ -35,15 +31,13 @@ import ma02_resources.project.Task;
 import pack.ContactImp;
 import pack.InstituitionImp;
 import pack.ParticipantImp;
-import pack.ParticipantsManager;
+import Managers.ParticipantsManager;
 import pack.StudentImp;
 import pack.FacilitatorImp;
 import pack.PartnerImp;
 import ma02_resources.participants.Partner;
 import ma02_resources.project.Status;
 import ma02_resources.project.Submission;
-import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
-import ma02_resources.project.exceptions.ParticipantAlreadyInProject;
 
 public class Menu {
 
@@ -51,11 +45,13 @@ public class Menu {
     private static final String PASSWORD = "admin";
     private CBL cbl;
     private ParticipantsManager pm;
+    private InstituitionsManager im;
     private Participant loggedInParticipant;
     private BufferedReader reader;
 
-    public Menu(CBL cbl, ParticipantsManager pm) {
+    public Menu(CBL cbl, ParticipantsManager pm, InstituitionsManager im) {
         this.cbl = cbl;
+        this.im = im;
         this.pm = pm;
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
@@ -84,7 +80,7 @@ public class Menu {
                     break;
                 case 2:
                     if (register()) {
-                        System.out.println("Registration Success. Login as to continue!");
+                        System.out.println("Registration Success. Login to continue!");
                     }
                     break;
                 case 3:
@@ -110,7 +106,7 @@ public class Menu {
             try {
                 String email = reader.readLine();
                 loggedInParticipant = pm.getParticipant(email);
-                System.out.println("Login successful. Welcome, " + loggedInParticipant.getName() + "!");
+                System.out.println("Login successful. Welcome, " + loggedInParticipant.getName() + "!\n\n");
                 return true;
             } catch (IOException e) {
                 System.out.println("Error reading input.");
@@ -134,13 +130,13 @@ public class Menu {
                     System.out.print("Password: ");
                     String password = reader.readLine();
                     if (!password.equals(PASSWORD)) {
-                        System.out.println("Login Failed!\n");
+                        System.out.println("Login Failed!\n\n");
                     } else {
                         return true;
                     }
                 } while (++counter < 3);
             } else {
-                System.out.println("Login Failed!");
+                System.out.println("Login Failed!\n\n");
                 return false;
             }
         } catch (IOException e) {
@@ -190,9 +186,10 @@ public class Menu {
             Contact contact = new ContactImp(street, city, state, zipCode, country, phone);
 
             //apresentar instituições do manager de instituições ainda não criado
-            Instituition instituition = null;
-            Participant newParticipant = new ParticipantImp(name, email, contact, instituition);
-
+            
+            Participant newParticipant = new ParticipantImp(name, email, contact, null);
+            
+            listInstituitions(newParticipant);
             switch (option) {
                 case 1:
                     return registerStudent(newParticipant);
@@ -208,6 +205,10 @@ public class Menu {
             System.out.println("Error reading input.");
         }
         return false;
+    }
+
+    private void listInstituitions() {
+
     }
 
     private boolean registerStudent(Participant participant) {
@@ -245,7 +246,7 @@ public class Menu {
 
             return true;
         } catch (IOException ex) {
-            System.out.println("Error reading input.");
+            System.out.println("Error reading input.\n\n");
             return false;
         } catch (AlreadyExistsInArray ex) {
             System.out.println(ex.getMessage());
@@ -273,12 +274,51 @@ public class Menu {
             return true;
 
         } catch (IOException ex) {
-            System.out.println("Error reading input.");
+            System.out.println("Error reading input.\n\n");
             return false;
         } catch (AlreadyExistsInArray ex) {
             System.out.println(ex.getMessage());
             return false;
         }
+    }
+
+    private void listInstituitions(Participant p) {
+
+        System.out.println("== Institutions Selection ==");
+        try {
+            Instituition[] instituitions = this.im.getInstituitions();
+            System.out.println("   == Available Institutions == ");
+            int i = 0;
+            for (i = 0; i < instituitions.length; i++) {
+                System.out.println((i + 1) + ". " + instituitions[i].getName());
+            }
+            System.out.println((i + 1) + ". No instituition");
+            System.out.print("Select an institution: ");
+            try {
+                int institutionNumber = Integer.parseInt(reader.readLine());
+
+                // check if it's valid
+                if (institutionNumber >= 1 && institutionNumber <= instituitions.length) {
+                    Instituition selectedInstitution = instituitions[institutionNumber - 1];
+                    p.setInstituition(selectedInstitution);
+                    System.out.println("Assigned with success to " + instituitions[institutionNumber - 1].getName());
+                } else if (institutionNumber == i + 1) {
+                    p.setInstituition(null);
+                    System.out.println("Not Assigned to any Instituition.");
+                } else {
+                    System.out.println("Invalid selection. Please try again.\n\n");
+                    listInstituitions(p);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
+                listInstituitions(p);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Error reading input.");
+        }
+
     }
 
     private void showMyEditionsMenu() {
@@ -288,7 +328,7 @@ public class Menu {
             // System.out.println("Select an edition:");
             try {
                 Edition[] editions = cbl.getEditionsByParticipant(loggedInParticipant);
-                System.out.println("== Your Editions == ");
+                System.out.println("   == Your Editions == ");
                 int i = 0;
                 for (i = 0; i < editions.length; i++) {
                     System.out.println((i + 1) + ". " + editions[i].getName() + "("
@@ -305,17 +345,17 @@ public class Menu {
                         Edition selectedEdition = editions[editionNumber - 1];
                         showProjectsMenu(selectedEdition);
                     } else if (editionNumber == i + 1) {
-
+                        exit = true;
                     } else {
-                        System.out.println("Invalid selection. Please try again.");
+                        System.out.println("Invalid selection. Please try again.\n\n");
                         showMyEditionsMenu();
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please enter a number.");
+                    System.out.println("Invalid input. Please enter a number.\n\n");
                     showMyEditionsMenu();
                 }
             } catch (NullPointerException e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             } catch (IOException e) {
                 System.out.println("Error reading input.");
             }
@@ -328,7 +368,6 @@ public class Menu {
             System.out.println("===== Projects Menu =====");
             System.out.println("Edition: " + edition.getName() + "("
                     + edition.getStatus().toString() + ")");
-            System.out.println("Select a project:");
 
             Project[] projects = edition.getProjects();
             int i = 0;
@@ -347,11 +386,11 @@ public class Menu {
                 } else if (projectNumber == i + 1) {
                     exit = true;
                 } else {
-                    System.out.println("Invalid selection. Please try again.");
+                    System.out.println("Invalid selection. Please try again.\n\n");
                     showProjectsMenu(edition);
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
+                System.out.println("Invalid input. Please enter a number.\n\n");
                 showProjectsMenu(edition);
             } catch (IOException e) {
                 System.out.println("Error reading input.");
@@ -366,24 +405,25 @@ public class Menu {
             System.out.println("===== Project Details =====");
             System.out.println("Project: " + project.getName());
             System.out.println("Description: " + project.getDescription());
-            System.out.println("Tags: ");
+            System.out.print("Tags: ");
+
             String[] tags = project.getTags();
             for (String s : tags) {
-                System.out.print(s + " ");
+                System.out.print("#" + s + " ");
             }
-            System.out.println("Status: " + (project.isCompleted() ? "Completed" : "Incomplete"));
+            System.out.println("\nStatus: " + (project.isCompleted() ? "Completed" : "Incomplete"));
             System.out.println("Participants: " + project.getNumberOfParticipants() + "/" + project.getMaximumNumberOfParticipants());
             System.out.println(" -- Facilitators: " + project.getNumberOfFacilitators() + "/" + project.getMaximumNumberOfFacilitators());
             System.out.println(" -- Students: " + project.getNumberOfStudents() + "/" + project.getMaximumNumberOfStudents());
             System.out.println(" -- Partners: " + project.getNumberOfPartners() + "/" + project.getMaximumNumberOfPartners());
-            System.out.println(" Tasks: " + project.getNumberOfTasks() + "/" + project.getMaximumNumberOfTasks());
+            System.out.println("\nTasks: " + project.getNumberOfTasks() + "/" + project.getMaximumNumberOfTasks());
 
             Task[] tasks = project.getTasks();
             int i = 0;
             for (i = 0; i < tasks.length; i++) {
                 System.out.println((i + 1) + ". " + tasks[i].getTitle());
             }
-            System.out.println((i + 1) + ". Back");
+            System.out.println("\n" + (i + 1) + ". Back");
             System.out.print("Enter the number of the task: ");
             try {
                 int taskNumber = Integer.parseInt(reader.readLine());
@@ -459,7 +499,7 @@ public class Menu {
                 }
 
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
+                System.out.println("Invalid input. Please enter a number.\n\n");
                 showTaskDetails(task);
             } catch (IOException e) {
                 System.out.println("Error reading input.");
@@ -470,29 +510,44 @@ public class Menu {
     private void listSubmissions(Task task) {
         boolean exit = false;
         while (!exit) {
-
-            Submission[] submissions = task.getSubmissions();
             int i = 0;
-            for (i = 0; i < submissions.length; i++) {
-                System.out.println((i + 1) + ". " + submissions[i].getText());
+            Submission[] submissions = null;
+            if (task.getNumberOfSubmissions() > 0) {
+
+                submissions = task.getSubmissions();
+
+                for (i = 0; i < submissions.length; i++) {
+                    System.out.println((i + 1) + ". " + submissions[i].getText());
+                }
+            } else {
+                System.out.println("  --- No submissions found! ---\n\n");
             }
+
             System.out.println((i + 1) + ". Back");
-            System.out.print("\nSelect a submission: ");
+            System.out.print("\nSelect: ");
             try {
                 int submissionNumber = Integer.parseInt(reader.readLine());
 
-                // Verifique se o número da tarefa é válido
-                if (submissionNumber >= 1 && submissionNumber <= submissions.length) {
-                    Submission selectedSubmission = submissions[submissionNumber - 1];
-                    showSubmissionDetails(selectedSubmission);
-                } else if (submissionNumber == (i + 1)) {
+                if (submissionNumber == (i + 1)) {
                     exit = true;
                 } else {
-                    System.out.println("Invalid selection. Please try again.");
+                    System.out.println("Invalid selection. Please try again.\n\n");
                     listSubmissions(task);
                 }
+
+                if (task.getNumberOfSubmissions() > 0) {
+                    // Validate submission number
+                    if (submissionNumber >= 1 && submissionNumber <= submissions.length) {
+                        Submission selectedSubmission = submissions[submissionNumber - 1];
+                        showSubmissionDetails(selectedSubmission);
+                    } else {
+                        System.out.println("Invalid selection. Please try again.\n\n");
+                        listSubmissions(task);
+                    }
+                }
+
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
+                System.out.println("Invalid input. Please enter a number.\n\n");
                 listSubmissions(task);
             } catch (IOException e) {
                 System.out.println("Error reading input.");
@@ -537,7 +592,15 @@ public class Menu {
 
             Submission newSubmission = new SubmissionImp((Student) loggedInParticipant, text);
             System.out.println("Date of Submission: " + newSubmission.getDate().toString());
+
+            try {
+                task.addSubmission(newSubmission);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
             return true;
+
         } catch (IOException e) {
             System.out.println("Error reading input.");
             return false;
@@ -546,14 +609,15 @@ public class Menu {
 
     public static void main(String[] args) {
 
-    //    try{
-            // Crie uma instância da classe CBL e adicione participantes, edições, projetos, etc.
-            ParticipantsManager pm = new ParticipantsManager();
-            CBL cbl = new CBLImp();
+        //    try{
+        // Crie uma instância da classe CBL e adicione participantes, edições, projetos, etc.
+        ParticipantsManager pm = new ParticipantsManager();
+        CBL cbl = new CBLImp();
+        InstituitionsManager im = new InstituitionsManager();
 
-//            Contact c = new ContactImp("Street", "city", "state", "zipCode", "country", "phone");
-//            Instituition estg = new InstituitionImp("ESTG", "estg@estg.ipp.pt", "estg.ipp.pt", "Escola de Tecnologia e Gestão de Felgueiras", c, InstituitionType.UNIVERSITY);
-//            Student p1 = new StudentImp("David Santos", "david@estg.ipp.pt", c, estg);
+        Contact c = new ContactImp("Street", "city", "state", "zipCode", "country", "phone");
+        Instituition estg = new InstituitionImp("ESTG", "estg@estg.ipp.pt", "estg.ipp.pt", "Escola de Tecnologia e Gestão de Felgueiras", c, InstituitionType.UNIVERSITY);
+        Student p1 = new StudentImp("David Santos", "david@estg.ipp.pt", c, estg);
 //            try {
 //                cbl.addEdition(new EditionImp("Test edition", LocalDate.of(2023, Month.MARCH, 13), LocalDate.of(2023, Month.JUNE, 17)));
 //            } catch (EditionAlreadyInCBL ex) {
@@ -563,28 +627,36 @@ public class Menu {
 //            cbl.getEdition("Test edition").addProject("Project test", "testando projeto", tags);
 //            cbl.getEdition("Test edition").getProject("Project test").addParticipant(p1);
 //
-//            try {
-//                pm.addParticipant(p1);
-//            } catch (AlreadyExistsInArray ex) {
-//                System.out.println(ex.toString());
-//            }
-            // Create menu and import data
-            if (cbl.importData("src/Files/cbl.json")) {
+        try {
+            pm.addParticipant(p1);
+            im.addInstituition(estg);
+        } catch (AlreadyExistsInArray ex) {
+            System.out.println(ex.toString());
+        }
+        // Create menu and import data
+        if (pm.importData("src/Files/users.json")/* && im.importData("src/Files/instituitions.json")*/) {
+            System.out.println("Success importing program users");
+        }
+        if (cbl.importData("src/Files/cbl.json")) {
 
-                System.out.println("Success importing program data");
-            } else {
-                System.out.println("Error importing program data");
-            }
+            System.out.println("Success importing program data");
+        } else {
+            System.out.println("Error importing program data");
+        }
 
-            Menu menu = new Menu(cbl, pm);
-            menu.start();
+        Menu menu = new Menu(cbl, pm, im);
+        menu.start();
 //export data before close program
 
-            if (cbl.export("src/Files/cbl.json")) {
-                System.out.println("Success exporting program data");
-            } else {
-                System.out.println("Error exporting program data");
-            }
+        if (cbl.export("src/Files/cbl.json")) {
+            System.out.println("Success exporting program data");
+        } else {
+            System.out.println("Error exporting program data");
+        }
+        if (pm.export("src/Files/users.json") && im.export("src/Files/instituitions.json")) {
+            System.out.println("Success exporting program users");
+        }
+
 //        } catch (IOException ex) {
 //            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (ParseException ex) {

@@ -79,7 +79,7 @@ public class TaskImp implements Task {
 
     private boolean hasSubmission(Submission sbmsn) {
         for (Submission s : submissions) {
-            if (s.compareTo(sbmsn) == 0) {
+            if (s != null && s.compareTo(sbmsn) == 0) {
                 return true;
             }
         }

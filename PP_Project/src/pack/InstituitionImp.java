@@ -83,11 +83,6 @@ public class InstituitionImp implements Instituition {
         this.type = it;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        return hash;
-    }
 
     @Override
     public boolean equals(Object obj) {

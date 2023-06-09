@@ -1,0 +1,18 @@
+{
+    "instituitions": [{
+            "website": "estg.ipp.pt",
+            "contact": {
+                "zipCode": "zipCode",
+                "country": "country",
+                "city": "city",
+                "phone": "phone",
+                "street": "Street",
+                "state": "state"
+            },
+            "name": "ESTG",
+            "description": "Escola de Tecnologia e Gestão de Felgueiras",
+            "type": "University",
+            "email": "estg@estg.ipp.pt"
+        }],
+    "instituitionsCounter": 1
+}
