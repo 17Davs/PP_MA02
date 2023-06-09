@@ -35,21 +35,21 @@ import pack.ParticipantImp;
 public class ProjectImp implements Project {
 
     /**
-     * @param name
-     * @param descriptions
-     * @param numberOfFacilitators
-     * @param numberOfStudents
-     * @param numberOfPartners
-     * @param numberOfParticipants
-     * @param numberOfTasks
-     * @param maximumNumberOfTasks
-     * @param maximumNumberOfStudents
-     * @param maximumNumberOfPartners
-     * @param maximumNumberOfFacilitators
-     * @param numberOfTags
-     * @param tasks
-     * @param participants
-     * @param tags
+     * @param name Name of the project.
+     * @param descriptions Description of the project.
+     * @param numberOfFacilitators Number of facilitators in a project.
+     * @param numberOfStudents Number of students in a project.
+     * @param numberOfPartners Number of partners in a project.
+     * @param numberOfParticipants Number of participants in a project.
+     * @param numberOfTasks Number of tasks in a project.
+     * @param maximumNumberOfTasks Max number of tasks in a project.
+     * @param maximumNumberOfStudents Max number of students in a project.
+     * @param maximumNumberOfPartners Max number of partners in a project.
+     * @param maximumNumberOfFacilitators Max number of facilitators in a project.
+     * @param numberOfTags Number of tags in a project.
+     * @param tasks List of tasks associated with the project.
+     * @param participants List of participants associated with the project.
+     * @param tags List of tags associated with the project.
      */
     private String name, description;
     private int numberOfFacilitators, numberOfStudents, numberOfPartners, numberOfParticipants,
@@ -78,13 +78,14 @@ public class ProjectImp implements Project {
     
     /**
      * This is the constructor method of Project.
-     * @param name
-     * @param description
-     * @param numberOfFacilitators
-     * @param numberOfStudents
-     * @param numberOfPartners
-     * @param taskArraySize
-     * @param tags 
+     * 
+     * @param name Name of the project.
+     * @param description Description of the project.
+     * @param numberOfFacilitators Number of facilitators in a project.
+     * @param numberOfStudents Number of students in a project.
+     * @param numberOfPartners Number of partners in a project.
+     * @param taskArraySize Size of the array.
+     * @param tags Tags associated with the project.
      */
     public ProjectImp(String name, String description, int numberOfFacilitators, int numberOfStudents, int numberOfPartners, int taskArraySize, String[] tags) {
 
