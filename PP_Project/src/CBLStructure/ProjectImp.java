@@ -34,6 +34,23 @@ import pack.ParticipantImp;
  */
 public class ProjectImp implements Project {
 
+    /**
+     * @param name
+     * @param descriptions
+     * @param numberOfFacilitators
+     * @param numberOfStudents
+     * @param numberOfPartners
+     * @param numberOfParticipants
+     * @param numberOfTasks
+     * @param maximumNumberOfTasks
+     * @param maximumNumberOfStudents
+     * @param maximumNumberOfPartners
+     * @param maximumNumberOfFacilitators
+     * @param numberOfTags
+     * @param tasks
+     * @param participants
+     * @param tags
+     */
     private String name, description;
     private int numberOfFacilitators, numberOfStudents, numberOfPartners, numberOfParticipants,
             numberOfTasks, maximumNumberOfTasks, maximumNumberOfStudents,
@@ -58,7 +75,22 @@ public class ProjectImp implements Project {
 //        this.participants = new Participant[(int) maximumNumberOfParticipants];
 //        this.tags = new String[2];
 //    }
+<<<<<<< HEAD
     public ProjectImp(String name, String description, int maximumNumberOfFacilitators, int maximumNumberOfStudents, int maximumNumberOfPartners, int maximumNumberOfTasks, String[] tags) {
+=======
+    
+    /**
+     * This is the constructor method of Project.
+     * @param name
+     * @param description
+     * @param numberOfFacilitators
+     * @param numberOfStudents
+     * @param numberOfPartners
+     * @param taskArraySize
+     * @param tags 
+     */
+    public ProjectImp(String name, String description, int numberOfFacilitators, int numberOfStudents, int numberOfPartners, int taskArraySize, String[] tags) {
+>>>>>>> 6c45d421d4832f0da9f4b908a2f1c1897883a155
 
         this.name = name;
         this.description = description;
