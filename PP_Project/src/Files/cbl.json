@@ -3,9 +3,9 @@
             "numberOfProjects": 1,
             "projects": [{
                     "numberOfParticipants": 1,
-                    "maximumNumberOfPartners": 5,
+                    "maximumNumberOfPartners": 16,
                     "numberOfTasks": 12,
-                    "maximumNumberOfParticipants": 15,
+                    "maximumNumberOfParticipants": 22,
                     "description": "testando projeto",
                     "numberOfPartners": 0,
                     "numberOfStudents": 1,
@@ -14,14 +14,14 @@
                     "numberOfFacilitators": 0,
                     "name": "Project test",
                     "numberOfTags": 2,
-                    "maximumNumberOfStudents": 5,
-                    "maximumNumberOfFacilitators": 5,
+                    "maximumNumberOfStudents": 4,
+                    "maximumNumberOfFacilitators": 2,
                     "tasks": [{
                             "duration": 14,
                             "numberOfSubmissions": 0,
                             "submissions": [],
                             "start": "2023-03-13",
-                            "description": "The team's initial goal is to identify up to 15 stakeholder\/user groups relevant to the project topic. Understanding key stakeholders and user groups is fundamental to generating innovative ideas and tackling complex problems, so it's important to have a comprehensive list. Have you examined the range of individuals, groups, and organizations that your project's topic affects? ",
+                            "description": "The team's initial goal is to identify up to 15 stakeholder\/user groups relevant to the project topic. Understanding key stakeholders and user groups is fundamental to generating innovative ideas and tackling complex problems, so it's important to have a comprehensive list. Have you examined the range of individuals, groups, and organizations that your project's topic  affects? ",
                             "end": "2023-03-27",
                             "title": "Long list of Stakeholder "
                         }, {
@@ -115,6 +115,7 @@
                         }],
                     "participants": [{
                             "number": 1,
+                            "typeOfParticipant": "StudentImp",
                             "contact": {
                                 "zipCode": "zipCode",
                                 "country": "country",
@@ -136,7 +137,7 @@
                                 },
                                 "name": "ESTG",
                                 "description": "Escola de Tecnologia e Gestão de Felgueiras",
-                                "type": "Universitary",
+                                "type": "University",
                                 "email": "estg@estg.ipp.pt"
                             },
                             "email": "david@estg.ipp.pt"

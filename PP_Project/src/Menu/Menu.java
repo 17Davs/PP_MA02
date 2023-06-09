@@ -545,34 +545,37 @@ public class Menu {
     }
 
     public static void main(String[] args) {
-        try {
+
+    //    try{
             // Crie uma instância da classe CBL e adicione participantes, edições, projetos, etc.
             ParticipantsManager pm = new ParticipantsManager();
             CBL cbl = new CBLImp();
 
-            Contact c = new ContactImp("Street", "city", "state", "zipCode", "country", "phone");
-            Instituition estg = new InstituitionImp("ESTG", "estg@estg.ipp.pt", "estg.ipp.pt", "Escola de Tecnologia e Gestão de Felgueiras", c, InstituitionType.UNIVERSITY);
-            Student p1 = new StudentImp("David Santos", "david@estg.ipp.pt", c, estg);
-            try {
-                cbl.addEdition(new EditionImp("Test edition", LocalDate.of(2023, Month.MARCH, 13), LocalDate.of(2023, Month.JUNE, 17)));
-            } catch (EditionAlreadyInCBL ex) {
-                System.out.println(ex.getMessage());
-            }
-            String[] tags = {"java","teste"};
-            cbl.getEdition("Test edition").addProject("Project test", "testando projeto", tags);
-            cbl.getEdition("Test edition").getProject("Project test").addParticipant(p1);
-            try {
-                pm.addParticipant(p1);
-            } catch (AlreadyExistsInArray ex) {
-                System.out.println(ex.toString());
-            }
-            // Create menu and import data
-
-//        if(cbl.import("src/Files/cbl.json")){
-//        System.out.println("Success importing program data");
-//    } else {
-//             System.out.println("Error importing program data");
+//            Contact c = new ContactImp("Street", "city", "state", "zipCode", "country", "phone");
+//            Instituition estg = new InstituitionImp("ESTG", "estg@estg.ipp.pt", "estg.ipp.pt", "Escola de Tecnologia e Gestão de Felgueiras", c, InstituitionType.UNIVERSITY);
+//            Student p1 = new StudentImp("David Santos", "david@estg.ipp.pt", c, estg);
+//            try {
+//                cbl.addEdition(new EditionImp("Test edition", LocalDate.of(2023, Month.MARCH, 13), LocalDate.of(2023, Month.JUNE, 17)));
+//            } catch (EditionAlreadyInCBL ex) {
+//                System.out.println(ex.getMessage());
 //            }
+//            String[] tags = {"java", "teste"};
+//            cbl.getEdition("Test edition").addProject("Project test", "testando projeto", tags);
+//            cbl.getEdition("Test edition").getProject("Project test").addParticipant(p1);
+//
+//            try {
+//                pm.addParticipant(p1);
+//            } catch (AlreadyExistsInArray ex) {
+//                System.out.println(ex.toString());
+//            }
+            // Create menu and import data
+            if (cbl.importData("src/Files/cbl.json")) {
+
+                System.out.println("Success importing program data");
+            } else {
+                System.out.println("Error importing program data");
+            }
+
             Menu menu = new Menu(cbl, pm);
             menu.start();
 //export data before close program
@@ -582,14 +585,14 @@ public class Menu {
             } else {
                 System.out.println("Error exporting program data");
             }
-        } catch (IOException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalNumberOfParticipantType ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParticipantAlreadyInProject ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        } catch (IOException ex) {
+//            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ParseException ex) {
+//            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IllegalNumberOfParticipantType ex) {
+//            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ParticipantAlreadyInProject ex) {
+//            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 }
