@@ -154,7 +154,7 @@ public class ParticipantsManager {
 
         try ( FileWriter fileWriter = new FileWriter(filePath)) {
             fileWriter.write(jsonObject.toJSONString());
-            //System.out.println("Exported to JSON file: " + filePath);
+             fileWriter.close();
         } catch (IOException e) {
 
             return false;

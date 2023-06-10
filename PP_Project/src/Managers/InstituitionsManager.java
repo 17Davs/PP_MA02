@@ -11,13 +11,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import ma02_resources.participants.Instituition;
 import ma02_resources.project.Project;
+import ma02_resources.project.exceptions.InstituitionAlreadyExistException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import pack.InstituitionImp;
-
 
 /**
  *
@@ -58,12 +58,12 @@ public class InstituitionsManager {
     /**
      *
      * @param p
-     * @throws AlreadyExistsInArray
+     * @throws InstituitionAlreadyExistException
      */
-    public void addInstituition(Instituition p) throws AlreadyExistsInArray {
+    public void addInstituition(Instituition p) throws InstituitionAlreadyExistException {
 
         if (hasInstituition(p)) {
-            throw new AlreadyExistsInArray("Instituition with same name already exists!");
+            throw new InstituitionAlreadyExistException("Instituition with same name already exists!");
         }
         if (instituitionsCounter == instituitionsList.length) {
             realloc();
@@ -105,26 +105,25 @@ public class InstituitionsManager {
         }
         throw new IllegalArgumentException("No Instituition found!");
     }
-    
-    
+
     public Instituition[] getInstituitions() {
-        int counter=0;
+        int counter = 0;
         Instituition temp[] = new Instituition[instituitionsCounter];
 
         for (int i = 0; i < instituitionsCounter; i++) {
             temp[counter++] = instituitionsList[i];
         }
-        if (counter == instituitionsCounter){
+        if (counter == instituitionsCounter) {
             return temp;
         }
-        
+
         Instituition trimmedTemp[] = new Instituition[counter];
-        for (int i = 0; i < counter; i++){
+        for (int i = 0; i < counter; i++) {
             trimmedTemp[i] = temp[i];
         }
         return trimmedTemp;
     }
-    
+
     public boolean export(String filePath) {
         JSONObject jsonObject = new JSONObject();
 
@@ -141,6 +140,7 @@ public class InstituitionsManager {
 
         try ( FileWriter fileWriter = new FileWriter(filePath)) {
             fileWriter.write(jsonObject.toJSONString());
+            fileWriter.close();
         } catch (IOException e) {
             return false;
         }
@@ -159,12 +159,12 @@ public class InstituitionsManager {
                     JSONObject instituitionsJson = (JSONObject) instituitionsArray.get(i);
                     Instituition p = InstituitionImp.fromJsonObj(instituitionsJson);
                     this.addInstituition(p);
-                } catch (AlreadyExistsInArray e) {
+                } catch (InstituitionAlreadyExistException e) {
 
                 }
             }
             return true;
-            
+
         } catch (IOException | ParseException ex) {
             return false;
         }

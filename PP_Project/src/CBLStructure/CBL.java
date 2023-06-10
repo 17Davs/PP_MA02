@@ -28,5 +28,6 @@ public interface CBL {
     public Edition[] getEditionsByParticipant(Participant p);
     public boolean export(String filePath);
     public boolean importData (String filePath);
+    public Edition[] getEditions();
 }
 

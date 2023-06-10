@@ -191,7 +191,7 @@ public class CBLImp implements CBL {
         Edition edition = new EditionImp(name, null, null);
         //try to find the active
         for (Edition e : editions) {
-            if (e.getStatus() == Status.ACTIVE) {
+            if (e != null && e.getStatus() == Status.ACTIVE) {
                 pos = i;
             }
             i++;
@@ -237,8 +237,11 @@ public class CBLImp implements CBL {
 
         for (int i = 0; i < numberOfEditions; i++) {
             hasIncompleteProject = false;
+            if (editions[i].getNumberOfProjects() == 0) {
+                hasIncompleteProject = true;
+            }
             for (Project project : editions[i].getProjects()) {
-                if (!project.isCompleted() && !hasIncompleteProject) {
+                if (project != null && !project.isCompleted() && !hasIncompleteProject) {
                     hasIncompleteProject = true;
                 }
             }
@@ -313,6 +316,26 @@ public class CBLImp implements CBL {
         return temp;
     }
 
+    @Override
+    public Edition[] getEditions() {
+        int counter = 0;
+        Edition temp[] = new Edition[numberOfEditions];
+
+        for (int i = 0; i < numberOfEditions; i++) {
+            temp[counter++] = editions[i];
+        }
+        if (counter == numberOfEditions) {
+            return temp;
+        }
+
+        Edition trimmedTemp[] = new Edition[counter];
+        for (int i = 0; i < counter; i++) {
+            trimmedTemp[i] = temp[i];
+        }
+        return trimmedTemp;
+    }
+
+    @Override
     public boolean export(String filePath) {
         JSONObject jsonObject = new JSONObject();
 
@@ -331,6 +354,7 @@ public class CBLImp implements CBL {
 
         try ( FileWriter fileWriter = new FileWriter(filePath)) {
             fileWriter.write(jsonObject.toJSONString());
+            fileWriter.close();
             //System.out.println("Exported to JSON file: " + filePath);
         } catch (IOException e) {
             e.getMessage();
@@ -346,7 +370,6 @@ public class CBLImp implements CBL {
         try ( FileReader reader = new FileReader(filePath)) {
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
 
-
             JSONArray editionsArray = (JSONArray) jsonObject.get("editions");
 
             for (int i = 0; i < editionsArray.size(); i++) {
@@ -354,7 +377,7 @@ public class CBLImp implements CBL {
                 try {
                     this.addEdition(EditionImp.fromJsonObj(editionJson));
                 } catch (EditionAlreadyInCBL ex) {
-                    
+
                 }
             }
 
