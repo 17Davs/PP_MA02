@@ -58,8 +58,6 @@ public class ProjectImp implements Project {
 
     /**
      * This is the constructor method of Project.
-<<<<<<< HEAD
-     * 
      * @param name Name of the project.
      * @param description Description of the project.
      * @param numberOfFacilitators Number of facilitators in a project.
@@ -67,16 +65,6 @@ public class ProjectImp implements Project {
      * @param numberOfPartners Number of partners in a project.
      * @param taskArraySize Size of the array.
      * @param tags Tags associated with the project.
-=======
-     *
-     * @param name
-     * @param description
-     * @param maximumNumberOfFacilitators
-     * @param maximumNumberOfStudents
-     * @param maximumNumberOfPartners
-     * @param maximumNumberOfTasks
-     * @param tags
->>>>>>> f86a62c9e2cec4ca0153c44f998552f679bcc7e8
      */
     public ProjectImp(String name, String description, int maximumNumberOfFacilitators, int maximumNumberOfStudents, int maximumNumberOfPartners, int maximumNumberOfTasks, String[] tags) {
 

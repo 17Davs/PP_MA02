@@ -41,20 +41,18 @@ public class SubmissionImp implements Submission {
         this.text = text;
     }
 
-<<<<<<< HEAD
     /**
      * {@inheritDoc}
      */
-=======
     public SubmissionImp(Student student, String text, LocalDateTime date) {
         this.date = date;
         this.student = student;
         this.text = text;
     }
-    
-    
-
->>>>>>> f86a62c9e2cec4ca0153c44f998552f679bcc7e8
+        
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Student getStudent() {
         return student;
