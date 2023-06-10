@@ -12,6 +12,7 @@ package Menu;
 import CBLStructure.CBL;
 import CBLStructure.CBLImp;
 import CBLStructure.EditionImp;
+import CBLStructure.ProjectImp;
 import CBLStructure.SubmissionImp;
 import Exceptions.AlreadyExistsInArray;
 import Exceptions.EditionAlreadyInCBL;
@@ -32,12 +33,19 @@ import pack.ContactImp;
 import pack.InstituitionImp;
 import pack.ParticipantImp;
 import Managers.ParticipantsManager;
+import java.io.FileWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pack.StudentImp;
 import pack.FacilitatorImp;
 import pack.PartnerImp;
 import ma02_resources.participants.Partner;
 import ma02_resources.project.Status;
 import ma02_resources.project.Submission;
+import ma02_resources.project.exceptions.InstituitionAlreadyExistException;
+import org.json.simple.JSONObject;
 
 public class Menu {
 
@@ -75,7 +83,7 @@ public class Menu {
             switch (option) {
                 case 1:
                     if (login()) {
-                        showMyEditionsMenu();
+                        showEditionsMenu();
                     }
                     break;
                 case 2:
@@ -85,7 +93,7 @@ public class Menu {
                     break;
                 case 3:
                     if (loginAdmin()) {
-                        // showAdminMenu();
+                        showAdminEditionsMenu();
                     }
                     break;
                 case 4:
@@ -132,6 +140,8 @@ public class Menu {
                     if (!password.equals(PASSWORD)) {
                         System.out.println("Login Failed!\n\n");
                     } else {
+                        //
+                        loggedInParticipant = null;
                         return true;
                     }
                 } while (++counter < 3);
@@ -186,10 +196,9 @@ public class Menu {
             Contact contact = new ContactImp(street, city, state, zipCode, country, phone);
 
             //apresentar instituições do manager de instituições ainda não criado
-            
             Participant newParticipant = new ParticipantImp(name, email, contact, null);
-            
-            listInstituitions(newParticipant);
+
+            assignInstituition(newParticipant);
             switch (option) {
                 case 1:
                     return registerStudent(newParticipant);
@@ -205,10 +214,6 @@ public class Menu {
             System.out.println("Error reading input.");
         }
         return false;
-    }
-
-    private void listInstituitions() {
-
     }
 
     private boolean registerStudent(Participant participant) {
@@ -282,7 +287,7 @@ public class Menu {
         }
     }
 
-    private void listInstituitions(Participant p) {
+    private void assignInstituition(Participant p) {
 
         System.out.println("== Institutions Selection ==");
         try {
@@ -307,11 +312,11 @@ public class Menu {
                     System.out.println("Not Assigned to any Instituition.");
                 } else {
                     System.out.println("Invalid selection. Please try again.\n\n");
-                    listInstituitions(p);
+                    assignInstituition(p);
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.\n\n");
-                listInstituitions(p);
+                assignInstituition(p);
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -321,14 +326,14 @@ public class Menu {
 
     }
 
-    private void showMyEditionsMenu() {
+    private void showEditionsMenu() {
         boolean exit = false;
         while (!exit) {
             System.out.println("===== Editions Menu =====");
-            // System.out.println("Select an edition:");
             try {
                 Edition[] editions = cbl.getEditionsByParticipant(loggedInParticipant);
-                System.out.println("   == Your Editions == ");
+
+                //list the editions
                 int i = 0;
                 for (i = 0; i < editions.length; i++) {
                     System.out.println((i + 1) + ". " + editions[i].getName() + "("
@@ -341,18 +346,19 @@ public class Menu {
                     int editionNumber = Integer.parseInt(reader.readLine());
 
                     // check if it's valid
-                    if (editionNumber >= 1 && editionNumber <= editions.length) {
+                    if (editionNumber == i + 1) {
+                        exit = true;
+                    } else if (editionNumber >= 1 && editionNumber <= editions.length) {
                         Edition selectedEdition = editions[editionNumber - 1];
                         showProjectsMenu(selectedEdition);
-                    } else if (editionNumber == i + 1) {
-                        exit = true;
+
                     } else {
                         System.out.println("Invalid selection. Please try again.\n\n");
-                        showMyEditionsMenu();
+                        showEditionsMenu();
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please enter a number.\n\n");
-                    showMyEditionsMenu();
+                    showEditionsMenu();
                 }
             } catch (NullPointerException e) {
                 e.printStackTrace();
@@ -362,6 +368,144 @@ public class Menu {
         }
     }
 
+    private void showAdminEditionsMenu() {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("===== Editions Menu =====");
+            System.out.println("Number of Edition: " + cbl.getNumberOfEditions());
+
+            try {
+                Edition[] editions = cbl.getEditions();
+                //list the editions
+                int i = 0;
+                if (cbl.getNumberOfEditions() != 0) {
+                    System.out.println(" ---- Editions List -----");
+
+                    for (i = 0; i < editions.length; i++) {
+                        System.out.println((i + 1) + ". " + editions[i].getName() + "("
+                                + editions[i].getStatus().toString() + ")"
+                        );
+                    }
+                    System.out.println(" ------------------- ");
+                }
+                System.out.println((i + 1) + ". Add/create an edition");
+                System.out.println((i + 2) + ". List uncompleted editions");
+                System.out.println((i + 3) + ". Back");
+                System.out.print("Select option: ");
+                try {
+                    int editionNumber = Integer.parseInt(reader.readLine());
+
+                    // check if it's valid
+                    if (editionNumber == i + 3) {
+                        exit = true;
+                    } else if (editions.length != 0 && editionNumber >= 1 && editionNumber <= editions.length) {
+                        Edition selectedEdition = editions[editionNumber - 1];
+                        showAdminProjectsMenu(selectedEdition);
+                    } else if (editionNumber == i + 1) {
+                        try {
+                            showAddEditions();
+                        } catch (EditionAlreadyInCBL e) {
+                            System.out.println(e.getMessage());
+                        }
+                    } else if (editionNumber == i + 2) {
+                        showUncompletedEditions();
+                    } else {
+                        System.out.println("Invalid selection. Please try again.\n\n");
+                        showAdminEditionsMenu();
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number.\n\n");
+                    showAdminEditionsMenu();
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private void showAddEditions() throws EditionAlreadyInCBL {
+        System.out.println("===== Add/Create Edition =====");
+        try {
+
+            System.out.print("\nName: ");
+            String name = reader.readLine();
+
+            LocalDate start = null;
+            while (start == null) {
+                System.out.print("Start date (yyyy-mm-dd): ");
+                String startDate = reader.readLine();
+                try {
+                    start = LocalDate.parse(startDate);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format. Please enter the date in yyyy-mm-dd format.");
+                }
+            }
+
+            LocalDate end = null;
+            while (end == null) {
+                System.out.print("End date (yyyy-mm-dd): ");
+                String endDate = reader.readLine();
+                try {
+                    end = LocalDate.parse(endDate);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format. Please enter the date in yyyy-mm-dd format.");
+                }
+            }
+
+            Edition edition = new EditionImp(name, start, end);
+
+            cbl.addEdition(edition);
+
+        } catch (IOException e) {
+            System.out.println("Error reading input.");
+        }
+
+    }
+
+    private void showUncompletedEditions() {
+        System.out.println("===== Uncompleted Editions =====");
+        boolean exit = false;
+        while (!exit) {
+            try {
+                Edition[] editions = cbl.uncompletedEditions();
+
+                int i = 0;
+
+                for (i = 0; i < editions.length; i++) {
+                    System.out.println((i + 1) + ". " + editions[i].getName() + "("
+                            + editions[i].getStatus().toString() + ")"
+                    );
+                }
+                System.out.println((i + 1) + ". Back");
+                System.out.print("Select option: ");
+                try {
+                    int editionNumber = Integer.parseInt(reader.readLine());
+
+                    // check if it's valid
+                    if (editionNumber == i + 1) {
+                        exit = true;
+                    } else if (editionNumber >= 1 && editionNumber <= editions.length) {
+                        Edition selectedEdition = editions[editionNumber - 1];
+                        showAdminProjectsMenu(selectedEdition);
+                    } else {
+                        System.out.println("Invalid selection. Please try again.\n\n");
+                        showAdminEditionsMenu();
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number.\n\n");
+                    showUncompletedEditions();
+                } catch (IOException e) {
+                    System.out.println("Error reading input.");
+                }
+            } catch (NullPointerException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+    }
+
     private void showProjectsMenu(Edition edition) {
         boolean exit = false;
         while (!exit) {
@@ -369,22 +513,23 @@ public class Menu {
             System.out.println("Edition: " + edition.getName() + "("
                     + edition.getStatus().toString() + ")");
 
-            Project[] projects = edition.getProjects();
+            Project[] projects = ((EditionImp) edition).getProjectsByParticipant(loggedInParticipant);
+
             int i = 0;
             for (i = 0; i < projects.length; i++) {
                 System.out.println((i + 1) + ". " + projects[i].getName());
             }
             System.out.println((i + 1) + ". Back");
-            System.out.print("Enter the number of the project: ");
+            System.out.print("Select an option: ");
             try {
                 int projectNumber = Integer.parseInt(reader.readLine());
 
                 // Verifique se o número do projeto é válido
-                if (projectNumber >= 1 && projectNumber <= projects.length) {
+                if (projectNumber == i + 1) {
+                    exit = true;
+                } else if (projectNumber >= 1 && projectNumber <= projects.length) {
                     Project selectedProject = projects[projectNumber - 1];
                     showProjectDetails(selectedProject);
-                } else if (projectNumber == i + 1) {
-                    exit = true;
                 } else {
                     System.out.println("Invalid selection. Please try again.\n\n");
                     showProjectsMenu(edition);
@@ -396,6 +541,122 @@ public class Menu {
                 System.out.println("Error reading input.");
             }
         }
+    }
+
+    private void showAdminProjectsMenu(Edition edition) {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("== Edition: " + edition.getName() + "("
+                    + edition.getStatus().toString() + ") ==");
+
+            Project[] projects = edition.getProjects();
+            int i = 0;
+            if (edition.getNumberOfProjects() != 0) {
+                System.out.println(" ---- Projects List -----");
+
+                for (i = 0; i < projects.length; i++) {
+                    System.out.println((i + 1) + ". " + projects[i].getName());
+                }
+
+                System.out.println(" --------------------- ");
+            }
+
+            System.out.println((i + 1) + ". Activate edition");
+            System.out.println((i + 2) + ". Remove edition");
+            System.out.println((i + 3) + ". Back");
+            System.out.print("Select an option: ");
+            try {
+                int projectNumber = Integer.parseInt(reader.readLine());
+
+                // Verifique se o número do projeto é válido
+                if (projectNumber == i + 3) {
+                    exit = true;
+                } else if (projects.length != 0 && projectNumber >= 1 && projectNumber <= projects.length) {
+                    Project selectedProject = projects[projectNumber - 1];
+                    showProjectDetails(selectedProject);
+                } else if (projectNumber == i + 1) {
+                    try {
+                        cbl.activateEdition(edition.getName());
+                        showAdminProjectsMenu(edition);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                        showAdminProjectsMenu(edition);
+                    }
+                } else if (projectNumber == i + 2) {
+
+                    System.out.println("Are you sure you want to remove this edition? (yes/no)");
+                    String answer = reader.readLine();
+
+                    if (answer.equalsIgnoreCase("yes")) {
+                        showRemoveEditionMenu(edition);
+                        exit = true;
+                    } else {
+                        System.out.println("Removal canceled.");
+                    }
+
+                } else {
+                    System.out.println("Invalid selection. Please try again.\n\n");
+                    showAdminProjectsMenu(edition);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
+                showAdminProjectsMenu(edition);
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+                showAdminProjectsMenu(edition);
+            }
+        }
+    }
+
+    private void showRemoveEditionMenu(Edition edition) {
+        boolean complete = false;
+
+        try {
+            Edition removedEdition = cbl.removeEdition(edition.getName());
+            System.out.println("Edition removed successfully.");
+            while (!complete) {
+                try {
+
+                    System.out.println("Do you want to save it to a json file? (yes/no)");
+                    String saveAnswer = reader.readLine();
+                    if (saveAnswer.equalsIgnoreCase("yes")) {
+
+                        System.out.println("Name of the file you want to save it to: ");
+                        String name = reader.readLine();
+                        if (name.equalsIgnoreCase("cbl") || name.equalsIgnoreCase("instituitions")
+                                || name.equalsIgnoreCase("project_template") || name.equalsIgnoreCase("users")) {
+                            System.out.println("Invalid name.");
+                        } else {
+                            String path = null;
+                            if (name.contains(".json")) {
+                                path = "src/Files/" + name;
+                            } else {
+                                path = "src/Files/" + name + ".json";
+                            }
+                            try {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("removed Edition", ((EditionImp) removedEdition).toJsonObj());
+                                FileWriter fileWriter = new FileWriter(path);
+                                fileWriter.write(jsonObject.toJSONString());
+                                fileWriter.close();
+                                complete = true;
+
+                            } catch (IOException e) {
+                                e.getMessage();
+                            }
+                        }
+
+                    } else {
+                        complete = true;
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error reading input.");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     private void showProjectDetails(Project project) {
@@ -630,7 +891,7 @@ public class Menu {
         try {
             pm.addParticipant(p1);
             im.addInstituition(estg);
-        } catch (AlreadyExistsInArray ex) {
+        } catch (AlreadyExistsInArray | InstituitionAlreadyExistException ex) {
             System.out.println(ex.toString());
         }
         // Create menu and import data
