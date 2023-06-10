@@ -28,10 +28,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import pack.ParticipantImp;
 
-/**
- *
- * @author David Santos
- */
 public class ProjectImp implements Project {
 
     /**

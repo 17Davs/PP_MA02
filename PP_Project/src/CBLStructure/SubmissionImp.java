@@ -16,37 +16,60 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import pack.StudentImp;
 
-/**
- *
- * @author David Santos
- */
 public class SubmissionImp implements Submission {
 
+    /**
+     * 
+     * @param date Date of submission.
+     * @param student A student that participates in the challenge.
+     * @param text 
+     */
     private LocalDateTime date;
     private Student student;
     private String text;
 
+    /**
+     * This is the constructor method for Submission.
+     * 
+     * @param student A student that participates in the challenge.
+     * @param text 
+     */
     public SubmissionImp(Student student, String text) {
         this.date = LocalDateTime.now();
         this.student = student;
         this.text = text;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Student getStudent() {
         return student;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getText() {
         return text;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LocalDateTime getDate() {
         return date;
     }
 
+    /**
+     * This method compares a 
+     * 
+     * @param sbmsn
+     * @return 
+     */
     @Override
     public int compareTo(Submission sbmsn) {
         if (this == sbmsn) {
