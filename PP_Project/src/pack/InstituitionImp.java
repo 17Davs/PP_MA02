@@ -83,11 +83,6 @@ public class InstituitionImp implements Instituition {
         this.type = it;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        return hash;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -110,10 +105,33 @@ public class InstituitionImp implements Instituition {
         jsonObject.put("email", email);
         jsonObject.put("website", website);
         jsonObject.put("description", description);
-        jsonObject.put("contact", ((ContactImp)contact).toJsonObj());
-        jsonObject.put("type", type.toString());
+        jsonObject.put("contact", ((ContactImp) contact).toJsonObj());
+        
+        //Error if its InstituitionType.UNIVERSITY, the toString given is "universitary", it causes problems when importing
+        if (this.type == InstituitionType.UNIVERSITY){
+            jsonObject.put("type", "University");
+        } else {
+            jsonObject.put("type", type.toString());
+        }
 
         return jsonObject;
+    }
+
+    public static Instituition fromJsonObj(JSONObject jsonObject) {
+
+        String name = (String) jsonObject.get("name");
+        String email = (String) jsonObject.get("email");
+        String website = (String) jsonObject.get("website");
+        String description = (String) jsonObject.get("description");
+        
+        JSONObject contactJson = (JSONObject) jsonObject.get("contact");
+        Contact contact = ContactImp.fromJsonObj(contactJson);
+        
+        InstituitionType type = InstituitionType.valueOf(((String) jsonObject.get("type")).toUpperCase());
+        
+        Instituition instituition = new InstituitionImp(name, email, website, description, contact, type);
+        
+        return instituition;
     }
 
 }

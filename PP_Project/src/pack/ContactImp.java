@@ -9,7 +9,6 @@
  */
 package pack;
 
-
 import ma02_resources.participants.Contact;
 import org.json.simple.JSONObject;
 
@@ -18,6 +17,7 @@ import org.json.simple.JSONObject;
  * @author David Santos
  */
 public class ContactImp implements Contact {
+
     private String street, city, state, zipCode, country, phone;
 
     public ContactImp(String street, String city, String state, String zipCode, String country, String phone) {
@@ -59,7 +59,6 @@ public class ContactImp implements Contact {
         return phone;
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -89,8 +88,8 @@ public class ContactImp implements Contact {
         }
         return this.phone.equals(other.getPhone());
     }
-    
-   public JSONObject toJsonObj() {
+
+    public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("street", street);
         jsonObject.put("city", city);
@@ -101,7 +100,19 @@ public class ContactImp implements Contact {
 
         return jsonObject;
     }
-     
-    
-    
+
+    public static Contact fromJsonObj(JSONObject jsonObject) {
+
+        String street = (String) jsonObject.get("street");
+        String city = (String) jsonObject.get("city");
+        String state = (String) jsonObject.get("state");
+        String zipCode = (String) jsonObject.get("zipCode");
+        String country = (String) jsonObject.get("country");
+        String phone = (String) jsonObject.get("phone");
+
+        Contact contact = new ContactImp(street, city, state, zipCode, country, phone);
+
+        return contact;
+    }
+
 }

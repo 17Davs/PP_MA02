@@ -10,16 +10,21 @@
 package CBLStructure;
 
 import Exceptions.EditionAlreadyInCBL;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import ma02_resources.participants.Participant;
 import ma02_resources.project.Edition;
 import ma02_resources.project.Project;
 import ma02_resources.project.Status;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -33,8 +38,8 @@ public class CBLImp implements CBL {
      * made
      * @param editions[] List of editions
      */
-    private int numberOfEditions;
-    private Edition editions[];
+    private static int numberOfEditions;
+    private static Edition editions[];
 
     /**
      * This is the Constructor of the CBL.
@@ -42,7 +47,7 @@ public class CBLImp implements CBL {
      * @param size The inicial lenght of the editions array
      */
     public CBLImp(int size) {
-        this.editions = new Edition[size];
+        editions = new Edition[size];
         numberOfEditions = 0;
     }
 
@@ -115,7 +120,7 @@ public class CBLImp implements CBL {
      */
     @Override
     public int getNumberOfEditions() {
-        return this.numberOfEditions;
+        return numberOfEditions;
     }
 
     /**
@@ -267,7 +272,7 @@ public class CBLImp implements CBL {
      *
      * @param p Participant to be searched
      * @return An array of editions by participant
-     * @throws NullPointerException -If it doesn't find a participant
+     * @throws NullPointerException -If it doesn't find any editions
      */
     @Override
     public Edition[] getEditionsByParticipant(Participant p) throws NullPointerException {
@@ -316,7 +321,10 @@ public class CBLImp implements CBL {
         JSONArray editionsArray = new JSONArray();
 
         for (int i = 0; i < numberOfEditions; i++) {
-            editionsArray.add(((EditionImp) editions[i]).toJsonObj());
+            try {
+                editionsArray.add(((EditionImp) editions[i]).toJsonObj());
+            } catch (NullPointerException e) {
+            }
         }
 
         jsonObject.put("editions", editionsArray);
@@ -331,45 +339,36 @@ public class CBLImp implements CBL {
         return true;
     }
 
-//    public boolean exportNew(String filePath) {
-//        JSONObject jsonObject = new JSONObject();
-//
-//        jsonObject.put("numberOfEditions", numberOfEditions);
-//
-//        JSONArray editionsArray = new JSONArray();
-//
-//        for (int i = 0; i < numberOfEditions; i++) {
-//            editionsArray.add(((EditionImp) editions[i]).toJson());
-//            
-//            JSONObject projectObject = new JSONObject();
-//            
-//            projectObject.put("name", editions[i].getName());
-//            projectObject.put("start", editions[i].getStart().toString());
-//            projectObject.put("end", editions[i].getEnd().toString());
-//            projectObject.put("status", editions[i].getStatus().toString());
-//            projectObject.put("numberOfProjects", editions[i].getNumberOfProjects());
-//            projectObject.put("projectTemplate", editions[i].getProjectTemplate());
-//
-//            JSONArray projectsArray = new JSONArray();
-//            
-//            for (int j = 0; j < editions[i].getNumberOfProjects(); j++) {
-//                //projectsArray.add(((ProjectImp) projects[j]).toJson());
-//                
-//                
-//                
-//            }
-//            jsonObject.put("projects", projectsArray);
-//        }
-//
-//        jsonObject.put("editions", editionsArray);
-//
-//        try ( FileWriter fileWriter = new FileWriter(filePath)) {
-//            fileWriter.write(jsonObject.toJSONString());
-//            //System.out.println("Exported to JSON file: " + filePath);
-//        } catch (IOException e) {
-//            e.getMessage();
-//            return false;
-//        }
-//        return true;
-//    }
+    @Override
+    public boolean importData(String filePath) {
+        JSONParser parser = new JSONParser();
+
+        try ( FileReader reader = new FileReader(filePath)) {
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
+
+
+            JSONArray editionsArray = (JSONArray) jsonObject.get("editions");
+
+            for (int i = 0; i < editionsArray.size(); i++) {
+                JSONObject editionJson = (JSONObject) editionsArray.get(i);
+                try {
+                    this.addEdition(EditionImp.fromJsonObj(editionJson));
+                } catch (EditionAlreadyInCBL ex) {
+                    
+                }
+            }
+
+            return true;
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("Not found");
+        } catch (IOException ex) {
+            System.out.println("IO");
+        } catch (ParseException ex) {
+            System.out.println("Parce");
+        }
+        return false;
+
+    }
+
 }

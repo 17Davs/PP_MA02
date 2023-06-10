@@ -40,6 +40,7 @@ public class PartnerImp extends ParticipantImp implements Partner {
 
     public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
+        jsonObject.put("typeOfParticipant", this.getClass().getSimpleName());
         jsonObject.put("name", super.getName());
         jsonObject.put("email", super.getEmail());
         jsonObject.put("contact", ((ContactImp) super.getContact()).toJsonObj());

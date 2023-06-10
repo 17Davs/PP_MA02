@@ -79,30 +79,31 @@ public class TaskImp implements Task {
 
     private boolean hasSubmission(Submission sbmsn) {
         for (Submission s : submissions) {
-            if (s.compareTo(sbmsn) == 0) {
+            if (s != null && s.compareTo(sbmsn) == 0) {
                 return true;
             }
         }
         return false;
     }
 
-    private void reallocSubmissions(){
+    private void reallocSubmissions() {
         Submission[] temp = new Submission[submissions.length * 2];
         int i = 0;
-        for (Submission s : submissions){
+        for (Submission s : submissions) {
             temp[i++] = s;
         }
         submissions = temp;
     }
+
     @Override
     public void addSubmission(Submission sbmsn) {
         if (sbmsn == null) {
-            throw new  IllegalArgumentException("Null submission!");
+            throw new IllegalArgumentException("Null submission!");
         }
         if (this.numberOfSubmissions == submissions.length) {
             reallocSubmissions();
         }
-        
+
         if (!hasSubmission(sbmsn)) {
             submissions[numberOfSubmissions++] = sbmsn;
         }
@@ -142,7 +143,7 @@ public class TaskImp implements Task {
 
     }
 
-      public JSONObject toJsonObj() {
+    public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("title", title);
         jsonObject.put("description", description);
@@ -152,20 +153,36 @@ public class TaskImp implements Task {
         jsonObject.put("numberOfSubmissions", numberOfSubmissions);
 
         JSONArray submissionsArray = new JSONArray();
-        for (int i=0; i<numberOfSubmissions; i++) {
-            submissionsArray.add(((SubmissionImp)submissions[i]).toJsonObj());
+        for (int i = 0; i < numberOfSubmissions; i++) {
+            submissionsArray.add(((SubmissionImp) submissions[i]).toJsonObj());
         }
         jsonObject.put("submissions", submissionsArray);
 
         return jsonObject;
     }
-    
-    
+
+    public static Task fromJsonObj(JSONObject jsonObject) {
+        String title = (String) jsonObject.get("title");
+        String description = (String) jsonObject.get("description");
+        LocalDate start = LocalDate.parse((String) jsonObject.get("start"));
+        LocalDate end = LocalDate.parse((String) jsonObject.get("end"));
+        int duration = ((Long) jsonObject.get("duration")).intValue();
+
+        TaskImp task = new TaskImp(title, description, start, end, duration);
+
+        JSONArray submissionsArray = (JSONArray) jsonObject.get("submissions");
+        
+        for (int i = 0; i < submissionsArray.size(); i++) {
+            JSONObject submissionJson = (JSONObject) submissionsArray.get(i);
+            task.addSubmission(SubmissionImp.fromJsonObj(submissionJson));
+        }
+
+        return task;
+    }
+
     @Override
     public String toString() {
-        return "Task {" + "title=" + title + ", description=" + description + ", start=" + start + ", end=" + end + ", duration=" + duration + ", numberOfSubmissions=" + numberOfSubmissions ;
+        return "Task {" + "title=" + title + ", description=" + description + ", start=" + start + ", end=" + end + ", duration=" + duration + ", numberOfSubmissions=" + numberOfSubmissions;
     }
-    
-    
 
 }

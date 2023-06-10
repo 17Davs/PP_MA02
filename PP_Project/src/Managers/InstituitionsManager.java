@@ -1,0 +1,173 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Managers;
+
+import Exceptions.AlreadyExistsInArray;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import ma02_resources.participants.Instituition;
+import ma02_resources.project.Project;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import pack.InstituitionImp;
+
+
+/**
+ *
+ * @author David Santos
+ */
+public class InstituitionsManager {
+
+    private static Instituition[] instituitionsList;
+    private static int instituitionsCounter;
+
+    public InstituitionsManager() {
+        instituitionsCounter = 0;
+        instituitionsList = new Instituition[10];
+    }
+
+    public int getInstituitionsCounter() {
+        return instituitionsCounter;
+    }
+
+    private void realloc() {
+        Instituition[] temp = new Instituition[instituitionsList.length * 2];
+        int i = 0;
+        for (Instituition p : instituitionsList) {
+            temp[i++] = p;
+        }
+        instituitionsList = temp;
+    }
+
+    public boolean hasInstituition(Instituition p) {
+        for (Instituition instituition : instituitionsList) {
+            if (instituition != null && instituition.equals(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param p
+     * @throws AlreadyExistsInArray
+     */
+    public void addInstituition(Instituition p) throws AlreadyExistsInArray {
+
+        if (hasInstituition(p)) {
+            throw new AlreadyExistsInArray("Instituition with same name already exists!");
+        }
+        if (instituitionsCounter == instituitionsList.length) {
+            realloc();
+        }
+        instituitionsList[instituitionsCounter++] = p;
+    }
+
+    public Instituition removeInstituition(String string) {
+        Instituition deleted = new InstituitionImp(string, null, null, null, null, null);
+        int pos = -1, i = 0;
+        while (pos == -1 && i < instituitionsCounter) {
+
+            if (instituitionsList[i].equals(deleted)) {
+                pos = i;
+                deleted = instituitionsList[i];
+            } else {
+                i++;
+            }
+        }
+        if (pos == -1) {
+            throw new IllegalArgumentException("No Instituition found!");
+        }
+        for (i = pos; i < instituitionsCounter; i++) {
+            instituitionsList[i] = instituitionsList[i + 1];
+        }
+        instituitionsList[--instituitionsCounter] = null;
+        return deleted;
+    }
+
+    public Instituition getInstituition(String string) throws IllegalArgumentException {
+        Instituition p = new InstituitionImp(string, null, null, null, null, null);
+
+        for (int i = 0; i < instituitionsCounter; i++) {
+
+            if (instituitionsList[i].equals(p)) {
+                p = instituitionsList[i];
+                return p;
+            }
+        }
+        throw new IllegalArgumentException("No Instituition found!");
+    }
+    
+    
+    public Instituition[] getInstituitions() {
+        int counter=0;
+        Instituition temp[] = new Instituition[instituitionsCounter];
+
+        for (int i = 0; i < instituitionsCounter; i++) {
+            temp[counter++] = instituitionsList[i];
+        }
+        if (counter == instituitionsCounter){
+            return temp;
+        }
+        
+        Instituition trimmedTemp[] = new Instituition[counter];
+        for (int i = 0; i < counter; i++){
+            trimmedTemp[i] = temp[i];
+        }
+        return trimmedTemp;
+    }
+    
+    public boolean export(String filePath) {
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("instituitionsCounter", instituitionsCounter);
+
+        JSONArray instituitionsArray = new JSONArray();
+        for (int i = 0; i < instituitionsCounter; i++) {
+            try {
+                instituitionsArray.add(((InstituitionImp) instituitionsList[i]).toJsonObj());
+            } catch (NullPointerException e) {
+            }
+        }
+        jsonObject.put("instituitions", instituitionsArray);
+
+        try ( FileWriter fileWriter = new FileWriter(filePath)) {
+            fileWriter.write(jsonObject.toJSONString());
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean importData(String filePath) {
+        JSONParser parser = new JSONParser();
+
+        try ( FileReader reader = new FileReader(filePath)) {
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
+
+            JSONArray instituitionsArray = (JSONArray) jsonObject.get("instituitionss");
+            for (int i = 0; i < instituitionsArray.size(); i++) {
+                try {
+                    JSONObject instituitionsJson = (JSONObject) instituitionsArray.get(i);
+                    Instituition p = InstituitionImp.fromJsonObj(instituitionsJson);
+                    this.addInstituition(p);
+                } catch (AlreadyExistsInArray e) {
+
+                }
+            }
+            return true;
+            
+        } catch (IOException | ParseException ex) {
+            return false;
+        }
+
+    }
+}

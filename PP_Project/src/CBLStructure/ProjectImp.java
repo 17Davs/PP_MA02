@@ -56,24 +56,9 @@ public class ProjectImp implements Project {
     private Participant participants[];
     private String[] tags;
 
-//    public ProjectImp(String name, String description, int maximumNumberOfTasks, int maximumNumberOfStudents,
-//            int maximumNumberOfPartners, int maximumNumberOfFacilitators, long maximumNumberOfParticipants) {
-//        this.name = name;
-//        this.description = description;
-//        this.maximumNumberOfTasks = maximumNumberOfTasks;
-//        this.maximumNumberOfStudents = maximumNumberOfStudents;
-//        this.maximumNumberOfPartners = maximumNumberOfPartners;
-//        this.maximumNumberOfFacilitators = maximumNumberOfFacilitators;
-//        this.maximumNumberOfParticipants = maximumNumberOfParticipants;
-//        this.numberOfFacilitators = numberOfStudents = numberOfPartners
-//                = numberOfParticipants = numberOfTags = numberOfTasks = 0;
-//        this.tasks = new Task[maximumNumberOfTasks];
-//        this.participants = new Participant[(int) maximumNumberOfParticipants];
-//        this.tags = new String[2];
-//    }
-    
     /**
      * This is the constructor method of Project.
+<<<<<<< HEAD
      * 
      * @param name Name of the project.
      * @param description Description of the project.
@@ -82,8 +67,18 @@ public class ProjectImp implements Project {
      * @param numberOfPartners Number of partners in a project.
      * @param taskArraySize Size of the array.
      * @param tags Tags associated with the project.
+=======
+     *
+     * @param name
+     * @param description
+     * @param maximumNumberOfFacilitators
+     * @param maximumNumberOfStudents
+     * @param maximumNumberOfPartners
+     * @param maximumNumberOfTasks
+     * @param tags
+>>>>>>> f86a62c9e2cec4ca0153c44f998552f679bcc7e8
      */
-    public ProjectImp(String name, String description, int numberOfFacilitators, int numberOfStudents, int numberOfPartners, int taskArraySize, String[] tags) {
+    public ProjectImp(String name, String description, int maximumNumberOfFacilitators, int maximumNumberOfStudents, int maximumNumberOfPartners, int maximumNumberOfTasks, String[] tags) {
 
         this.name = name;
         this.description = description;
@@ -92,10 +87,10 @@ public class ProjectImp implements Project {
                 = this.numberOfParticipants = this.numberOfTasks = this.numberOfTags = 0;
 
         //The limits variables need to be created based  on the arguments
-        this.maximumNumberOfTasks = taskArraySize;
-        this.maximumNumberOfStudents = numberOfStudents;
-        this.maximumNumberOfPartners = numberOfPartners;
-        this.maximumNumberOfFacilitators = numberOfFacilitators;
+        this.maximumNumberOfTasks = maximumNumberOfTasks;
+        this.maximumNumberOfStudents = maximumNumberOfStudents;
+        this.maximumNumberOfPartners = maximumNumberOfPartners;
+        this.maximumNumberOfFacilitators = maximumNumberOfFacilitators;
         this.maximumNumberOfParticipants = this.maximumNumberOfStudents + this.maximumNumberOfPartners + this.maximumNumberOfFacilitators;
 
         this.tasks = new Task[maximumNumberOfTasks];
@@ -336,10 +331,7 @@ public class ProjectImp implements Project {
                 return p;
             }
         }
-        if (p == null) {
-            throw new IllegalArgumentException("No Participant found!");
-        }
-        return p;
+        throw new IllegalArgumentException("No Participant found!");
     }
 ///////////////////////////////////////////////////
 
@@ -373,11 +365,12 @@ public class ProjectImp implements Project {
      */
     @Override
     public String[] getTags() {
-        String[] temp = null;
+        String[] temp = new String[tags.length];
         int i = 0;
         for (String s : tags) {
             temp[i++] = s;
         }
+
         return temp;
     }
 
@@ -453,24 +446,9 @@ public class ProjectImp implements Project {
         return true;
     }
 
-    /*
-    this.name = name;
-        this.description = description;
-
-        this.numberOfFacilitators = this.numberOfStudents = this.numberOfPartners
-                = this.numberOfParticipants = this.numberOfTasks = this.numberOfTags = 0;
-
-        //The limits variables need to be created based  on the arguments
-        this.maximumNumberOfTasks = taskArraySize;
-        this.maximumNumberOfStudents = numberOfStudents;
-        this.maximumNumberOfPartners = numberOfPartners;
-        this.maximumNumberOfFacilitators = numberOfFacilitators;
-        this.maximumNumberOfParticipants = this.maximumNumberOfStudents + this.maximumNumberOfPartners + this.maximumNumberOfFacilitators;
-
-    */
     public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
-        
+
         jsonObject.put("name", name);
         jsonObject.put("description", description);
         jsonObject.put("numberOfFacilitators", numberOfFacilitators);
@@ -479,38 +457,77 @@ public class ProjectImp implements Project {
         jsonObject.put("numberOfParticipants", numberOfParticipants);
         jsonObject.put("numberOfTasks", numberOfTasks);
         jsonObject.put("numberOfTags", numberOfTags);
-       
 
         jsonObject.put("maximumNumberOfFacilitators", maximumNumberOfFacilitators);
         jsonObject.put("maximumNumberOfStudents", maximumNumberOfStudents);
         jsonObject.put("maximumNumberOfPartners", maximumNumberOfPartners);
         jsonObject.put("maximumNumberOfParticipants", maximumNumberOfParticipants);
         jsonObject.put("maximumNumberOfTasks", maximumNumberOfTasks);
-        
-        
+
         JSONArray tasksArray = new JSONArray();
-        for (int i=0; i<numberOfTasks;i++) {
-            tasksArray.add(((TaskImp)tasks[i]).toJsonObj());
+        for (int i = 0; i < numberOfTasks; i++) {
+            tasksArray.add(((TaskImp) tasks[i]).toJsonObj());
         }
         jsonObject.put("tasks", tasksArray);
 
         JSONArray participantsArray = new JSONArray();
-        for (int i=0; i< numberOfParticipants;i++) {
-            participantsArray.add(((ParticipantImp)participants[i]).toJsonObj());
+        for (int i = 0; i < numberOfParticipants; i++) {
+            participantsArray.add(((ParticipantImp) participants[i]).toJsonObj());
         }
         jsonObject.put("participants", participantsArray);
 
         JSONArray tagsArray = new JSONArray();
-        for (int i=0; i<numberOfTags;i++) {
+        for (int i = 0; i < numberOfTags; i++) {
             tagsArray.add(tags[i]);
         }
         jsonObject.put("tags", tagsArray);
 
         return jsonObject;
     }
-    
-    
-     //to do
+
+    public static Project fromJsonObj(JSONObject jsonObject) {
+
+        String name = (String) jsonObject.get("name");
+        String description = (String) jsonObject.get("description");
+
+        int maximumNumberOfFacilitators = ((Long) jsonObject.get("maximumNumberOfFacilitators")).intValue();
+        int maximumNumberOfStudents = ((Long) jsonObject.get("maximumNumberOfStudents")).intValue();
+        int maximumNumberOfPartners = ((Long) jsonObject.get("maximumNumberOfPartners")).intValue();
+        int maximumNumberOfTasks = ((Long) jsonObject.get("maximumNumberOfTasks")).intValue();
+
+        JSONArray tagsArray = (JSONArray) jsonObject.get("tags");
+        String[] tags = new String[tagsArray.size()];
+        for (int i = 0; i < tagsArray.size(); i++) {
+            tags[i] = (String) tagsArray.get(i);
+        }
+
+        ProjectImp project = new ProjectImp(name, description, maximumNumberOfFacilitators, maximumNumberOfStudents, maximumNumberOfPartners, maximumNumberOfTasks, tags);
+
+        JSONArray tasksArray = (JSONArray) jsonObject.get("tasks");
+        for (int i = 0; i < tasksArray.size(); i++) {
+            try {
+                JSONObject taskJson = (JSONObject) tasksArray.get(i);
+                project.addTask(TaskImp.fromJsonObj(taskJson));
+            } catch (IllegalNumberOfTasks | TaskAlreadyInProject ex) {
+
+            }
+        }
+
+        JSONArray participantsArray = (JSONArray) jsonObject.get("participants");
+        for (int i = 0; i < participantsArray.size(); i++) {
+            try {
+                JSONObject participantJson = (JSONObject) participantsArray.get(i);
+                Participant p = ParticipantImp.fromJsonObj(participantJson);
+                project.addParticipant(p);
+            } catch (IllegalNumberOfParticipantType | ParticipantAlreadyInProject ex) {
+
+            }
+        }
+
+        return project;
+    }
+
+    //to do
     @Override
     public String toString() {
         return "ProjectImp{" + "name=" + name + ", description=" + description

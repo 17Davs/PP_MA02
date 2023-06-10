@@ -34,13 +34,14 @@ import org.json.simple.parser.JSONParser;
 public class EditionImp implements Edition {
 
     /**
-     * 
+     *
      * @param name Edition name
-     * @param start Edition's start date 
-     * @param end Edition's end date 
+     * @param start Edition's start date
+     * @param end Edition's end date
      * @param status Edition's status
-     * @param numberOfProjects Variable that defines how many Editions are in a list
-     * @param projectTemplate 
+     * @param numberOfProjects Variable that defines how many Editions are in a
+     * list
+     * @param projectTemplate
      * @param defaultProjectTemplate
      * @param projects[] List of Editions
      */
@@ -55,10 +56,10 @@ public class EditionImp implements Edition {
 
     /**
      * This is the constructor method for Edition.
-     * 
+     *
      * @param name Edition name
-     * @param start Edition's start date 
-     * @param end Edition's end date 
+     * @param start Edition's start date
+     * @param end Edition's end date
      */
     public EditionImp(String name, LocalDate start, LocalDate end) {
         this.name = name;
@@ -66,6 +67,16 @@ public class EditionImp implements Edition {
         this.end = end;
         projectTemplate = defaultProjectTemplate;
         status = Status.INACTIVE;
+        projects = new Project[5];
+        numberOfProjects = 0;
+    }
+
+    public EditionImp(String name, LocalDate start, LocalDate end, Status status, String projectTemplate) {
+        this.name = name;
+        this.start = start;
+        this.end = end;
+        this.status = status;
+        this.projectTemplate = projectTemplate;
         projects = new Project[5];
         numberOfProjects = 0;
     }
@@ -114,6 +125,14 @@ public class EditionImp implements Edition {
         return false;
     }
 
+    private void reallocProjects() {
+        Project[] temp = new Project[projects.length * 2];
+        for (int i = 0; i < projects.length; i++) {
+            temp[i] = projects[i];
+        }
+        projects = temp;
+    }
+
     /**
      * This method adds a project to the edition. The project is created from
      * the template.
@@ -130,6 +149,12 @@ public class EditionImp implements Edition {
             throw new IllegalArgumentException("Illegal (null) argument");
         }
 
+        //verify space
+        if (numberOfProjects == projects.length) {
+            reallocProjects();
+        }
+
+        //creating from the template
         try {
             Reader reader = new FileReader(projectTemplate);
 
@@ -142,10 +167,11 @@ public class EditionImp implements Edition {
             long number_of_students = (long) object.get("number_of_students");
             long number_of_partners = (long) object.get("number_of_partners");
             System.out.println(number_of_partners);
-            // Create an json array and read into it the tasks of the template 
+
+            // Create a json array and read into it the tasks of the template 
             JSONArray taskArray = (JSONArray) object.get("tasks");
 
-            Project newPj = new ProjectImp(name, description, 5, 5, 5, taskArray.size(), tags);
+            Project newPj = new ProjectImp(name, description, (int) number_of_facilitors, (int) number_of_students, (int) number_of_partners, taskArray.size(), tags);
             if (hasProject(newPj)) {
                 throw new IllegalArgumentException("Project already exists");
             }
@@ -211,14 +237,13 @@ public class EditionImp implements Edition {
             projects[i] = projects[i + 1];
         }
         projects[--numberOfProjects] = null;
-
     }
 
     /**
-     * This method  
-     * 
+     * This method
+     *
      * @param string
-     * @return 
+     * @return
      */
     @Override
     public Project getProject(String string) {
@@ -236,21 +261,30 @@ public class EditionImp implements Edition {
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
     public Project[] getProjects() {
+        int counter=0;
         Project temp[] = new Project[numberOfProjects];
 
         for (int i = 0; i < numberOfProjects; i++) {
-            temp[i] = projects[i];
+            temp[counter++] = projects[i];
         }
-        return temp;
+        if (counter == numberOfProjects){
+            return temp;
+        }
+        
+        Project trimmedTemp[] = new Project[counter];
+        for (int i = 0; i < counter; i++){
+            trimmedTemp[i] = temp[i];
+        }
+        return trimmedTemp;
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -278,7 +312,7 @@ public class EditionImp implements Edition {
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -360,7 +394,7 @@ public class EditionImp implements Edition {
 //
 //        return jsonObject.toJSONString();
 //    }
-     public JSONObject toJsonObj() {
+    public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("start", start.toString());
@@ -370,12 +404,80 @@ public class EditionImp implements Edition {
         jsonObject.put("projectTemplate", projectTemplate);
 
         JSONArray projectsArray = new JSONArray();
-        for (int i=0; i<numberOfProjects; i++) {
-            projectsArray.add(((ProjectImp)projects[i]).toJsonObj());
+        for (int i = 0; i < numberOfProjects; i++) {
+            projectsArray.add(((ProjectImp) projects[i]).toJsonObj());
         }
         jsonObject.put("projects", projectsArray);
 
         return jsonObject;
+    }
+
+    public static Edition fromJsonObj(JSONObject jsonObject) {
+
+        String name = (String) jsonObject.get("name");
+        LocalDate start = LocalDate.parse((String) jsonObject.get("start"));
+        LocalDate end = LocalDate.parse((String) jsonObject.get("end"));
+        Status status = Status.valueOf(((String) jsonObject.get("status")).toUpperCase());
+        String projectTemplate = (String) jsonObject.get("projectTemplate");
+
+        EditionImp edition = new EditionImp(name, start, end, status, projectTemplate);
+
+        JSONArray projectsArray = (JSONArray) jsonObject.get("projects");
+
+        for (int i = 0; i < projectsArray.size(); i++) {
+            try {
+
+                JSONObject projectJson = (JSONObject) projectsArray.get(i);
+
+                edition.addProjectFormImport(ProjectImp.fromJsonObj(projectJson));
+            } catch (IllegalArgumentException e) {
+
+            }
+        }
+
+        return edition;
+
+    }
+
+    private void addProjectFormImport(Project p) {
+        if (p == null) {
+            throw new IllegalArgumentException();
+        }
+        if (hasProject(p)) {
+            throw new IllegalArgumentException("Project already exists");
+        }
+        if (numberOfProjects == projects.length) {
+            reallocProjects();
+        }
+
+        projects[numberOfProjects++] = p;
+    }
+
+    public Project[] getProjectsByParticipant(Participant p) {
+        int counter = 0;
+
+        Project[] temp = new Project[numberOfProjects];
+
+        for (int i = 0; i < numberOfProjects; i++) {
+
+            try {
+                Participant participant = projects[i].getParticipant(p.getEmail());
+
+                temp[counter++] = projects[i];
+
+            } catch (IllegalArgumentException e) {
+            }
+        }
+        //limit the array to just the not null positions
+        if (counter != numberOfProjects) {
+            Project[] projectsByParticipant = new Project[counter];
+
+            for (int i = 0; i < counter; i++) {
+                projectsByParticipant[i] = temp[i];
+            }
+            return projectsByParticipant;
+        }
+        return temp;
     }
 
     @Override

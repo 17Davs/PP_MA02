@@ -13,6 +13,7 @@ import ma02_resources.participants.Contact;
 import ma02_resources.participants.Facilitator;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.Participant;
+import ma02_resources.participants.Partner;
 import ma02_resources.participants.Student;
 import org.json.simple.JSONObject;
 
@@ -81,12 +82,43 @@ public class ParticipantImp implements Participant {
 
     public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
+        jsonObject.put("typeOfParticiant", this.getClass().getSimpleName());
         jsonObject.put("name", name);
         jsonObject.put("email", email);
         jsonObject.put("contact", ((ContactImp) contact).toJsonObj());
         jsonObject.put("instituition", ((InstituitionImp) instituition).toJsonObj());
 
         return jsonObject;
+    }
+
+    public static Participant fromJsonObj(JSONObject jsonObject) {
+
+        String name = (String) jsonObject.get("name");
+        String email = (String) jsonObject.get("email");
+
+        JSONObject contactJson = (JSONObject) jsonObject.get("contact");
+        Contact contact = ContactImp.fromJsonObj(contactJson);
+
+        JSONObject instituitionJson = (JSONObject) jsonObject.get("instituition");
+        Instituition instituition = InstituitionImp.fromJsonObj(instituitionJson);
+
+        String type = (String) jsonObject.get("typeOfParticipant");
+
+        if (type.equals("StudentImp")) {
+            return new StudentImp(name, email, contact, instituition);
+
+        } else if (type.equals("FacilitatorImp")) {
+            String areaOfExpertise = (String) jsonObject.get("areaOfExpertise");
+            return new FacilitatorImp(areaOfExpertise, name, email, contact, instituition);
+
+        } else if (type.equals("PartnerImp")) {
+            String vat = (String) jsonObject.get("vat");
+            String website = (String) jsonObject.get("website");
+            return new PartnerImp(vat, website, name, email, contact, instituition);
+
+        } else {
+            return new ParticipantImp(name, email, contact, instituition);
+        }
     }
 
 }
