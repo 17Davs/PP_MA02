@@ -16,9 +16,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import ma02_resources.participants.Participant;
+import ma02_resources.participants.Student;
 import ma02_resources.project.Edition;
 import ma02_resources.project.Project;
 import ma02_resources.project.Status;
+import ma02_resources.project.Submission;
+import ma02_resources.project.Task;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -385,5 +388,48 @@ public class CBLImp implements CBL {
         }
         return participantProjects;
     }
+
+    public Submission[] getSubmissionsOf(Student student) {
+        int submissionCount = 0;
+
+        for (int i = 0; i < numberOfEditions; i++) {
+            Project[] projects = editions[i].getProjectsOf(student.getEmail());
+            for (Project project : projects) {
+                Task[] tasks = project.getTasks();
+                for (Task task : tasks) {
+                    Submission[] submissions = task.getSubmissions();
+                    for (Submission submission : submissions) {
+                        if (submission.getStudent().equals(student)) {
+                            submissionCount++;
+                        }
+                    }
+                }
+            }
+        }
+        if (submissionCount == 0) {
+            return null;
+        }
+        Submission[] studentSubmissions = new Submission[submissionCount];
+        int counter = 0;
+
+        for (int j = 0; j < numberOfEditions; j++) {
+            Project[] projects = editions[j].getProjectsOf(student.getEmail());
+            for (Project project : projects) {
+                Task[] tasks = project.getTasks();
+                for (Task task : tasks) {
+                    Submission[] submissions = task.getSubmissions();
+                    for (Submission submission : submissions) {
+                        if (submission.getStudent().equals(student)) {
+                            studentSubmissions[counter++] = submission;
+                        }
+                    }
+                }
+            }
+        }
+
+        return studentSubmissions;
+    }
+    
+    
 
 }

@@ -1831,14 +1831,13 @@ public class Menu {
     }
 
 //lists/reports
-    
-    private void showListiongsMenu(){
-         boolean exit = false;
+    private void showListiongsMenu() {
+        boolean exit = false;
         while (!exit) {
             System.out.println(" ==== Listings/Reports ==== ");
             System.out.println(" 1. Top Participants by number of participation in projects");
-            System.out.println(" 2. ");
-            System.out.println(" 3. ");
+            System.out.println(" 2. Top Students by number of task's submissions");
+            System.out.println(" 3. Instituitions Participants and Number of Projects");
             System.out.println(" 4. Exit");
             System.out.print("Select option: ");
 
@@ -1850,13 +1849,12 @@ public class Menu {
                         showTopParticipants();
                         break;
                     case 2:
-                        /////////////////////
+                        showTopStudentsBySubmissions();
                         break;
                     case 3:
-                        /////////////////////
+                        showInstituitionsParticipants();
                         break;
-                    case 43
-                            :
+                    case 4:
                         exit = true;
                         break;
                     default:
@@ -1871,11 +1869,7 @@ public class Menu {
             }
         }
     }
-    
-    
-    
-   
-    
+
     /**
      * This method retrieves an array of the top participants based on their
      * participation in projects. Participants are sorted in descending order
@@ -1911,13 +1905,19 @@ public class Menu {
         return topParticipants;
     }
 
+    /**
+     * Displays the list of top participants by the number of projects they have
+     * participated in. The method prompts the user to select an option and
+     * allows them to go back or exit the menu. This method keeps displaying the
+     * list until the user chooses to exit.
+     */
     private void showTopParticipants() {
         boolean exit = false;
         while (!exit) {
 
             System.out.println(" === List of Top Participants by number of Projects === ");
             Participant[] topParticipants = getTopParticipantsByParticipation();
-            if (topParticipants != null) {
+            if (topParticipants != null && topParticipants.length > 0) {
                 try {
                     int i = 0;
                     for (Participant participant : topParticipants) {
@@ -1925,7 +1925,7 @@ public class Menu {
                     }
                     System.out.println(" ---------------------------------------------\n");
                     System.out.println((i + 1) + ". Back");
-                    System.out.println("Select the Back number: ");
+                    System.out.print("Select the Back number: ");
                     int option = Integer.parseInt(reader.readLine());
                     if (option == i + 1) {
                         exit = true;
@@ -1940,6 +1940,145 @@ public class Menu {
             } else {
                 System.out.println("No participants found!\n");
                 exit = true;
+            }
+        }
+    }
+
+    private Student[] getTopStudentsBySubmissions() {
+        // Get all students
+        Student[] students = pm.getStudents();
+
+        // order students by the number of submissions, in descending order
+        for (int i = 0; i < students.length - 1; i++) {
+            for (int j = 0; j < students.length - i - 1; j++) {
+                Submission[] submissions1 = ((CBLImp) cbl).getSubmissionsOf(students[j]);
+                Submission[] submissions2 = ((CBLImp) cbl).getSubmissionsOf(students[j + 1]);
+
+                int submissionCount1 = (submissions1 != null) ? submissions1.length : 0;
+                int submissionCount2 = (submissions2 != null) ? submissions2.length : 0;
+
+                if (submissionCount1 < submissionCount2) {
+                    // Swap students at positions
+                    Student temp = students[j];
+                    students[j] = students[j + 1];
+                    students[j + 1] = temp;
+                }
+            }
+        }
+
+        return students;
+    }
+
+    private void showTopStudentsBySubmissions() {
+        Student[] topStudents = getTopStudentsBySubmissions();
+        boolean exit = false;
+        while (!exit) {
+
+            System.out.println("=== Top Students by Submissions ===");
+
+            if (topStudents != null && topStudents.length > 0) {
+                System.out.println("Top 3 Students with the Most Submissions:");
+                for (int i = 0; i < Math.min(3, topStudents.length); i++) {
+                    try {
+                        System.out.println(" -- " + topStudents[i].getName()
+                                + " (" + topStudents[i].getEmail() + ")" + "--> "
+                                + ((CBLImp) cbl).getSubmissionsOf(topStudents[i]).length + " submissions");
+                    } catch (NullPointerException e) {
+                        System.out.println(" -- " + topStudents[i].getName()
+                                + " (" + topStudents[i].getEmail() + ")" + "--> "
+                                + "0 submissions");
+                    }
+                }
+
+                System.out.println();
+
+                System.out.println("Top 3 Students with the Least Submissions:");
+                for (int i = topStudents.length - 1; i >= Math.max(0, topStudents.length - 3); i--) {
+                    try {
+
+                        System.out.println(" -- " + topStudents[i].getName()
+                                + " (" + topStudents[i].getEmail() + ")" + "--> "
+                                + ((CBLImp) cbl).getSubmissionsOf(topStudents[i]).length + " submissions");
+                    } catch (NullPointerException e) {
+                        System.out.println(" -- " + topStudents[i].getName()
+                                + " (" + topStudents[i].getEmail() + ")" + "--> "
+                                + "0 submissions");
+                    }
+
+                }
+
+                System.out.println(" ----------------------------------------------------");
+                System.out.println(" 1. Back");
+                System.out.print("Select option: ");
+                try {
+                    int option = Integer.parseInt(reader.readLine());
+                    if (option == 1) {
+                        exit = true;
+                    } else {
+                        System.out.println("Invalid Selection.");
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error reading input.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number.\n\n");
+                }
+
+            } else {
+                System.out.println("No students found!");
+            }
+            System.out.println();
+        }
+
+    }
+
+    private void getInstituitionsParticipants() {
+
+        try {
+            Instituition[] instituitions = im.getInstituitions();
+            int counter = 0;
+            for (Instituition instituition : instituitions) {
+                int numberOfParticipants = 0;
+                int totalProjects = 0;
+                System.out.println(++counter + ". " + instituition.getName());
+                try {
+                    for (Participant participant : pm.getParticipants()) {
+                        if (participant.getInstituition().equals(instituition)) {
+                            System.out.println(" --- " + participant.getEmail());
+                            numberOfParticipants++;
+                            totalProjects += cbl.getProjectsOf(participant).length;
+                        }
+                    }
+
+                } catch (NullPointerException e) {
+
+                }
+                System.out.println(" --- Total project in which " + instituition.getName() + " takes part: " + totalProjects + "  ---");
+            }
+
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    private void showInstituitionsParticipants() {
+        boolean exit = false;
+        while (!exit) {
+            getInstituitionsParticipants();
+            System.out.println(" ----------------------------------------------------");
+            System.out.println(" 1. Back");
+            System.out.print("Select option: ");
+            try {
+                int option = Integer.parseInt(reader.readLine());
+                if (option == 1) {
+                    exit = true;
+                } else {
+                    System.out.println("Invalid Selection.");
+                }
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
             }
         }
     }
