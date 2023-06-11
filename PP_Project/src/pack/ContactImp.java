@@ -15,13 +15,7 @@ import org.json.simple.JSONObject;
 public class ContactImp implements Contact {
 
     /**
-     * 
-     * @param street Street address.
-     * @param city City.
-     * @param state State.
-     * @param zipCode Zip Code.
-     * @param country Country.
-     * @param phone Phone.
+     * Variables that define Street City State Zip Code Country (address) and phone number.
      */
     private String street, city, state, zipCode, country, phone;
 
