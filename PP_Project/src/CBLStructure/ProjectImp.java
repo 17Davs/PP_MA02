@@ -242,6 +242,10 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
+     * 
+     * This method adds a participant to the project. It checks if the participant to be added already exists and if the list is full. 
+     * 
+     * @throws IllegalNumberOfParticipantType - If list is full.
      */
     @Override
     public void addParticipant(Participant p) throws IllegalNumberOfParticipantType, ParticipantAlreadyInProject {
