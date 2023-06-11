@@ -45,12 +45,16 @@ public class InstituitionsManager {
 
     /**
      * This method is a getter for Institutions Manager.
-     * @return 
+     * @return How many Institutions exist.
      */
     public int getInstituitionsCounter() {
         return instituitionsCounter;
     }
 
+    /**
+     * This method adds space to the list if it's full.
+     * 
+     */
     private void realloc() {
         Instituition[] temp = new Instituition[instituitionsList.length * 2];
         int i = 0;
@@ -60,6 +64,13 @@ public class InstituitionsManager {
         instituitionsList = temp;
     }
 
+    /**
+     * This method checks if Institution exists in array.
+     * 
+     * @param p Institution to be checked.
+     * @return true if exists.
+     * @return false if doensn't exit.
+     */
     public boolean hasInstituition(Instituition p) {
         for (Instituition instituition : instituitionsList) {
             if (instituition != null && instituition.equals(p)) {
@@ -87,6 +98,13 @@ public class InstituitionsManager {
         instituitionsList[instituitionsCounter++] = p;
     }
 
+    
+    /**
+     * This method removes an Institution from array.
+     * 
+     * @param string Name.
+     * @return The deleted institution.
+     */
     public Instituition removeInstituition(String string) {
         Instituition deleted = new InstituitionImp(string, null, null, null, null, null);
         int pos = -1, i = 0;
@@ -109,6 +127,13 @@ public class InstituitionsManager {
         return deleted;
     }
 
+    /**
+     * This method gets data of one Institution.
+     * 
+     * @param string Name to be searched.
+     * @return The institution.
+     * @throws IllegalArgumentException - if not found.
+     */
     public Instituition getInstituition(String string) throws IllegalArgumentException {
         Instituition p = new InstituitionImp(string, null, null, null, null, null);
 
@@ -122,6 +147,12 @@ public class InstituitionsManager {
         throw new IllegalArgumentException("No Instituition found!");
     }
 
+    /**
+     * This method returns All Institutions.
+     * 
+     * @return A list with all institutions.
+     * @throws NullPointerException - if not found.
+     */
     public Instituition[] getInstituitions() throws NullPointerException {
         if (instituitionsCounter > 0){
             Instituition temp[] = new Instituition[instituitionsCounter];
@@ -137,6 +168,12 @@ public class InstituitionsManager {
 
     }
 
+    /**
+     * This method exports data to a JSON file.
+     * 
+     * @param filePath The path where the end file is located.
+     * @return true if successful.
+     */
     public boolean export(String filePath) {
         JSONObject jsonObject = new JSONObject();
 
@@ -160,6 +197,12 @@ public class InstituitionsManager {
         return true;
     }
 
+    /**
+     * This method imports data from JSON file.
+     * 
+     * @param filePath The start path where the JSON file is located.
+     * @return true if successful.
+     */
     public boolean importData(String filePath) {
         JSONParser parser = new JSONParser();
 

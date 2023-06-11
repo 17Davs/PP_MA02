@@ -27,24 +27,38 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import pack.ParticipantImp;
 
-/**
- *
- * @author David Santos
- */
 public class ParticipantsManager {
 
+    /**
+     * Array that stores Participants.
+     */
     private static Participant[] participantsList;
+    /**
+     * This counter variable increases the number of participants.
+     */
     private static int participantsCounter;
 
+    
+    /**
+     * This is the constructor method for ParticipantsManager.
+     */
     public ParticipantsManager() {
         participantsCounter = 0;
         participantsList = new Participant[10];
     }
 
+    /**
+     * This method is a getter for Participants Manager.
+     * @return How many Participants exist.
+     */
     public int getParticipantsCounter() {
         return participantsCounter;
     }
 
+    /**
+     * This method adds space to the list if it's full.
+     * 
+     */
     private void realloc() {
         Participant[] temp = new Participant[participantsList.length * 2];
         int i = 0;
@@ -54,6 +68,13 @@ public class ParticipantsManager {
         participantsList = temp;
     }
 
+    /**
+     * This method checks if Participant exists in array.
+     * 
+     * @param p Participant to be checked.
+     * @return true if exists.
+     * @return false if doensn't exit.
+     */
     public boolean hasParticipant(Participant p) {
         for (Participant participant : participantsList) {
             if (participant != null && participant.equals(p)) {
@@ -73,6 +94,14 @@ public class ParticipantsManager {
 //        }
 //        return -1;
 //    }
+    
+    /**
+     * This method adds a Participant to the list. It checks if Participant to be added
+     * already exists and if the array is full.
+     * 
+     * @param p Participant to be added.
+     * @throws AlreadyExistsInArray
+     */
     public void addParticipant(Participant p) throws AlreadyExistsInArray {
 
         if (hasParticipant(p)) {
@@ -84,6 +113,12 @@ public class ParticipantsManager {
         participantsList[participantsCounter++] = p;
     }
 
+    /**
+     * This method removes a Participant from array.
+     * 
+     * @param string Name.
+     * @return The deleted Participant.
+     */
     public Participant removeParticipant(String string) {
         Participant deleted = new ParticipantImp(null, string, null, null);;
         int pos = -1, i = 0;
@@ -106,6 +141,13 @@ public class ParticipantsManager {
         return deleted;
     }
 
+    /**
+     * This method gets data of one Participant.
+     * 
+     * @param string Name to be searched.
+     * @return The Participant.
+     * @throws IllegalArgumentException - if not found.
+     */
     public Participant getParticipant(String string) throws IllegalArgumentException {
         Participant p = new ParticipantImp(null, string, null, null);
 
@@ -167,6 +209,12 @@ public class ParticipantsManager {
         return numberOfPartners;
     }
 
+    /**
+     * This method gets data of all Participants, ordered by Facilitatiors, Students
+     * and Partners.
+     * 
+     * @return The list with data.
+     */
     public Participant[] getParticipants() {
         int counter = 0;
 
@@ -214,6 +262,12 @@ public class ParticipantsManager {
         return trimmedTemp;
     }
 
+    /**
+     * This method returns All Students.
+     * 
+     * @return A list with all institutions.
+     * @throws NullPointerException - if not found.
+     */
     public Student[] getStudents() {
         int counter = 0;
 
@@ -229,6 +283,12 @@ public class ParticipantsManager {
         return null;
     }
 
+    /**
+     * This method exports data to a JSON file.
+     * 
+     * @param filePath The path where the end file is located.
+     * @return true if successful.
+     */
     public boolean export(String filePath) {
         JSONObject jsonObject = new JSONObject();
 
@@ -253,6 +313,12 @@ public class ParticipantsManager {
         return true;
     }
 
+    /**
+     * This method imports data from JSON file.
+     * 
+     * @param filePath The start path where the JSON file is located.
+     * @return true if successful.
+     */
     public boolean importData(String filePath) {
         JSONParser parser = new JSONParser();
 
