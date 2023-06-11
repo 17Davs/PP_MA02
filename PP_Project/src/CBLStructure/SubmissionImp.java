@@ -77,8 +77,8 @@ public class SubmissionImp implements Submission {
     /**
      * This method compares a 
      * 
-     * @param sbmsn
-     * @return 
+     * @param sbmsn Submission.
+     * @return date
      */
     @Override
     public int compareTo(Submission sbmsn) {

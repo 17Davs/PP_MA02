@@ -27,10 +27,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-/**
- *
- * @author David Santos
- */
 public class EditionImp implements Edition {
 
     /**
@@ -41,8 +37,8 @@ public class EditionImp implements Edition {
      * @param status Edition's status
      * @param numberOfProjects Variable that defines how many Editions are in a
      * list
-     * @param projectTemplate
-     * @param defaultProjectTemplate
+     * @param projectTemplate Project template defined by user.
+     * @param defaultProjectTemplate Default structure of project when one isn't chosen.
      * @param projects[] List of Editions
      */
     //private static final int initialSize = 5;
@@ -71,6 +67,15 @@ public class EditionImp implements Edition {
         numberOfProjects = 0;
     }
 
+    /**
+     * This is the constructor method for Edition.
+     *
+     * @param name Edition name
+     * @param start Edition's start date
+     * @param end Edition's end date
+     * @param status Edition's status
+     * @param projectTemplate Project template defined by user.
+     */
     public EditionImp(String name, LocalDate start, LocalDate end, Status status, String projectTemplate) {
         this.name = name;
         this.start = start;
@@ -81,41 +86,69 @@ public class EditionImp implements Edition {
         numberOfProjects = 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LocalDate getStart() {
         return start;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getProjectTemplate() {
         return projectTemplate;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Status getStatus() {
         return status;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setStatus(Status status) {
         this.status = status;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfProjects() {
         return numberOfProjects;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LocalDate getEnd() {
         return end;
     }
 
+    /**
+     * This method searches for a project in the list.
+     * 
+     * @param pj Project to be searched.
+     * @return true if it finds a project.
+     * @return false if it doesn't find a project.
+     */
     private boolean hasProject(Project pj) {
         for (Project p : projects) {
             if (p != null && p.equals(pj)) {
@@ -125,6 +158,9 @@ public class EditionImp implements Edition {
         return false;
     }
 
+    /**
+     * This method adds space to the Projects list.
+     */
     private void reallocProjects() {
         Project[] temp = new Project[projects.length * 2];
         for (int i = 0; i < projects.length; i++) {
@@ -240,10 +276,11 @@ public class EditionImp implements Edition {
     }
 
     /**
-     * This method
+     * This method searches for a project in a list of projects.
      *
-     * @param string
-     * @return
+     * @param string Project name.
+     * @return Project in the list.
+     * @throws IllegalArgumentException - If it doesn't find a project.
      */
     @Override
     public Project getProject(String string) {
@@ -263,6 +300,8 @@ public class EditionImp implements Edition {
     /**
      *
      * {@inheritDoc}
+     * 
+     * This method creates a list with all the projects.
      */
     @Override
     public Project[] getProjects() {
@@ -272,15 +311,8 @@ public class EditionImp implements Edition {
         for (int i = 0; i < numberOfProjects; i++) {
             temp[counter++] = projects[i];
         }
-        if (counter == numberOfProjects){
-            return temp;
-        }
         
-        Project trimmedTemp[] = new Project[counter];
-        for (int i = 0; i < counter; i++){
-            trimmedTemp[i] = temp[i];
-        }
-        return trimmedTemp;
+        return temp;
     }
 
     /**
@@ -314,6 +346,8 @@ public class EditionImp implements Edition {
     /**
      *
      * {@inheritDoc}
+     * 
+     * This method returns a list of all projects by a certain participant.
      */
     @Override
     public Project[] getProjectsOf(String string) {
@@ -439,6 +473,10 @@ public class EditionImp implements Edition {
 
     }
 
+    /**
+     * This method adds 
+     * @param p 
+     */
     private void addProjectFormImport(Project p) {
         if (p == null) {
             throw new IllegalArgumentException();

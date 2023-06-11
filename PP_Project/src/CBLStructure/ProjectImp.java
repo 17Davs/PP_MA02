@@ -58,12 +58,13 @@ public class ProjectImp implements Project {
 
     /**
      * This is the constructor method of Project.
+     * 
      * @param name Name of the project.
      * @param description Description of the project.
-     * @param numberOfFacilitators Number of facilitators in a project.
-     * @param numberOfStudents Number of students in a project.
-     * @param numberOfPartners Number of partners in a project.
-     * @param taskArraySize Size of the array.
+     * @param maximumNumberOfFacilitators Max number of facilitators in a project.
+     * @param maximumNumberOfStudents Max number of students in a project.
+     * @param maximumNumberOfPartners Max number of partners in a project.
+     * @param maximumNumberOfTasks Max number of tasks in a project.
      * @param tags Tags associated with the project.
      */
     public ProjectImp(String name, String description, int maximumNumberOfFacilitators, int maximumNumberOfStudents, int maximumNumberOfPartners, int maximumNumberOfTasks, String[] tags) {
@@ -136,6 +137,7 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
+     * 
      */
     @Override
     public int getNumberOfTasks() {
@@ -184,6 +186,8 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
+     * 
+     * This method overrides the superclass method to provide additional functionality.
      */
     @Override
     public Task[] getTasks() {
@@ -199,12 +203,21 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
+     * 
+     * This method overrides the superclass method to provide additional functionality.
      */
     @Override
     public int getNumberOfParticipants() {
         return numberOfParticipants;
     }
 
+    /**
+     * This method checks if a project has a participant.
+     * 
+     * @param p Participant to be searched.
+     * @return true if found.
+     * @return false if not found.
+     */
     private boolean hasParticipant(Participant p) {
         for (Participant participant : participants) {
             if (participant != null && participant.equals(p)) {
@@ -321,8 +334,11 @@ public class ProjectImp implements Project {
         }
         throw new IllegalArgumentException("No Participant found!");
     }
-///////////////////////////////////////////////////
 
+    /**
+     * This method adds space to the tags list.
+     * 
+     */
     private void reallocTags() {
         String[] temp = new String[tags.length * 2];
         int i = 0;
@@ -332,6 +348,12 @@ public class ProjectImp implements Project {
         tags = temp;
     }
 
+    /**
+     * This method adds tags to the tags list.
+     * 
+     * @param t Tag to be added.
+     * @throws AlreadyExistsInArray - If the tag to be added already exists in the list.
+     */
     public void addTags(String t) throws AlreadyExistsInArray {
         if (t == null) {
             throw new IllegalArgumentException("Null argument");
@@ -374,8 +396,14 @@ public class ProjectImp implements Project {
         }
         return false;
     }
-//////////////////////////////////////////
 
+    /**
+     * This method verifies if task exists.
+     * 
+     * @param task Task to be verified.
+     * @return true if exists.
+     * @return false if doesn't exist.
+     */
     private boolean hasTask(Task task) {
         for (Task t : tasks) {
             if (t != null && t.equals(task)) {

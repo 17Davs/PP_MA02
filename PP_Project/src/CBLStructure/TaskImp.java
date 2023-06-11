@@ -15,17 +15,32 @@ import ma02_resources.project.Task;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-/**
- *
- * @author David Santos
- */
 public class TaskImp implements Task {
 
+    /**
+     * 
+     * @param title 
+     * @param description
+     * @param start
+     * @param end
+     * @param duration
+     * @param numberOfSubmissions
+     * @param submissions[] 
+     */
     private String title, description;
     private LocalDate start, end;
     private int duration, numberOfSubmissions;
     private Submission submissions[];
 
+    /**
+     * This is the constructor method for Task.
+     * 
+     * @param title Task title.
+     * @param description Task description.
+     * @param start Task start date.
+     * @param end Task end date.
+     * @param duration Task duration.
+     */
     public TaskImp(String title, String description, LocalDate start, LocalDate end, int duration) {
         this.title = title;
         this.description = description;
@@ -86,6 +101,9 @@ public class TaskImp implements Task {
         return false;
     }
 
+    /**
+     * This method adds more space to Submissions list.
+     */
     private void reallocSubmissions() {
         Submission[] temp = new Submission[submissions.length * 2];
         int i = 0;
