@@ -22,8 +22,18 @@ public class ParticipantImp implements Participant {
      * @param contact Participant's contact.
      * @param instituition Participant's institution.
      */
+    /**
+     * /**
+     * Variables that define name email of Participant.
+     */
     private String name, email;
+    /**
+     * Variable that defines contact of participant.
+     */
     private Contact contact;
+    /**
+     * Variable that defines an Institution.
+     */
     private Instituition instituition;
 
     /**

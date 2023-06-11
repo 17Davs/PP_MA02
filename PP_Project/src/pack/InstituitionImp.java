@@ -17,15 +17,16 @@ import org.json.simple.JSONObject;
 public class InstituitionImp implements Instituition {
 
     /**
-     * @param name Institution's name.
-     * @param email Institution's email.
-     * @param website Institution's website.
-     * @param description Institution's description.
-     * @param contact Institution's contact.
-     * @param type Institution's type.
+     * Variables that define name email website description of Institution.
      */
     private String name, email, website, description;
+    /**
+     * Variable that defines contact of institution.
+     */
     private Contact contact;
+    /**
+     * Variable that defines institution type from UNIVERSITY, COMPANY, NGO, OTHER.
+     */
     private InstituitionType type;
 
     /**

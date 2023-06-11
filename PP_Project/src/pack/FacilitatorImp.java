@@ -17,7 +17,7 @@ import org.json.simple.JSONObject;
 public class FacilitatorImp extends ParticipantImp implements Facilitator {
 
     /**
-     * @param areaOfExpertise Area of expertise of a Facilitator.
+     * Area of expertise of a Facilitator.
      */
     private String areaOfExpertise;
 
