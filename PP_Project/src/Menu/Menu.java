@@ -602,14 +602,18 @@ public class Menu {
             String description = reader.readLine();
 
             Contact contact = assignContact();
-            
+
             Instituition instituition = new InstituitionImp(name, email, website, description, contact, null);
 
             changeType(instituition);
-            
+
+            im.addInstituition(instituition);
+
             System.out.println("Instituition added successfully.\n");
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Error reading imput.\n");
+        } catch (InstituitionAlreadyExistException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -902,7 +906,8 @@ public class Menu {
             System.out.println(" 1. Manage CBL");
             System.out.println(" 2. Manage Users/Participants");
             System.out.println(" 3. Manage Instituitions");
-            System.out.println(" 4. Exit");
+            System.out.println(" 4. Listings/Reports");
+            System.out.println(" 5. Exit");
             System.out.print("Select option: ");
 
             try {
@@ -919,6 +924,9 @@ public class Menu {
                         showInstituitionsMenu();
                         break;
                     case 4:
+                        showListiongsMenu();
+                        break;
+                    case 5:
                         exit = true;
                         break;
                     default:
@@ -1329,20 +1337,20 @@ public class Menu {
             }
             System.out.println(" ----------------------- ");
             System.out.println((i + 1) + ". Remove this project");
-            System.out.println((i + 2) + ". List participants");
-            System.out.println((i + 3) + ". Add participants ("
+            System.out.println((i + 2) + ". Project progress");
+            System.out.println((i + 3) + ". List participants");
+            System.out.println((i + 4) + ". Add participants ("
                     + (currentProject.getNumberOfParticipants() == currentProject.getMaximumNumberOfParticipants() ? "Not Available" : " Available") + ")");
-            // System.out.println(". Remove participants");
-            System.out.println((i + 4) + ". Add Task ("
+            System.out.println((i + 5) + ". Add Task ("
                     + (currentProject.getNumberOfTasks() == currentProject.getMaximumNumberOfTasks() ? "Not Available" : " Available") + ")");
             // System.out.println(". Remove Task");
-            System.out.println("\n" + (i + 5) + ". Back");
+            System.out.println("\n" + (i + 6) + ". Back");
             System.out.print("Select an option: ");
             try {
                 int taskNumber = Integer.parseInt(reader.readLine());
 
                 // Verifique se o número da tarefa é válido
-                if (taskNumber == (i + 5)) {
+                if (taskNumber == (i + 6)) {
                     exit = true;
                 } else if (taskNumber == (i + 1)) {
                     System.out.println("Are you sure you want to remove this project? (yes/no)");
@@ -1358,12 +1366,14 @@ public class Menu {
                         }
                     }
                 } else if (taskNumber == (i + 2)) {
+                    showProjectProgress();
+                } else if (taskNumber == (i + 3)) {
                     if (currentProject.getNumberOfParticipants() > 0) {
                         listParticipantsOfProject();
                     } else {
                         System.out.println("No participants in project. Add participants");
                     }
-                } else if (taskNumber == (i + 3)) {
+                } else if (taskNumber == (i + 4)) {
                     if (currentProject.getMaximumNumberOfParticipants() != currentProject.getNumberOfParticipants()) {
                         try {
                             showAddParticipant();
@@ -1375,7 +1385,7 @@ public class Menu {
                         System.out.println("Maximum ammount of Participants reached!\n");
                     }
 
-                } else if (taskNumber == (i + 4)) {
+                } else if (taskNumber == (i + 5)) {
                     if (currentProject.getNumberOfTasks() == currentProject.getMaximumNumberOfTasks()) {
                         try {
                             showAddTask();
@@ -1398,6 +1408,30 @@ public class Menu {
 
             } catch (IOException e) {
                 System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private void showProjectProgress() {
+        boolean exit = false;
+
+        System.out.println("\n === Project progress ===");
+        System.out.println(currentProject.toString());
+        System.out.println("\n");
+        System.out.println("1. Back");
+        while (!exit) {
+            try {
+                System.out.print("Select option: ");
+                int option = Integer.parseInt(reader.readLine());
+                if (option == 1) {
+                    exit = true;
+                } else {
+                    System.out.println("Invalid Selection");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            } catch (IOException ex) {
+                System.out.println("Error reading imput!");
             }
         }
     }
@@ -1793,6 +1827,120 @@ public class Menu {
         } catch (IOException e) {
             System.out.println("Error reading input.");
             return false;
+        }
+    }
+
+//lists/reports
+    
+    private void showListiongsMenu(){
+         boolean exit = false;
+        while (!exit) {
+            System.out.println(" ==== Listings/Reports ==== ");
+            System.out.println(" 1. Top Participants by number of participation in projects");
+            System.out.println(" 2. ");
+            System.out.println(" 3. ");
+            System.out.println(" 4. Exit");
+            System.out.print("Select option: ");
+
+            try {
+                int option = Integer.parseInt(reader.readLine());
+
+                switch (option) {
+                    case 1:
+                        showTopParticipants();
+                        break;
+                    case 2:
+                        /////////////////////
+                        break;
+                    case 3:
+                        /////////////////////
+                        break;
+                    case 43
+                            :
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Invalid selection. Try again!\n");
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+    
+    
+    
+   
+    
+    /**
+     * This method retrieves an array of the top participants based on their
+     * participation in projects. Participants are sorted in descending order
+     * based on the number of projects they participated in. Returns a maximum
+     * of 5 participants, or fewer if there are fewer than 5 participants.
+     *
+     * @return An array of the top participants based on participation in
+     * projects.
+     */
+    private Participant[] getTopParticipantsByParticipation() {
+        // sort participants by the number of projects they participated in, in descending order
+        Participant[] participants = pm.getParticipants();
+
+        // order the participants 
+        for (int i = 0; i < participants.length - 1; i++) {
+            for (int j = 0; j < participants.length - i - 1; j++) {
+                if (cbl.getProjectsOf(participants[j]).length < cbl.getProjectsOf(participants[j + 1]).length) {
+                    // Swap participants at positions 
+                    Participant temp = participants[j];
+                    participants[j] = participants[j + 1];
+                    participants[j + 1] = temp;
+                }
+            }
+        }
+
+        // set the top 5 participants
+        int count = Math.min(5, participants.length);
+        Participant[] topParticipants = new Participant[count];
+        for (int i = 0; i < count; i++) {
+            topParticipants[i] = participants[i];
+        }
+
+        return topParticipants;
+    }
+
+    private void showTopParticipants() {
+        boolean exit = false;
+        while (!exit) {
+
+            System.out.println(" === List of Top Participants by number of Projects === ");
+            Participant[] topParticipants = getTopParticipantsByParticipation();
+            if (topParticipants != null) {
+                try {
+                    int i = 0;
+                    for (Participant participant : topParticipants) {
+                        System.out.println(++i + ". " + participant.getName() + "(" + participant.getEmail() + ")");
+                    }
+                    System.out.println(" ---------------------------------------------\n");
+                    System.out.println((i + 1) + ". Back");
+                    System.out.println("Select the Back number: ");
+                    int option = Integer.parseInt(reader.readLine());
+                    if (option == i + 1) {
+                        exit = true;
+                    } else {
+                        System.out.println("Invalid Selection.");
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error reading input.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number.\n\n");
+                }
+            } else {
+                System.out.println("No participants found!\n");
+                exit = true;
+            }
         }
     }
 

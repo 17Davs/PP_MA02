@@ -41,7 +41,7 @@ public class EditionImp implements Edition {
      * @param defaultProjectTemplate Default structure of project when one isn't chosen.
      * @param projects[] List of Editions
      */
-    //private static final int initialSize = 5;
+    
     private String name;
     private LocalDate start, end;
     private Status status;
@@ -485,10 +485,34 @@ public class EditionImp implements Edition {
         projects[numberOfProjects++] = p;
     }
 
-
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
-        return "EditionImp{" + "name=" + name + ", start=" + start + ", end=" + end + status.toString() + ", numberOfProjects=" + numberOfProjects + ", projects=" + Arrays.toString(projects) + '}';
+        // Count the total number of projects
+        int completedProjects = 0;
+        int totalCompletedTasks = 0;
+
+        //count completed projects and tasks
+        for (int i =0;i<numberOfProjects;i++) {
+            if (projects[i].isCompleted()) {
+                completedProjects++;
+                totalCompletedTasks += projects[i].getNumberOfTasks();
+            }
+        }
+
+        // Calculate the progress percentage
+        int progressPercentage = (int) ((double) completedProjects / numberOfProjects * 100);
+
+        // the textual representation of the progress
+        String progressText = "Edition Progress: " + progressPercentage + "%\n\n";
+        progressText += "Completed Projects: " + completedProjects + "/" + numberOfProjects + "\n";
+        progressText += "Completed Tasks: " + totalCompletedTasks + "\n";
+        progressText += " *** A task is considered completed if it has at least 1 submission *** \n";
+
+        return progressText;
     }
 
 }

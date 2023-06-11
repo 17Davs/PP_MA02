@@ -16,6 +16,7 @@ import ma02_resources.participants.Participant;
 import ma02_resources.participants.Partner;
 import ma02_resources.participants.Student;
 import ma02_resources.project.Project;
+import ma02_resources.project.Submission;
 import ma02_resources.project.Task;
 import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
 import ma02_resources.project.exceptions.IllegalNumberOfTasks;
@@ -623,21 +624,49 @@ public class ProjectImp implements Project {
         return project;
     }
 
-    //to do
+    
+    /**
+     * This method returns the textual representation of the project's progress,
+     * considering the submissions made so far.
+     *
+     * @return The textual representation of the project's progress.
+     */
     @Override
     public String toString() {
-        return "ProjectImp{" + "name=" + name + ", description=" + description
-                + ", numberOfFacilitators=" + numberOfFacilitators
-                + ", numberOfStudents=" + numberOfStudents + ", numberOfPartners="
-                + numberOfPartners + ", numberOfParticipants=" + numberOfParticipants
-                + ", numberOfTasks=" + numberOfTasks + ", maximumNumberOfTasks="
-                + maximumNumberOfTasks + ", maximumNumberOfStudents="
-                + maximumNumberOfStudents + ", maximumNumberOfPartners="
-                + maximumNumberOfPartners + ", maximumNumberOfFacilitators="
-                + maximumNumberOfFacilitators + ", numberOfTags=" + numberOfTags
-                + ", maximumNumberOfParticipants=" + maximumNumberOfParticipants
-                + ", tasks=" + Arrays.toString(tasks) + ", participants=" + Arrays.toString(participants) + ", tags="
-                + Arrays.toString(tags) + '}';
+        
+        int completedTasks = 0;
+        for (int i=0; i< numberOfTasks;i++) {
+            if (tasks[i].getNumberOfSubmissions() > 0) {
+                completedTasks++;
+            }
+        }
+        
+        int progressPercentage = (int) ((double) completedTasks / maximumNumberOfTasks * 100);
+        String progressText = "Project progress: " + progressPercentage + "%\n\n";
+        
+        
+        
+        
+        progressText += "Tasks considered Completed: " + completedTasks + "/" + maximumNumberOfTasks + "\n\n";
+        progressText += "Submissions Detail:\n";
+
+        for (int i=0; i< numberOfTasks;i++) {
+            progressText += "Task: " + tasks[i].getTitle() + "\n";
+            progressText += "Number of Submissions: " + tasks[i].getNumberOfSubmissions() + "\n";
+
+            if (tasks[i].getNumberOfSubmissions() > 0) {
+                progressText += "Last Submission:\n";
+                Submission lastSubmission = tasks[i].getSubmissions()[tasks[i].getNumberOfSubmissions() - 1];
+                progressText += "Date: " + lastSubmission.getDate() + "\n";
+                progressText += "Student: " + lastSubmission.getStudent().getEmail() + "\n";
+                progressText += "Text: " + lastSubmission.getText() + "\n";
+            }
+
+            progressText += "\n";
+        }
+
+        return progressText;
     }
+    
 
 }
