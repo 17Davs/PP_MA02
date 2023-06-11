@@ -58,7 +58,7 @@ public class ProjectImp implements Project {
     /**
      * This is the constructor method of Project. It is used to create a project
      * object based on the Project Template. All the information not found in
-     * the project template is retrived from the parameters of this method.
+     * the project template is retrieved from the parameters of this method.
      *
      * @param name Name of the project.
      * @param description Description of the project.
@@ -236,8 +236,11 @@ public class ProjectImp implements Project {
     /**
      * {@inheritDoc}
      * 
-     * This method adds a particiopant to the participants array. Firstly, it verifies
-     * the participant's type and checks if the maximum ammount of that type of
+     * This method adds a participant to the project. It checks if the participant to be added already exists and if the list is full. 
+     * 
+     * @throws IllegalNumberOfParticipantType - If list is full.
+     * This method adds a participant to the participants array. Firstly, it verifies
+     * the participant's type and checks if the maximum amount of that type of
      * participant is reached. Then, it verifies if the participant given is not already
      * in the participants array. If it isn't, the given participant is added and the counters
      * are updated.
@@ -576,10 +579,11 @@ public class ProjectImp implements Project {
     }
 
     /**
-     * This method is used to retrive information from a JSON file to create a 
-     * project object. All the data is retrived and organized to create a project
+     * This method is used to retrieve information from a JSON file to create a 
+     * project object. All the data is retrieved and organized to create a project
      * and add its tasks, participants and tags. 
-     * @param jsonObject JSON object containig the data to be retrived.
+     * 
+     * @param jsonObject JSON object containing the data to be retrieved.
      * @return The project created from the JSON Object.
      */
     public static Project fromJsonObj(JSONObject jsonObject) {

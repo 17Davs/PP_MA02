@@ -50,31 +50,49 @@ public class TaskImp implements Task {
         this.submissions = new Submission[2];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getTitle() {
         return title;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDescription() {
         return description;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LocalDate getStart() {
         return start;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getDuration() {
         return duration;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LocalDate getEnd() {
         return end;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Submission[] getSubmissions() {
         Submission temp[] = new Submission[numberOfSubmissions];
@@ -84,11 +102,21 @@ public class TaskImp implements Task {
         return temp;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfSubmissions() {
         return numberOfSubmissions;
     }
 
+    /**
+     * This method checks if a submission exists in the list.
+     * 
+     * @param sbmsn Submission to be checked.
+     * @return true if submission exists.
+     * @return false if submission doesn't exist.
+     */
     private boolean hasSubmission(Submission sbmsn) {
         for (Submission s : submissions) {
             if (s != null && s.compareTo(sbmsn) == 0) {
@@ -110,6 +138,9 @@ public class TaskImp implements Task {
         submissions = temp;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addSubmission(Submission sbmsn) {
         if (sbmsn == null) {
@@ -125,6 +156,9 @@ public class TaskImp implements Task {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void extendDeadline(int days) {
         if (days < 0) {
@@ -134,6 +168,9 @@ public class TaskImp implements Task {
         this.end = temp;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int compareTo(Task task) {
         if (this == task) {

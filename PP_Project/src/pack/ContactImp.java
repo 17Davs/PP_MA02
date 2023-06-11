@@ -12,14 +12,29 @@ package pack;
 import ma02_resources.participants.Contact;
 import org.json.simple.JSONObject;
 
-/**
- *
- * @author David Santos
- */
 public class ContactImp implements Contact {
 
+    /**
+     * 
+     * @param street Street address.
+     * @param city City.
+     * @param state State.
+     * @param zipCode Zip Code.
+     * @param country Country.
+     * @param phone Phone.
+     */
     private String street, city, state, zipCode, country, phone;
 
+    /**
+     * This is the constructor for Contact.
+     * 
+     * @param street Street address.
+     * @param city City.
+     * @param state State.
+     * @param zipCode Zip Code.
+     * @param country Country.
+     * @param phone Phone.
+     */
     public ContactImp(String street, String city, String state, String zipCode, String country, String phone) {
         this.street = street;
         this.city = city;
@@ -29,36 +44,57 @@ public class ContactImp implements Contact {
         this.phone = phone;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getStreet() {
         return street;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getCity() {
         return city;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getState() {
         return state;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getZipCode() {
         return zipCode;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getCountry() {
         return country;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getPhone() {
         return phone;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

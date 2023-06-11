@@ -14,26 +14,38 @@ import ma02_resources.participants.Facilitator;
 import ma02_resources.participants.Instituition;
 import org.json.simple.JSONObject;
 
-
-
-/**
- *
- * @author David Santos
- */
 public class FacilitatorImp extends ParticipantImp implements Facilitator {
 
+    /**
+     * @param areaOfExpertise Area of expertise of a Facilitator.
+     */
     private String areaOfExpertise;
 
+    /**
+     * This is the constructor method of Facilitator.
+     *  
+     * @param areaOfExpertise Area of expertise of a Facilitator.
+     * @param name Facilitator's name.
+     * @param email Facilitator's email.
+     * @param contact Facilitator's contact.
+     * @param instituition Facilitator's institution.
+     */
     public FacilitatorImp(String areaOfExpertise, String name, String email, Contact contact, Instituition instituition) {
         super(name, email, contact, instituition);
         this.areaOfExpertise = areaOfExpertise;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getAreaOfExpertise() {
         return this.areaOfExpertise;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAreaOfExpertise(String string) {
         this.areaOfExpertise = string;

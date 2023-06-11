@@ -14,13 +14,26 @@ import ma02_resources.participants.Instituition;
 import ma02_resources.participants.Participant;
 import org.json.simple.JSONObject;
 
-
 public class ParticipantImp implements Participant {
 
+    /**
+     * @param name Participant's name.
+     * @param email Participant's email.
+     * @param contact Participant's contact.
+     * @param instituition Participant's institution.
+     */
     private String name, email;
     private Contact contact;
     private Instituition instituition;
 
+    /**
+     * This is the constructor method for Participant. 
+     * 
+     * @param name Participant's name.
+     * @param email Participant's email.
+     * @param contact Participant's contact.
+     * @param instituition Participant's institution.
+     */
     public ParticipantImp(String name, String email, Contact contact, Instituition instituition) {
         this.name = name;
         this.email = email;
@@ -28,31 +41,49 @@ public class ParticipantImp implements Participant {
         this.instituition = instituition;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setContact(Contact contact) {
         this.contact = contact;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setInstituition(Instituition instituition) {
         this.instituition = instituition;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getEmail() {
         return this.email;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Contact getContact() {
         return this.contact;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Instituition getInstituition() {
         return this.instituition;

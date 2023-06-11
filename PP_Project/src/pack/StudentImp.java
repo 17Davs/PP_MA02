@@ -14,15 +14,23 @@ import ma02_resources.participants.Instituition;
 import ma02_resources.participants.Student;
 import org.json.simple.JSONObject;
 
-/**
- *
- * @author David Santos
- */
 public class StudentImp extends ParticipantImp implements Student {
 
+    /**
+     * @param counter This counter increases Student's number.
+     * @param number Student's number.
+     */
     private static int counter = 0;
     private int number;
 
+    /**
+     * This is the constructor method for Student.
+     * 
+     * @param name Student name.
+     * @param email Student email.
+     * @param contact Student contact.
+     * @param instituition Student institution.
+     */
     public StudentImp(String name, String email, Contact contact, Instituition instituition) {
         super(name, email, contact, instituition);
         this.number = ++counter;
