@@ -12,7 +12,6 @@ package CBLStructure;
 import java.time.LocalDateTime;
 import ma02_resources.participants.Student;
 import ma02_resources.project.Submission;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import pack.ParticipantImp;
 import pack.StudentImp;
@@ -22,8 +21,8 @@ public class SubmissionImp implements Submission {
     /**
      * 
      * @param date Date of submission.
-     * @param student A student that participates in the challenge.
-     * @param text 
+     * @param student The student that submitted the work.
+     * @param text The description of the submission/work
      */
     private LocalDateTime date;
     private Student student;
@@ -32,8 +31,8 @@ public class SubmissionImp implements Submission {
     /**
      * This is the constructor method for Submission.
      * 
-     * @param student A student that participates in the challenge.
-     * @param text 
+     * @param student The student that submitted the work.
+     * @param text The description of the submission/work
      */
     public SubmissionImp(Student student, String text) {
         this.date = LocalDateTime.now();
@@ -42,7 +41,12 @@ public class SubmissionImp implements Submission {
     }
 
     /**
-     * {@inheritDoc}
+     * This is one of the constructor methods for Submission. This one is used
+     * when we want to import form the json file a submission that was created 
+     * previously.
+     * @param student The student that submitted the work.
+     * @param text The description of the submission/work
+     * @param date The submissions date
      */
     public SubmissionImp(Student student, String text, LocalDateTime date) {
         this.date = date;
@@ -74,11 +78,8 @@ public class SubmissionImp implements Submission {
         return date;
     }
 
-    /**
-     * This method compares a 
-     * 
-     * @param sbmsn
-     * @return 
+   /**
+     * {@inheritDoc}
      */
     @Override
     public int compareTo(Submission sbmsn) {
@@ -88,6 +89,10 @@ public class SubmissionImp implements Submission {
         return date.compareTo(sbmsn.getDate());
     }
 
+    /**
+     * This method is used to export to a JSON file, information of a submission.
+     * @return A Json Object with the submission's information
+     */
     public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("text", text);
@@ -97,6 +102,12 @@ public class SubmissionImp implements Submission {
         return jsonObject;
     }
 
+    /**
+     * This method is used to import information about a submission from a JSON
+     * file.
+     * @param jsonObject The JSON Object containing the information to be retrived
+     * @return A submission creted based on the information retrived
+     */
     public static SubmissionImp fromJsonObj(JSONObject jsonObject) {
         String text = (String) jsonObject.get("text");
         LocalDateTime date = LocalDateTime.parse((String) jsonObject.get("date"));

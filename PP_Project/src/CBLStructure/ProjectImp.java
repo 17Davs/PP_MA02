@@ -88,7 +88,7 @@ public class ProjectImp implements Project {
         for (String tag : tags) {
             try {
                 this.addTags(tag);
-            } catch (AlreadyExistsInArray e) {
+            } catch (AlreadyExistsInArray | NullPointerException e) {
             }
         }
 

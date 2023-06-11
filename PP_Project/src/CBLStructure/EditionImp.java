@@ -218,7 +218,8 @@ public class EditionImp implements Edition {
         if (string == null) {
             throw new IllegalArgumentException("Null argument!");
         }
-        Project project = new ProjectImp(string, null, 0, 0, 0, 0, null);
+        String[] tags = {"null"};
+        Project project = new ProjectImp(string, null, 0, 0, 0, 0, tags);
 
         int pos = -1, i = 0;
 
