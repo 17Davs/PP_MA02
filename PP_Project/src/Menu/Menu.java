@@ -37,14 +37,11 @@ import java.io.FileWriter;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import ma02_resources.participants.InstituitionType;
 import pack.StudentImp;
 import pack.FacilitatorImp;
 import pack.PartnerImp;
 import ma02_resources.participants.Partner;
-import ma02_resources.project.Status;
 import ma02_resources.project.Submission;
 import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
 import ma02_resources.project.exceptions.IllegalNumberOfTasks;
@@ -55,16 +52,54 @@ import org.json.simple.JSONObject;
 
 public class Menu {
 
+    /**
+     * The default admin username for authentication.
+     */
     private static final String USERNAME = "admin";
+
+    /**
+     * The default admin password for authentication.
+     */
     private static final String PASSWORD = "admin";
+
+    /*
+     The CBL 
+     */
     private CBL cbl;
+
+    /**
+     * The participant manager containis all registered participants
+     */
     private ParticipantsManager pm;
+
+    /**
+     * The instituitions manager containis all registered instituitions
+     */
     private InstituitionsManager im;
+    /**
+     * the loggedIn participant
+     */
     private Participant loggedInParticipant;
+    /**
+     * The selected edition
+     */
     private Edition currentEdition;
+    /**
+     * The selected project
+     */
     private Project currentProject;
+    /**
+     * the BufferedReader
+     */
     private BufferedReader reader;
 
+    /**
+     * Constructor method
+     *
+     * @param cbl
+     * @param pm
+     * @param im
+     */
     public Menu(CBL cbl, ParticipantsManager pm, InstituitionsManager im) {
         this.cbl = cbl;
         this.im = im;
@@ -72,6 +107,9 @@ public class Menu {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
+    /**
+     * Starts the application and presents the main menu.
+     */
     public void start() {
         int option = 0;
         do {
@@ -117,6 +155,21 @@ public class Menu {
         } while (option != 4);
     }
 
+    /**
+     * Logs in a participant by requesting their email.
+     *
+     * The method prompts the user to enter their email to log in as a
+     * participant. It retrieves the participant with the entered email from the
+     * participant manager. If a participant with the specified email is found,
+     * the participant is considered logged in, and the method sets the
+     * `loggedInParticipant` variable to the retrieved participant and returns
+     * true. If the participant is not found, an error message is displayed, and
+     * the user can try again. The method allows three login attempts. If the
+     * login fails after three attempts, it returns false.
+     *
+     * @return True if the participant is successfully logged in, false
+     * otherwise.
+     */
     private boolean login() {
         int counter = 0;
         System.out.println("===== Login =====");
@@ -137,6 +190,16 @@ public class Menu {
         return false;
     }
 
+    /**
+     * Logs in the admin by requesting the email and password. The method
+     * prompts the user to enter their email and password to log in as an admin.
+     * If the entered email matches the predefined admin username and the
+     * password matches the predefined admin password, the admin is considered
+     * logged in and the method returns true. The method allows three login
+     * attempts. If the login fails after three attempts, it returns false.
+     *
+     * @return True if the admin is successfully logged in, false otherwise.
+     */
     private boolean loginAdmin() {
         int counter = 0;
 
@@ -166,6 +229,23 @@ public class Menu {
         return false;
     }
 
+    /**
+     * Initiates the registration process for a participant. This method prompts
+     * the user to select the type of participant they want to register as
+     * Student, Facilitator or Partner. * Based on the user's selection, the
+     * method collects the participant's name, email, and contact information.
+     * It then creates a new Participant object with the provided details and
+     * assigns an institution to it. The participant is then registered as the
+     * selected type (student, facilitator, or partner) by calling the
+     * respective registration method.
+     *
+     * If the user chooses to go back, the method returns false indicating that
+     * the registration process was canceled. If any errors occur during the
+     * registration process, false is also returned.
+     *
+     * @return True if the participant is registered successfully, false
+     * otherwise.
+     */
     private boolean register() {
 
         int option = 0;
@@ -218,6 +298,19 @@ public class Menu {
         return false;
     }
 
+    /**
+     * Registers a student based on the provided participant information.
+     *
+     * This method creates a new Student object using the participant's existing
+     * details. The new student is then added to the participant manager.
+     *
+     * If the student already exists in the participant manager, an error
+     * message is displayed and false is returned.
+     *
+     * @param participant The participant for whom the student is being
+     * registered.
+     * @return True if the student is registered successfully, false otherwise.
+     */
     private boolean registerStudent(Participant participant) {
         try {
 
@@ -236,6 +329,23 @@ public class Menu {
         }
     }
 
+    /**
+     * Registers a facilitator based on the provided participant information.
+     *
+     * This method prompts the user to enter additional information required for
+     * registering a facilitator, such as area of expertise. It creates a new
+     * Facilitator object using the provided information and the participant's
+     * existing details. The new facilitator is then added to the participant
+     * manager.
+     *
+     * If an IOException occurs or the facilitator already exists in the
+     * participant manager, an error message is displayed and false is returned.
+     *
+     * @param participant The participant for whom the facilitator is being
+     * registered.
+     * @return True if the facilitator is registered successfully, false
+     * otherwise.
+     */
     private boolean registerFacilitator(Participant participant) {
         try {
 
@@ -261,6 +371,21 @@ public class Menu {
         }
     }
 
+    /**
+     * Registers a partner based on the provided participant information.
+     *
+     * This method prompts the user to enter additional information required for
+     * registering a partner, such as VAT and website. It creates a new Partner
+     * object using the provided information and the participant's existing
+     * details. The new partner is then added to the participant manager.
+     *
+     * If an IOException occurs or the partner already exists in the participant
+     * manager, an error message is displayed and false is returned.
+     *
+     * @param participant The participant for whom the partner is being
+     * registered.
+     * @return True if the partner is registered successfully, false otherwise.
+     */
     private boolean registerPartner(Participant participant) {
         try {
 
@@ -289,6 +414,20 @@ public class Menu {
         }
     }
 
+    /**
+     * Prompts the user to enter contact information and creates a Contact
+     * object based on the input.
+     *
+     * This method prompts the user to enter the contact details such as street,
+     * city, state, zip code, country, and phone. It reads the user's input and
+     * creates a Contact object using the provided information. The created
+     * Contact object is then returned.
+     *
+     * If an IOException occurs while reading user input, the method recursively
+     * calls itself to retry reading the input.
+     *
+     * @return The Contact object created based on the user's input.
+     */
     private Contact assignContact() {
         try {
             System.out.print("\nStreet: ");
@@ -314,6 +453,19 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays a list of institutions to the user and allows them to select an
+     * institution to view its details.
+     *
+     * This method displays a list of institutions retrieved from the
+     * InstituitionManager to the user. The user can then select an institution
+     * to view its details by entering the corresponding number. The details of
+     * the selected institution are shown using the showInstituitionDetails
+     * method. The user can go back by selecting the option "Back".
+     *
+     * @throws NullPointerException If the array of institutions is null.
+     * @throws IOException If an error occurs while reading user input.
+     */
     private void listInstituitions() {
         boolean exit = false;
         while (!exit) {
@@ -348,6 +500,16 @@ public class Menu {
         }
     }
 
+    /**
+     * Retrieves the list of institutions and displays their names to the user.
+     *
+     * This method retrieves the list of institutions from the
+     * InstituitionManager and displays their names to the user. It then returns
+     * the array of institutions for further processing.
+     *
+     * @return The array of institutions retrieved from the InstituitionManager.
+     * @throws NullPointerException If the array of institutions is null.
+     */
     private Instituition[] getInstituitionsOutput() throws NullPointerException {
         System.out.println("=== Institutions ===");
         Instituition[] instituitions = this.im.getInstituitions();
@@ -359,6 +521,20 @@ public class Menu {
         return instituitions;
     }
 
+    /**
+     * Displays the details of an institution and provides options to modify its
+     * information.
+     *
+     * This method displays the details of the given institution, including its
+     * name, email, website, description, institution type, and contact
+     * information. It then presents a menu with various options to modify the
+     * institution's details, such as changing the contact information, type,
+     * website, or description, and also provides an option to remove the
+     * institution.
+     *
+     * @param instituition The institution for which the details need to be
+     * displayed and modified.
+     */
     private void showInstituitionDetails(Instituition instituition) {
         boolean exit = false;
         while (!exit) {
@@ -436,6 +612,15 @@ public class Menu {
         }
     }
 
+    /**
+     * Changes the type of an institution.
+     *
+     * This method prompts the user to select a new type for the given
+     * institution and updates the type accordingly.
+     *
+     * @param instituition The institution for which the type needs to be
+     * changed.
+     */
     private void changeType(Instituition instituition) {
         boolean complete = false;
         while (!complete) {
@@ -475,6 +660,15 @@ public class Menu {
         }
     }
 
+    /**
+     * Changes the website of an institution.
+     *
+     * This method prompts the user to enter a new website for the given
+     * institution and updates the website accordingly.
+     *
+     * @param instituition The institution for which the website needs to be
+     * changed.
+     */
     private void changeWebsite(Instituition instituition) {
 
         System.out.println(" == Change website information == ");
@@ -490,6 +684,15 @@ public class Menu {
         }
     }
 
+    /**
+     * Changes the description of an institution.
+     *
+     * This method prompts the user to enter a new description for the given
+     * institution and updates the description accordingly.
+     *
+     * @param instituition The institution for which the description needs to be
+     * changed.
+     */
     private void changeDescription(Instituition instituition) {
 
         System.out.println(" == Change description of Instituition == ");
@@ -505,6 +708,21 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the confirmation prompt to remove an institution and handles the
+     * removal process.
+     *
+     * This method confirms the removal of the given institution and proceeds
+     * with the removal if confirmed. After the removal, the user is prompted to
+     * save the removed institution to a JSON file if desired. The method
+     * handles the input and saves the institution as a JSON object with the
+     * specified file name in the "src/Files" directory.
+     *
+     * @param instituition The institution to be removed.
+     *
+     * @throws IllegalArgumentException If an error occurs during the removal
+     * process or the institution does not exist.
+     */
     private void showRemoveInstituition(Instituition instituition) {
         boolean complete = false;
         try {
@@ -553,6 +771,20 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the menu for selecting an institution and assigns the selected
+     * institution to the given participant.
+     *
+     * This method presents the user with a list of institutions and prompts
+     * them to select one. The participant's institution is then set
+     * accordingly. If the user selects "No institution," the participant's
+     * institution is set to null, indicating that they are not associated with
+     * any institution.
+     *
+     * @param p The participant to assign the institution to.
+     *
+     * @throws IOException If an error occurs while reading the user's input.
+     */
     private void assignInstituition(Participant p) {
 
         System.out.println("=== Institutions Selection ===");
@@ -589,6 +821,19 @@ public class Menu {
 
     }
 
+    /**
+     * Displays the menu for adding a new institution and handles the input to
+     * create and add the institution to the system.
+     *
+     * This method prompts the user to enter information about the institution,
+     * such as name, email, website, and description. It then creates a new
+     * Institution object with the provided information and adds it to the
+     * system using the InstituitionManager.
+     *
+     * @throws IOException If an error occurs while reading the user's input.
+     * @throws InstituitionAlreadyExistException If the institution being added
+     * already exists in the system.
+     */
     private void showAddInstituition() {
         System.out.println(" == Add Instituition == ");
         try {
@@ -617,6 +862,12 @@ public class Menu {
         }
     }
 
+    /**
+     * Retrieves and lists all participants registered in the system.
+     *
+     * @return An array of Participant objects representing all registered
+     * participants.
+     */
     private Participant[] listParticipants() {
 
         System.out.println(" ===== All Participants registered ======= ");
@@ -654,6 +905,15 @@ public class Menu {
         return participants;
     }
 
+    /**
+     * Displays the admin participants menu. Lists the participants, provides
+     * options to create a participant, delete a participant, or go back.
+     * Performs the corresponding action based on the selected option.
+     *
+     * @throws NumberFormatException if the input provided for the participant
+     * number is not a valid number.
+     * @throws IOException if there is an error reading input.
+     */
     private void showAdminParticipantsMenu() {
         boolean exit = false;
         while (!exit) {
@@ -715,6 +975,20 @@ public class Menu {
 
     }
 
+    /**
+     * Displays the details of a participant. Shows the participant's name,
+     * email, area of expertise (for facilitators), student number (for
+     * students), VAT and website (for partners), contact details, and
+     * institution details (if assigned). Prompts the user to select an option
+     * to change the contact information, assign to another institution, or go
+     * back. Performs the corresponding action based on the selected option.
+     *
+     * @param participant the participant whose details are to be displayed.
+     * @throws NumberFormatException if the input provided for the option is not
+     * a valid number.
+     * @throws NullPointerException if there is a null reference encountered.
+     * @throws IOException if there is an error reading input.
+     */
     private void showParticipantDetails(Participant participant) {
         boolean exit = false;
         while (!exit) {
@@ -787,6 +1061,18 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the menu for participants. Prompts the user to select an option
+     * and performs the corresponding action. If the option is to show editions
+     * and projects, it calls the method to show the editions menu. If the
+     * option is to show participant details, it calls the method to show
+     * participant details. If the option is to exit, it sets the 'exit' flag to
+     * true and exits the loop.
+     *
+     * @throws NumberFormatException if the input provided for the option is not
+     * a valid number.
+     * @throws IOException if there is an error reading input.
+     */
     private void showParticipantsMenu() {
         boolean exit = false;
         while (!exit) {
@@ -822,6 +1108,18 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the menu for managing institutions. Prompts the user to select
+     * an option and performs the corresponding action. If the option is to list
+     * institutions, it calls the method to list institutions. If the option is
+     * to add an institution, it calls the method to show the add institution
+     * menu. If the option is to exit, it sets the 'exit' flag to true and exits
+     * the loop.
+     *
+     * @throws NumberFormatException if the input provided for the option is not
+     * a valid number.
+     * @throws IOException if there is an error reading input.
+     */
     private void showInstituitionsMenu() {
         boolean exit = false;
         while (!exit) {
@@ -857,6 +1155,17 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the menu for selecting editions in the participant view.
+     * Retrieves the editions associated with the logged-in participant and
+     * lists them. Prompts the user to select an edition and performs the
+     * corresponding action. If a valid edition is selected, it sets the current
+     * edition and calls the method to show the projects menu.
+     *
+     * @throws NumberFormatException if the input provided for the edition
+     * number is not a valid number.
+     * @throws IOException if there is an error reading input.
+     */
     private void showEditionsMenu() {
         boolean exit = false;
         while (!exit) {
@@ -899,6 +1208,17 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the menu for managing the CBL . Provides options to manage CBL,
+     * users/participants, institutions, listings/reports, or exit the program.
+     * Prompts the user to select an option and performs the corresponding
+     * action. If a valid option is selected, it calls the corresponding method
+     * to show the respective menu.
+     *
+     * @throws NumberFormatException if the input provided for the menu option
+     * is not a valid number.
+     * @throws IOException if there is an error reading input.
+     */
     private void showAdminMenu() {
         boolean exit = false;
         while (!exit) {
@@ -942,6 +1262,20 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the menu for managing editions in the administrator view. Lists
+     * all the editions in the CBL and provides options to add/create an
+     * edition, list uncompleted editions, or go back to the previous menu.
+     * Prompts the user to select an option and performs the corresponding
+     * action. If a valid edition number is selected, sets the currentEdition to
+     * the selected edition and displays the projects menu.
+     *
+     * @throws EditionAlreadyInCBL if an edition with the same name already
+     * exists in the CBL system while adding a new edition.
+     * @throws NumberFormatException if the input provided for edition selection
+     * is not a valid number.
+     * @throws IOException if there is an error reading input.
+     */
     private void showAdminEditionsMenu() {
         boolean exit = false;
         while (!exit) {
@@ -997,6 +1331,14 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the menu for adding/creating a new edition. Prompts the user to
+     * enter the name, start date, and end date of the edition. Creates a new
+     * Edition object with the provided information and adds it to the CBL.
+     *
+     * @throws EditionAlreadyInCBL if an edition with the same name already
+     * exists in the CBL system.
+     */
     private void showAddEditions() throws EditionAlreadyInCBL {
         System.out.println("===== Add/Create Edition =====");
         try {
@@ -1037,6 +1379,12 @@ public class Menu {
 
     }
 
+    /**
+     * Displays the uncompleted editions menu for the admin. The menu lists the
+     * uncompleted editions and allows the administrator to select an edition to
+     * manage its projects. The administrator can select an edition, view its
+     * projects, or choose to go back.
+     */
     private void showUncompletedEditions() {
         System.out.println("===== Uncompleted Editions =====");
         boolean exit = false;
@@ -1078,6 +1426,12 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the projects menu for the logged-in participant. The menu lists
+     * the projects associated with the participant and allows them to view
+     * project details. The participant can select a project or choose to go
+     * back.
+     */
     private void showProjectsMenu() {
         boolean exit = false;
         while (!exit) {
@@ -1115,6 +1469,12 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the admin projects menu, allowing the admin to interact with
+     * projects in the current edition. The menu provides options to view
+     * project details, activate the edition, remove the edition, add a new
+     * project, and get projects by tag.
+     */
     private void showAdminProjectsMenu() {
         boolean exit = false;
         while (!exit) {
@@ -1192,6 +1552,12 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the prompt for removing the selected edition. Removes the
+     * current(selected) edition from the CBL, prompts the user for further
+     * actions (save edition in JSON file), and handles exceptions related to
+     * input/output and illegal arguments.
+     */
     private void showRemoveEditionMenu() {
         boolean complete = false;
 
@@ -1243,6 +1609,12 @@ public class Menu {
 
     }
 
+    /**
+     * Displays the prompt for adding a new project. Prompts the user to enter
+     * the project name, description, and tags. Adds the new project to the
+     * current edition with the entered details. Handles exceptions related to
+     * input/output, parsing, and illegal arguments.
+     */
     private void showAddProject() {
         System.out.println("===== Add New Project =====");
         try {
@@ -1267,6 +1639,15 @@ public class Menu {
         }
     }
 
+    /**
+     * Lists the projects in the current edition that have the specified tag.
+     * Displays the project names with the specified tag and provides options to
+     * view project details or go back. Handles user input and performs
+     * corresponding actions based on the selected option. Handles exceptions
+     * related to errors in reading input.
+     *
+     * @param tag The tag to filter the projects by.
+     */
     private void listProjectsByTag(String tag) {
         boolean exit = false;
         while (!exit) {
@@ -1304,11 +1685,22 @@ public class Menu {
 
                 } catch (IOException e) {
                     System.out.println("Error reading input.");
+                } catch (NullPointerException e) {
+                    System.out.println(e.getMessage());
                 }
             }
         }
     }
 
+    /**
+     * Displays the details of the current project for the admin. Prints the
+     * project name, description, tags, status, and participant information.
+     * Provides options to remove the project, view project progress, list
+     * participants, add participants, add tasks, and go back to the previous
+     * menu. Handles user input and performs corresponding actions based on the
+     * selected option. Handles exceptions related to errors in reading input
+     * and illegal operations.
+     */
     private void showAdminProjectDetails() {
         boolean exit = false;
         while (!exit) {
@@ -1412,6 +1804,12 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the progress of the current project. Prints the details of the
+     * current project using its toString() method. Provides an option to go
+     * back to the previous menu. Handles user input and handles invalid
+     * selections. Handles exceptions related to errors in reading input.
+     */
     private void showProjectProgress() {
         boolean exit = false;
 
@@ -1436,6 +1834,18 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays a prompt to add a new task to the current project. Reads input
+     * for the task title, description, start date, and end date. Validates the
+     * date format and handles invalid inputs. Creates a new task with the
+     * provided details and adds it to the current project. Handles exceptions
+     * related to errors in reading input.
+     *
+     * @throws IllegalNumberOfTasks If the maximum number of tasks is reached in
+     * the project.
+     * @throws TaskAlreadyInProject If the task being added is already present
+     * in the project.
+     */
     private void showAddTask() throws IllegalNumberOfTasks, TaskAlreadyInProject {
         System.out.println(" === Add Task ===");
         try {
@@ -1475,6 +1885,19 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays a list of participants and allows adding a participant to the
+     * current project. Calls the listParticipants() method to retrieve an array
+     * of participants. Displays the participants' information along with an
+     * option to go back. Handles user input for selecting a participant and
+     * adds the selected participant to the current project. Handles exceptions
+     * related to invalid input or error in reading input.
+     *
+     * @throws IllegalNumberOfParticipantType If an invalid number of
+     * participant type is encountered.
+     * @throws ParticipantAlreadyInProject If the selected participant is
+     * already in the project.
+     */
     private void showAddParticipant() throws IllegalNumberOfParticipantType, ParticipantAlreadyInProject {
 
         Participant[] participants = listParticipants();
@@ -1497,6 +1920,17 @@ public class Menu {
 
     }
 
+    /**
+     * Lists the participants of the current project and provides options to
+     * remove a participant from the project. Enters a loop to repeatedly
+     * display the participants types. Displays the name and email of each
+     * participant and provides options to remove a participant from the project
+     * or go back. Handles user input and performs actions based on the selected
+     * option. If the user selects the "Remove from this project" option, it
+     * prompts for the number of the participant to remove. Asks for
+     * confirmation and removes the selected participant if confirmed. Handles
+     * invalid input and provides appropriate error messages.
+     */
     private void listParticipantsOfProject() {
         boolean exit = false;
         while (!exit) {
@@ -1580,6 +2014,18 @@ public class Menu {
 
     }
 
+    /**
+     * Method that displays the details of a task from an administrator's
+     * perspective. Displays the task title, description, start and end dates,
+     * and the number of submissions. Provides options to list submissions,
+     * extend the deadline, or go back. Handles user input and performs actions
+     * based on the selected option. If the user selects the "List Submissions"
+     * option, it calls the listSubmissions() method to display the submissions
+     * of the task. If the user selects the "Extend Deadline" option, it prompts
+     * for the number of days to extend the deadline and extends the task's end
+     * date. If the user selects the "Back" option, it exits the loop. Handles
+     * invalid input and provides appropriate error messages.
+     */
     private void showAdminTaskDetails(Task task) {
         boolean exit = false;
 
@@ -1632,6 +2078,16 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the details of the current project being the project name,
+     * description, tags, status, and participants information. Displays the
+     * number of tasks in the project and lists them. Provides an option to go
+     * back or select a specific task. Handles user input and performs actions
+     * based on the selection. If the user selects a task, it calls the
+     * showTaskDetails() method to display the details of the selected task.
+     * Exits the loop if the user selects the "Back" option. Handles invalid
+     * input and provides appropriate error messages.
+     */
     private void showProjectDetails() {
         boolean exit = false;
         while (!exit) {
@@ -1681,6 +2137,20 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the details of a given task. Enters a loop to repeatedly display
+     * the task details and provide a menu for options. Displays the title,
+     * description, start and end dates, and the number of submissions for the
+     * task. It verifies if the logged-in participant is a student and then,
+     * provides options to list submissions, add a submission (only for
+     * students), or go back. Handles user input and performs actions based on
+     * the selection. If the user selects the option to list submissions, it
+     * calls the listSubmissions() method. If the user is a student and selects
+     * the option to add a submission, it calls the submitWork() method and
+     * provides appropriate feedback. Exits the loop if the user selects the
+     * "Back" option. Handles invalid input and provides appropriate error
+     * messages.
+     */
     private void showTaskDetails(Task task) {
         boolean isStudent = false, exit = false;
         if (loggedInParticipant instanceof Student) {
@@ -1741,6 +2211,17 @@ public class Menu {
         }
     }
 
+    /**
+     * Lists the submissions for a given task. Enters a loop that repeatedly
+     * lists the submissions and provides a menu for options. If submissions
+     * exist for the task, it lists the text of each submission. If no
+     * submissions are found, it displays a corresponding message. Provides an
+     * option to go back. Handles user input and performs actions based on the
+     * selection. If the user selects a submission, it calls the
+     * showSubmissionDetails() method to display the details of the selected
+     * submission. Exits the loop if the user selects the "Back" option. Handles
+     * invalid input and provides appropriate error messages.
+     */
     private void listSubmissions(Task task) {
         boolean exit = false;
         while (!exit) {
@@ -1778,6 +2259,12 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays the details of a submission being the student's name and email,
+     * text, and date of the submission. Provides an option to go back. Handles
+     * user input and exits the loop if the user selects the "Back" option.
+     * Handles invalid input and provides appropriate error messages.
+     */
     private void showSubmissionDetails(Submission submission) {
         boolean exit = false;
 
@@ -1806,6 +2293,15 @@ public class Menu {
         }
     }
 
+    /**
+     * Method used to submit work for a given task. Displays the submit work
+     * prompt, including the logged in student's email. Reads the text input
+     * from the user and creates a new submission assigned to the logged-in
+     * student and the entered text. Prints the date of submission and attempts
+     * to add the new submission to the task. Handles any exceptions that may
+     * occur during submission and provides appropriate error messages. Returns
+     * true if the submission was added successfully, false otherwise.
+     */
     private boolean submitWork(Task task) {
         System.out.println("=== Submit Work ===");
         System.out.println("Student: " + loggedInParticipant.getEmail());
@@ -1830,7 +2326,15 @@ public class Menu {
         }
     }
 
-//lists/reports
+//listings/reports
+    /**
+     * Displays the listings/reports menu and handles user input to show
+     * different reports. Enters a loop that repeatedly displays the menu
+     * options. Based on the user's selection, the method calls corresponding
+     * methods to show different reports. If the user selects the "Exit" option,
+     * the loop is exited and the method returns. Handles invalid input and
+     * provides appropriate error messages.
+     */
     private void showListiongsMenu() {
         boolean exit = false;
         while (!exit) {
@@ -1944,6 +2448,14 @@ public class Menu {
         }
     }
 
+    /**
+     * Retrieves the top students based on the number of submissions they have
+     * made. The method retrieves all students from the ParticipantManager and
+     * orders them based on the number of submissions, in descending order.
+     *
+     * @return An array of Student objects ordered in descending order based on
+     * the number of submissions.
+     */
     private Student[] getTopStudentsBySubmissions() {
         // Get all students
         Student[] students = pm.getStudents();
@@ -1969,6 +2481,14 @@ public class Menu {
         return students;
     }
 
+    /**
+     * Displays the top students with the most and least submissions. The method
+     * retrieves the top students by calling the `getTopStudentsBySubmissions()`
+     * method. It then enters a loop that repeatedly displays the top students.
+     * The user can select the "Back" option to exit the loop and return to the
+     * previous menu. The method handles any exceptions that may occur during
+     * input reading and provides error messages accordingly.
+     */
     private void showTopStudentsBySubmissions() {
         Student[] topStudents = getTopStudentsBySubmissions();
         boolean exit = false;
@@ -2028,9 +2548,18 @@ public class Menu {
             }
             System.out.println();
         }
-
     }
 
+    /**
+     * This method retrieves and displays the participants of institutions. The
+     * method retrieves the institutions and their participants from the
+     * InstituitionManager and ParticipantManager classes, respectively. It then
+     * iterates over the institutions and their participants, displaying their
+     * names and email addresses. Additionally, it calculates and displays the
+     * total number of projects in which each participant from an institution is
+     * involved. Any NullPointerException that occurs during the execution is
+     * caught and handled.
+     */
     private void getInstituitionsParticipants() {
 
         try {
@@ -2052,7 +2581,7 @@ public class Menu {
                 } catch (NullPointerException e) {
 
                 }
-                System.out.println(" --- Total project in which " + instituition.getName() + " takes part: " + totalProjects + "  ---");
+                System.out.println(" --- Total projects' participation for " + instituition.getName() + ": " + totalProjects + "  ---");
             }
 
         } catch (NullPointerException e) {
@@ -2061,6 +2590,13 @@ public class Menu {
 
     }
 
+    /**
+     * Displays the participants of each institution. The method enters a loop
+     * that repeatedly displays the institutions' participants. It is also
+     * displayed the ammount of participation each instituition have in
+     * projects. The user can select the "Back" option to exit the loop and
+     * return to the previous menu.
+     */
     private void showInstituitionsParticipants() {
         boolean exit = false;
         while (!exit) {
@@ -2083,10 +2619,14 @@ public class Menu {
         }
     }
 
+    /**
+     * Main method. Inicializes a CBL, Participant manager and Instituition
+     * manager and then calls start mehod for menu
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
-        //    try{
-        // Crie uma instância da classe CBL e adicione participantes, edições, projetos, etc.
         ParticipantsManager pm = new ParticipantsManager();
         CBL cbl = new CBLImp();
         InstituitionsManager im = new InstituitionsManager();
