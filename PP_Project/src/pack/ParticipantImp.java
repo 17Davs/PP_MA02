@@ -10,17 +10,11 @@
 package pack;
 
 import ma02_resources.participants.Contact;
-import ma02_resources.participants.Facilitator;
 import ma02_resources.participants.Instituition;
 import ma02_resources.participants.Participant;
-import ma02_resources.participants.Partner;
-import ma02_resources.participants.Student;
 import org.json.simple.JSONObject;
 
-/**
- *
- * @author David Santos
- */
+
 public class ParticipantImp implements Participant {
 
     private String name, email;

@@ -106,22 +106,19 @@ public class InstituitionsManager {
         throw new IllegalArgumentException("No Instituition found!");
     }
 
-    public Instituition[] getInstituitions() {
-        int counter = 0;
-        Instituition temp[] = new Instituition[instituitionsCounter];
+    public Instituition[] getInstituitions() throws NullPointerException {
+        if (instituitionsCounter > 0){
+            Instituition temp[] = new Instituition[instituitionsCounter];
 
-        for (int i = 0; i < instituitionsCounter; i++) {
-            temp[counter++] = instituitionsList[i];
+            for (int i = 0; i < instituitionsCounter; i++) {
+                temp[i] = instituitionsList[i];
+            }
+            return temp;  
+        } else {
+            throw new NullPointerException("No instituitions found!");
         }
-        if (counter == instituitionsCounter) {
-            return temp;
-        }
+        
 
-        Instituition trimmedTemp[] = new Instituition[counter];
-        for (int i = 0; i < counter; i++) {
-            trimmedTemp[i] = temp[i];
-        }
-        return trimmedTemp;
     }
 
     public boolean export(String filePath) {
@@ -153,7 +150,7 @@ public class InstituitionsManager {
         try ( FileReader reader = new FileReader(filePath)) {
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
 
-            JSONArray instituitionsArray = (JSONArray) jsonObject.get("instituitionss");
+            JSONArray instituitionsArray = (JSONArray) jsonObject.get("instituitions");
             for (int i = 0; i < instituitionsArray.size(); i++) {
                 try {
                     JSONObject instituitionsJson = (JSONObject) instituitionsArray.get(i);
