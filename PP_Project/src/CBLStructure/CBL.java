@@ -117,4 +117,6 @@ public interface CBL {
      * @return An array of projects in which the participant is involved.
      */
     public Project[] getProjectsOf(Participant participant);
+    
+    
 }

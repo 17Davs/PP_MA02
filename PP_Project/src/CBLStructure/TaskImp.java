@@ -18,14 +18,14 @@ import org.json.simple.JSONObject;
 public class TaskImp implements Task {
 
     /**
-     * 
-     * @param title 
+     *
+     * @param title
      * @param description
      * @param start
      * @param end
      * @param duration
      * @param numberOfSubmissions
-     * @param submissions[] 
+     * @param submissions[]
      */
     private String title, description;
     private LocalDate start, end;
@@ -34,7 +34,7 @@ public class TaskImp implements Task {
 
     /**
      * This is the constructor method for Task.
-     * 
+     *
      * @param title Task title.
      * @param description Task description.
      * @param start Task start date.
@@ -96,11 +96,8 @@ public class TaskImp implements Task {
     @Override
     public Submission[] getSubmissions() {
         Submission temp[] = new Submission[numberOfSubmissions];
-        int i = 0;
-        for (Submission s : submissions) {
-            if (s != null) {
-                temp[i++] = s;
-            }
+        for (int i = 0; i < numberOfSubmissions; i++) {
+            temp[i] = submissions[i];
         }
         return temp;
     }
@@ -226,7 +223,7 @@ public class TaskImp implements Task {
         TaskImp task = new TaskImp(title, description, start, end, duration);
 
         JSONArray submissionsArray = (JSONArray) jsonObject.get("submissions");
-        
+
         for (int i = 0; i < submissionsArray.size(); i++) {
             JSONObject submissionJson = (JSONObject) submissionsArray.get(i);
             task.addSubmission(SubmissionImp.fromJsonObj(submissionJson));

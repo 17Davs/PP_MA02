@@ -146,8 +146,8 @@ public class ParticipantsManager {
         }
         return numberOfFacilitators;
     }
-    
-     public int getNumberOfStudents() {
+
+    public int getNumberOfStudents() {
         int numberOfStudents = 0;
         for (int i = 0; i < participantsCounter; i++) {
             if (participantsList[i] instanceof Student) {
@@ -156,8 +156,8 @@ public class ParticipantsManager {
         }
         return numberOfStudents;
     }
-     
-     public int getNumberOfPartners() {
+
+    public int getNumberOfPartners() {
         int numberOfPartners = 0;
         for (int i = 0; i < participantsCounter; i++) {
             if (participantsList[i] instanceof Partner) {
@@ -166,14 +166,11 @@ public class ParticipantsManager {
         }
         return numberOfPartners;
     }
-    
-     
-   
+
     public Participant[] getParticipants() {
         int counter = 0;
 
         Participant[] temp = new Participant[participantsCounter];
-        
 
         for (int i = 0; i < participantsCounter; i++) {
             if (participantsList != null) {
@@ -215,6 +212,21 @@ public class ParticipantsManager {
         }
 
         return trimmedTemp;
+    }
+
+    public Student[] getStudents() {
+        int counter = 0;
+
+        if (getNumberOfStudents() > 0) {
+            Student[] temp = new Student[getNumberOfStudents()];
+            for (int i = 0; i < participantsCounter; i++) {
+                if (participantsList[i] instanceof Student) {
+                    temp[counter++] = (Student) participantsList[i];
+                }
+            }
+            return temp;
+        }
+        return null;
     }
 
     public boolean export(String filePath) {
