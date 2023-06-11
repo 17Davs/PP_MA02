@@ -15,8 +15,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import ma02_resources.participants.Participant;
 import ma02_resources.project.Edition;
 import ma02_resources.project.Project;
@@ -55,7 +53,7 @@ public class CBLImp implements CBL {
      * This is the Constructor of the CBL.
      */
     public CBLImp() {
-        this.editions = new Edition[2];
+        editions = new Edition[2];
         numberOfEditions = 0;
     }
 
@@ -92,12 +90,7 @@ public class CBLImp implements CBL {
     }
 
     /**
-     * This method adds an edition to the CBL if it doesn't already exist.
-     *
-     * @param edition The edition to be added.
-     * @throws Exceptions.EditionAlreadyInCBL - if the edition already exists.
-     * @throws IllegalArgumentException - if the given edition's name is null or
-     * empty.
+     * {@inheritDoc}
      */
     @Override
     public void addEdition(Edition edition) throws EditionAlreadyInCBL {
@@ -114,9 +107,7 @@ public class CBLImp implements CBL {
     }
 
     /**
-     * This method returns the number of existing editions on the CBL
-     *
-     * @return Returns the number of editions
+     * {@inheritDoc}
      */
     @Override
     public int getNumberOfEditions() {
@@ -124,13 +115,7 @@ public class CBLImp implements CBL {
     }
 
     /**
-     * This method removes an edition from the CBL. The edition is identified by
-     * its name.
-     *
-     * @param name The name of the edition
-     * @return Returns the removed edition
-     * @throws IllegalArgumentException if the given edition's name is null or
-     * empty, or if the edition does not exist.
+     * {@inheritDoc}
      */
     @Override
     public Edition removeEdition(String name) {
@@ -159,12 +144,7 @@ public class CBLImp implements CBL {
     }
 
     /**
-     * This method returns an edition with the name given by argumment if it
-     * exists
-     *
-     * @param name The name of the edition
-     * @return Returns the edition with the given name
-     * @throws IllegalArgumentException if the edition wasn't found
+     * {@inheritDoc}
      */
     @Override
     public Edition getEdition(String name) {
@@ -179,10 +159,7 @@ public class CBLImp implements CBL {
     }
 
     /**
-     * This method changes the status of an edition to active certifying it is
-     * the only active edition of the CBL
-     *
-     * @param name The name of the edition to be activated
+     * {@inheritDoc}
      */
     @Override
     public void activateEdition(String name) throws IllegalArgumentException {
@@ -223,11 +200,7 @@ public class CBLImp implements CBL {
     }
 
     /**
-     * This method returns all the editions that have projects with missing
-     * submissions on tasks.
-     *
-     * @return An array of editions with incomplete projects
-     * @throws NullPointerException - if None of the editions are incomplete
+     * {@inheritDoc}
      */
     @Override
     public Edition[] uncompletedEditions() {
@@ -237,12 +210,12 @@ public class CBLImp implements CBL {
 
         for (int i = 0; i < numberOfEditions; i++) {
             hasIncompleteProject = false;
-            
+
             if (editions[i].getNumberOfProjects() == 0) {
                 hasIncompleteProject = true;
             } else {
-                Project [] uncompletedProjects =((EditionImp) editions[i]).getUncompletedProjects();
-                if (uncompletedProjects != null){
+                Project[] uncompletedProjects = ((EditionImp) editions[i]).getUncompletedProjects();
+                if (uncompletedProjects != null) {
                     hasIncompleteProject = true;
                 }
             }
@@ -266,14 +239,8 @@ public class CBLImp implements CBL {
         return uncompletedEditions;
     }
 
-
     /**
-     * This method returns a list of editions in which the participant is part
-     * of.
-     *
-     * @param p Participant to be searched
-     * @return An array of editions by participant
-     * @throws NullPointerException -If it doesn't find any editions
+     * {@inheritDoc}
      */
     @Override
     public Edition[] getEditionsByParticipant(Participant p) throws NullPointerException {
@@ -314,25 +281,25 @@ public class CBLImp implements CBL {
         return temp;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Edition[] getEditions() {
-        int counter = 0;
+
         Edition temp[] = new Edition[numberOfEditions];
 
         for (int i = 0; i < numberOfEditions; i++) {
-            temp[counter++] = editions[i];
-        }
-        if (counter == numberOfEditions) {
-            return temp;
+            temp[i] = editions[i];
         }
 
-        Edition trimmedTemp[] = new Edition[counter];
-        for (int i = 0; i < counter; i++) {
-            trimmedTemp[i] = temp[i];
-        }
-        return trimmedTemp;
+        return temp;
+
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean export(String filePath) {
         JSONObject jsonObject = new JSONObject();
@@ -361,6 +328,9 @@ public class CBLImp implements CBL {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean importData(String filePath) {
         JSONParser parser = new JSONParser();
@@ -382,14 +352,38 @@ public class CBLImp implements CBL {
             return true;
 
         } catch (FileNotFoundException ex) {
-            System.out.println("Not found");
+            System.out.println("File not found");
         } catch (IOException ex) {
-            System.out.println("IO");
+            System.out.println("IO exception");
         } catch (ParseException ex) {
-            System.out.println("Parce");
+            System.out.println("Parce exception");
         }
         return false;
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Project[] getProjectsOf(Participant participant) {
+        int projectCount = 0;
+
+        for (int i = 0; i < numberOfEditions; i++) {
+            Project[] projects = editions[i].getProjectsOf(participant.getEmail());
+            projectCount += projects.length;
+        }
+
+        Project[] participantProjects = new Project[projectCount];
+        int counter = 0;
+
+        for (int j = 0; j < numberOfEditions; j++) {
+            Project[] projects = editions[j].getProjectsOf(participant.getEmail());
+            for (int i = 0; i < projects.length; i++) {
+                participantProjects[counter++] = projects[i];
+            }
+        }
+        return participantProjects;
     }
 
 }

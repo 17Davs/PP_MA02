@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import ma02_resources.participants.Contact;
 import ma02_resources.participants.Instituition;
-import ma02_resources.participants.InstituitionType;
 import ma02_resources.participants.Participant;
 import ma02_resources.participants.Student;
 import ma02_resources.participants.Facilitator;
@@ -40,6 +39,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ma02_resources.participants.InstituitionType;
 import pack.StudentImp;
 import pack.FacilitatorImp;
 import pack.PartnerImp;
@@ -88,7 +88,7 @@ public class Menu {
                 switch (option) {
                     case 1:
                         if (login()) {
-                            showEditionsMenu();
+                            showParticipantsMenu();
                         }
                         break;
                     case 2:
@@ -191,25 +191,16 @@ public class Menu {
             String name = reader.readLine();
             System.out.print("\nEmail: ");
             String email = reader.readLine();
-            System.out.print("\nStreet: ");
-            String street = reader.readLine();
-            System.out.print("\nCity: ");
-            String city = reader.readLine();
-            System.out.print("\nState: ");
-            String state = reader.readLine();
-            System.out.print("\nZipCode: ");
-            String zipCode = reader.readLine();
-            System.out.print("\nCountry: ");
-            String country = reader.readLine();
-            System.out.print("\nPhone: ");
-            String phone = reader.readLine();
 
-            Contact contact = new ContactImp(street, city, state, zipCode, country, phone);
+            Contact contact = assignContact();
 
-            //apresentar instituições do manager de instituições ainda não criado
+            // create participant without instituition
             Participant newParticipant = new ParticipantImp(name, email, contact, null);
 
+            //Participant chooses an instituition to be assigned to
             assignInstituition(newParticipant);
+
+            //registar as Participant specific type
             switch (option) {
                 case 1:
                     return registerStudent(newParticipant);
@@ -229,12 +220,12 @@ public class Menu {
 
     private boolean registerStudent(Participant participant) {
         try {
-            //number problem -> can be same number if done like this
-            //get missing variables
+
             //create student
             Student newStudent = new StudentImp(participant.getName(),
                     participant.getEmail(), participant.getContact(),
                     participant.getInstituition());
+
             //add to participant Manager array
             pm.addParticipant(newStudent);
 
@@ -298,16 +289,277 @@ public class Menu {
         }
     }
 
+    private Contact assignContact() {
+        try {
+            System.out.print("\nStreet: ");
+            String street = reader.readLine();
+            System.out.print("\nCity: ");
+            String city = reader.readLine();
+            System.out.print("\nState: ");
+            String state = reader.readLine();
+            System.out.print("\nZipCode: ");
+            String zipCode = reader.readLine();
+            System.out.print("\nCountry: ");
+            String country = reader.readLine();
+            System.out.print("\nPhone: ");
+            String phone = reader.readLine();
+
+            Contact contact = new ContactImp(street, city, state, zipCode, country, phone);
+            return contact;
+
+        } catch (IOException ex) {
+            System.out.println("Error reading imput.");
+            Contact contact = assignContact();
+            return contact;
+        }
+    }
+
+    private void listInstituitions() {
+        boolean exit = false;
+        while (!exit) {
+
+            System.out.println("=== Institutions Selection ===");
+            try {
+                Instituition[] instituitions = getInstituitionsOutput();
+                int i = instituitions.length;
+
+                System.out.println((i + 1) + ". Back");
+                System.out.print("Select an institution: ");
+                try {
+                    int institutionNumber = Integer.parseInt(reader.readLine());
+
+                    // check if it's valid
+                    if (institutionNumber >= 1 && institutionNumber <= instituitions.length) {
+                        Instituition selectedInstitution = instituitions[institutionNumber - 1];
+                        showInstituitionDetails(selectedInstitution);
+                    } else if (institutionNumber == i + 1) {
+                        exit = true;
+                    } else {
+                        System.out.println("Invalid selection. Please try again.\n\n");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number.\n\n");
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private Instituition[] getInstituitionsOutput() throws NullPointerException {
+        System.out.println("=== Institutions ===");
+        Instituition[] instituitions = this.im.getInstituitions();
+
+        int i = 0;
+        for (i = 0; i < instituitions.length; i++) {
+            System.out.println((i + 1) + ". " + instituitions[i].getName());
+        }
+        return instituitions;
+    }
+
+    private void showInstituitionDetails(Instituition instituition) {
+        boolean exit = false;
+        while (!exit) {
+
+            try {
+
+                System.out.println(" === Instituition Details ===");
+                System.out.println("Name: " + instituition.getName());
+                System.out.println("Email: " + instituition.getEmail());
+                System.out.println("Website: " + instituition.getWebsite());
+                System.out.println("Description: " + instituition.getDescription());
+                System.out.println("Institution Type: " + instituition.getType());
+
+                System.out.println("Contact Details:");
+                System.out.println("Street: " + instituition.getContact().getStreet());
+                System.out.println("City: " + instituition.getContact().getCity());
+                System.out.println("State: " + instituition.getContact().getState());
+                System.out.println("Zip Code: " + instituition.getContact().getZipCode());
+                System.out.println("Country: " + instituition.getContact().getCountry());
+                System.out.println("Phone: " + instituition.getContact().getPhone());
+
+                System.out.println(" --------------------------------");
+                System.out.println(" 1. Change contact information");
+                System.out.println(" 2. Change type");
+                System.out.println(" 3. Change Website");
+                System.out.println(" 4. Change Description");
+                System.out.println(" 5. Remove this Instituition");
+                System.out.println(" 6. Back");
+
+                int option = Integer.parseInt(reader.readLine());
+
+                switch (option) {
+                    case 1:
+                        Contact newContact = assignContact();
+                        if (newContact != null) {
+                            instituition.setContact(newContact);
+                            System.out.println("Contact updated successfully\n");
+                        } else {
+                            System.out.println("Someting went wrong. Please try again.\n");
+                        }
+                        break;
+                    case 2:
+                        changeType(instituition);
+                        break;
+                    case 3:
+                        changeWebsite(instituition);
+                        break;
+                    case 4:
+                        changeDescription(instituition);
+                        break;
+                    case 5:
+                        System.out.println("\nAre you sure you want to remove this instituition? (yes/no)");
+                        String answer = reader.readLine();
+
+                        if (answer.equalsIgnoreCase("yes")) {
+                            showRemoveInstituition(instituition);
+                            exit = true;
+                        } else {
+                            System.out.println("Removal canceled.");
+                        }
+                        break;
+                    case 6:
+                        exit = true;
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
+
+            } catch (NullPointerException e) {
+                System.out.println(e.getMessage());
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private void changeType(Instituition instituition) {
+        boolean complete = false;
+        while (!complete) {
+            System.out.println(" == Available Types == ");
+            System.out.println(" 1. UNIVERSITY       2. COMPANY");
+            System.out.println(" 3. NGO              4. OTHER");
+            System.out.print("Select the type: ");
+            try {
+
+                int type = Integer.parseInt(reader.readLine());
+                switch (type) {
+                    case 1:
+                        instituition.setType(InstituitionType.UNIVERSITY);
+                        complete = true;
+                        break;
+                    case 2:
+                        instituition.setType(InstituitionType.COMPANY);
+                        complete = true;
+                        break;
+                    case 3:
+                        instituition.setType(InstituitionType.NGO);
+                        complete = true;
+                        break;
+                    case 4:
+                        instituition.setType(InstituitionType.OTHER);
+                        complete = true;
+                        break;
+                    default:
+                        System.out.println("Invalid Selection.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
+            } catch (IOException ex) {
+                System.out.println("Error reading imput.");
+            }
+        }
+    }
+
+    private void changeWebsite(Instituition instituition) {
+
+        System.out.println(" == Change website information == ");
+        System.out.println(" New Website: ");
+        try {
+            String website = reader.readLine();
+
+            instituition.setWebsite(website);
+            System.out.println("Website updated successfully.\n");
+
+        } catch (IOException ex) {
+            System.out.println("Error reading imput.");
+        }
+    }
+
+    private void changeDescription(Instituition instituition) {
+
+        System.out.println(" == Change description of Instituition == ");
+        System.out.println(" New Description: ");
+        try {
+            String description = reader.readLine();
+
+            instituition.setDescription(description);
+            System.out.println("Description updated successfully.\n");
+
+        } catch (IOException ex) {
+            System.out.println("Error reading imput.");
+        }
+    }
+
+    private void showRemoveInstituition(Instituition instituition) {
+        boolean complete = false;
+        try {
+            Instituition revomedInstituition = im.removeInstituition(instituition.getName());
+            System.out.println("Instituition removed successfully.");
+            while (!complete) {
+                try {
+
+                    System.out.println("Do you want to save it to a json file? (yes/no)");
+                    String saveAnswer = reader.readLine();
+                    if (saveAnswer.equalsIgnoreCase("yes")) {
+
+                        System.out.println("Name of the file you want to save it to: ");
+                        String name = reader.readLine();
+                        if (name.equalsIgnoreCase("cbl") || name.equalsIgnoreCase("instituitions")
+                                || name.equalsIgnoreCase("project_template") || name.equalsIgnoreCase("users")) {
+                            System.out.println("Invalid name.");
+                        } else {
+                            String path = null;
+                            if (name.contains(".json")) {
+                                path = "src/Files/" + name;
+                            } else {
+                                path = "src/Files/" + name + ".json";
+                            }
+                            try {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("revomed Instituition", ((InstituitionImp) revomedInstituition).toJsonObj());
+                                FileWriter fileWriter = new FileWriter(path);
+                                fileWriter.write(jsonObject.toJSONString());
+                                fileWriter.close();
+                                complete = true;
+
+                            } catch (IOException e) {
+                                e.getMessage();
+                            }
+                        }
+                    } else {
+                        complete = true;
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error reading input.");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     private void assignInstituition(Participant p) {
 
-        System.out.println("== Institutions Selection ==");
+        System.out.println("=== Institutions Selection ===");
         try {
-            Instituition[] instituitions = this.im.getInstituitions();
-            System.out.println("   == Available Institutions == ");
-            int i = 0;
-            for (i = 0; i < instituitions.length; i++) {
-                System.out.println((i + 1) + ". " + instituitions[i].getName());
-            }
+            Instituition[] instituitions = getInstituitionsOutput();
+            int i = instituitions.length;
+
             System.out.println((i + 1) + ". No instituition");
             System.out.print("Select an institution: ");
             try {
@@ -335,6 +587,34 @@ public class Menu {
             System.out.println("Error reading input.");
         }
 
+    }
+
+    private void showAddInstituition() {
+        System.out.println(" == Add Instituition == ");
+        try {
+            System.out.print("\nName: ");
+            String name = reader.readLine();
+            System.out.print("\nEmail: ");
+            String email = reader.readLine();
+            System.out.print("\nWebsite: ");
+            String website = reader.readLine();
+            System.out.print("\nDescription: ");
+            String description = reader.readLine();
+
+            Contact contact = assignContact();
+
+            Instituition instituition = new InstituitionImp(name, email, website, description, contact, null);
+
+            changeType(instituition);
+
+            im.addInstituition(instituition);
+
+            System.out.println("Instituition added successfully.\n");
+        } catch (IOException e) {
+            System.out.println("Error reading imput.\n");
+        } catch (InstituitionAlreadyExistException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private Participant[] listParticipants() {
@@ -374,7 +654,7 @@ public class Menu {
         return participants;
     }
 
-    private void showParticipantsMenu() {
+    private void showAdminParticipantsMenu() {
         boolean exit = false;
         while (!exit) {
 
@@ -383,16 +663,17 @@ public class Menu {
             int counter = participants.length;
 
             System.out.println("");
-            System.out.println((counter + 1) + ". Delete participant");
-            System.out.println((counter + 2) + ". Back");
+            System.out.println((counter + 1) + ". Create a participant");
+            System.out.println((counter + 2) + ". Delete participant");
+            System.out.println((counter + 3) + ". Back");
 
             try {
                 int participantNumber = Integer.parseInt(reader.readLine());
 
                 // Verifique se o número da tarefa é válido
-                if (participantNumber == (counter + 2)) {
+                if (participantNumber == (counter + 3)) {
                     exit = true;
-                } else if (participantNumber == (counter + 1)) {
+                } else if (participantNumber == (counter + 2)) {
                     System.out.println("Select the number of the Participant you want to remove: ");
                     int removeParticipant = Integer.parseInt(reader.readLine());
 
@@ -413,9 +694,13 @@ public class Menu {
                         }
                     } else if (counter != 0 && removeParticipant >= 1 && removeParticipant <= participants.length) {
                         Participant participant = participants[participantNumber - 1];
-//                        showParticipantDetails(participant);
+                        showParticipantDetails(participant);
                     } else {
                         System.out.println("Invalid selection");
+                    }
+                } else if (participantNumber == (counter + 1)) {
+                    if (register()) {
+                        System.out.println("Registration Success!");
                     }
                 } else {
                     System.out.println("Invalid selection. Please try again.");
@@ -428,6 +713,148 @@ public class Menu {
             }
         }
 
+    }
+
+    private void showParticipantDetails(Participant participant) {
+        boolean exit = false;
+        while (!exit) {
+
+            try {
+
+                System.out.println(" === Participant Details ===");
+                System.out.println("Name: " + participant.getName());
+                System.out.println("Email: " + participant.getEmail());
+
+                if (participant instanceof Facilitator) {
+                    System.out.println("Area Of Expertise: " + ((Facilitator) participant).getAreaOfExpertise());
+                } else if (participant instanceof Student) {
+                    System.out.println("Student Number: " + ((Student) participant).getNumber());
+                } else if (participant instanceof Partner) {
+                    System.out.print("Vat: " + ((Partner) participant).getVat());
+                    System.out.print("WebSite: " + ((Partner) participant).getWebsite());
+                }
+
+                System.out.println("Contact Details:");
+                System.out.println("Street: " + participant.getContact().getStreet());
+                System.out.println("City: " + participant.getContact().getCity());
+                System.out.println("State: " + participant.getContact().getState());
+                System.out.println("Zip Code: " + participant.getContact().getZipCode());
+                System.out.println("Country: " + participant.getContact().getCountry());
+                System.out.println("Phone: " + participant.getContact().getPhone());
+
+                System.out.println("Institution Details:");
+                if (participant.getInstituition() != null) {
+                    System.out.println("Name: " + participant.getInstituition().getName() + " (" + participant.getInstituition().getType().toString() + ")");
+                    System.out.println("Email: " + participant.getInstituition().getEmail());
+                    System.out.println("Website: " + participant.getInstituition().getWebsite());
+                } else {
+                    System.out.println("No instituition assigned to this participant!");
+                }
+
+                System.out.println(" --------------------------------");
+                System.out.println(" 1. Change contact information");
+                System.out.println(" 2. Assign to another Instituition");
+                System.out.println(" 3. Back");
+
+                int option = Integer.parseInt(reader.readLine());
+
+                switch (option) {
+                    case 1:
+                        Contact newContact = assignContact();
+                        if (newContact != null) {
+                            participant.setContact(newContact);
+                            System.out.println("Contact updated successfully\n");
+                        } else {
+                            System.out.println("Someting went wrong. Please try again.\n");
+                        }
+                        break;
+                    case 2:
+                        assignInstituition(participant);
+                        break;
+                    case 3:
+                        exit = true;
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
+
+            } catch (NullPointerException e) {
+                System.out.println(e.getMessage());
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private void showParticipantsMenu() {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println(" ==== Menu ==== ");
+            System.out.println(" 1. My Editions and Projects");
+            System.out.println(" 2. My information");
+            System.out.println(" 3. Exit");
+            System.out.print("Select option: ");
+
+            try {
+                int option = Integer.parseInt(reader.readLine());
+
+                switch (option) {
+                    case 1:
+                        showEditionsMenu();
+                        break;
+                    case 2:
+                        showParticipantDetails(loggedInParticipant);
+                        break;
+                    case 3:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Invalid selection. Try again!\n");
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private void showInstituitionsMenu() {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println(" ==== Instituitions Menu ==== ");
+            System.out.println(" 1. List instituitions");
+            System.out.println(" 2. Add Instituitions");
+            System.out.println(" 3. Exit");
+            System.out.print("Select option: ");
+
+            try {
+                int option = Integer.parseInt(reader.readLine());
+
+                switch (option) {
+                    case 1:
+                        listInstituitions();
+                        break;
+                    case 2:
+                        showAddInstituition();
+                        break;
+                    case 3:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Invalid selection. Try again!\n");
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
     }
 
     private void showEditionsMenu() {
@@ -479,23 +906,32 @@ public class Menu {
             System.out.println(" 1. Manage CBL");
             System.out.println(" 2. Manage Users/Participants");
             System.out.println(" 3. Manage Instituitions");
-            System.out.println(" 4. Exit");
+            System.out.println(" 4. Listings/Reports");
+            System.out.println(" 5. Exit");
             System.out.print("Select option: ");
 
             try {
                 int option = Integer.parseInt(reader.readLine());
 
-                if (option == 1) {
-                    showAdminEditionsMenu();
-
-                } else if (option == 2) {
-                    showParticipantsMenu();
-                } else if (option == 3) {
-                    //showInstituitionsMenu();
-                } else if (option == 4) {
-                    exit = true;
-                } else {
-                    System.out.println("Invalid selection. Try again!\n");
+                switch (option) {
+                    case 1:
+                        showAdminEditionsMenu();
+                        break;
+                    case 2:
+                        showAdminParticipantsMenu();
+                        break;
+                    case 3:
+                        showInstituitionsMenu();
+                        break;
+                    case 4:
+                        showListiongsMenu();
+                        break;
+                    case 5:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Invalid selection. Try again!\n");
+                        break;
                 }
 
             } catch (NumberFormatException e) {
@@ -901,20 +1337,20 @@ public class Menu {
             }
             System.out.println(" ----------------------- ");
             System.out.println((i + 1) + ". Remove this project");
-            System.out.println((i + 2) + ". List participants");
-            System.out.println((i + 3) + ". Add participants ("
+            System.out.println((i + 2) + ". Project progress");
+            System.out.println((i + 3) + ". List participants");
+            System.out.println((i + 4) + ". Add participants ("
                     + (currentProject.getNumberOfParticipants() == currentProject.getMaximumNumberOfParticipants() ? "Not Available" : " Available") + ")");
-            // System.out.println(". Remove participants");
-            System.out.println((i + 4) + ". Add Task ("
+            System.out.println((i + 5) + ". Add Task ("
                     + (currentProject.getNumberOfTasks() == currentProject.getMaximumNumberOfTasks() ? "Not Available" : " Available") + ")");
             // System.out.println(". Remove Task");
-            System.out.println("\n" + (i + 5) + ". Back");
+            System.out.println("\n" + (i + 6) + ". Back");
             System.out.print("Select an option: ");
             try {
                 int taskNumber = Integer.parseInt(reader.readLine());
 
                 // Verifique se o número da tarefa é válido
-                if (taskNumber == (i + 5)) {
+                if (taskNumber == (i + 6)) {
                     exit = true;
                 } else if (taskNumber == (i + 1)) {
                     System.out.println("Are you sure you want to remove this project? (yes/no)");
@@ -930,12 +1366,14 @@ public class Menu {
                         }
                     }
                 } else if (taskNumber == (i + 2)) {
+                    showProjectProgress();
+                } else if (taskNumber == (i + 3)) {
                     if (currentProject.getNumberOfParticipants() > 0) {
                         listParticipantsOfProject();
                     } else {
                         System.out.println("No participants in project. Add participants");
                     }
-                } else if (taskNumber == (i + 3)) {
+                } else if (taskNumber == (i + 4)) {
                     if (currentProject.getMaximumNumberOfParticipants() != currentProject.getNumberOfParticipants()) {
                         try {
                             showAddParticipant();
@@ -947,7 +1385,7 @@ public class Menu {
                         System.out.println("Maximum ammount of Participants reached!\n");
                     }
 
-                } else if (taskNumber == (i + 4)) {
+                } else if (taskNumber == (i + 5)) {
                     if (currentProject.getNumberOfTasks() == currentProject.getMaximumNumberOfTasks()) {
                         try {
                             showAddTask();
@@ -970,6 +1408,30 @@ public class Menu {
 
             } catch (IOException e) {
                 System.out.println("Error reading input.");
+            }
+        }
+    }
+
+    private void showProjectProgress() {
+        boolean exit = false;
+
+        System.out.println("\n === Project progress ===");
+        System.out.println(currentProject.toString());
+        System.out.println("\n");
+        System.out.println("1. Back");
+        while (!exit) {
+            try {
+                System.out.print("Select option: ");
+                int option = Integer.parseInt(reader.readLine());
+                if (option == 1) {
+                    exit = true;
+                } else {
+                    System.out.println("Invalid Selection");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            } catch (IOException ex) {
+                System.out.println("Error reading imput!");
             }
         }
     }
@@ -1368,6 +1830,120 @@ public class Menu {
         }
     }
 
+//lists/reports
+    
+    private void showListiongsMenu(){
+         boolean exit = false;
+        while (!exit) {
+            System.out.println(" ==== Listings/Reports ==== ");
+            System.out.println(" 1. Top Participants by number of participation in projects");
+            System.out.println(" 2. ");
+            System.out.println(" 3. ");
+            System.out.println(" 4. Exit");
+            System.out.print("Select option: ");
+
+            try {
+                int option = Integer.parseInt(reader.readLine());
+
+                switch (option) {
+                    case 1:
+                        showTopParticipants();
+                        break;
+                    case 2:
+                        /////////////////////
+                        break;
+                    case 3:
+                        /////////////////////
+                        break;
+                    case 43
+                            :
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Invalid selection. Try again!\n");
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.\n\n");
+            } catch (IOException e) {
+                System.out.println("Error reading input.");
+            }
+        }
+    }
+    
+    
+    
+   
+    
+    /**
+     * This method retrieves an array of the top participants based on their
+     * participation in projects. Participants are sorted in descending order
+     * based on the number of projects they participated in. Returns a maximum
+     * of 5 participants, or fewer if there are fewer than 5 participants.
+     *
+     * @return An array of the top participants based on participation in
+     * projects.
+     */
+    private Participant[] getTopParticipantsByParticipation() {
+        // sort participants by the number of projects they participated in, in descending order
+        Participant[] participants = pm.getParticipants();
+
+        // order the participants 
+        for (int i = 0; i < participants.length - 1; i++) {
+            for (int j = 0; j < participants.length - i - 1; j++) {
+                if (cbl.getProjectsOf(participants[j]).length < cbl.getProjectsOf(participants[j + 1]).length) {
+                    // Swap participants at positions 
+                    Participant temp = participants[j];
+                    participants[j] = participants[j + 1];
+                    participants[j + 1] = temp;
+                }
+            }
+        }
+
+        // set the top 5 participants
+        int count = Math.min(5, participants.length);
+        Participant[] topParticipants = new Participant[count];
+        for (int i = 0; i < count; i++) {
+            topParticipants[i] = participants[i];
+        }
+
+        return topParticipants;
+    }
+
+    private void showTopParticipants() {
+        boolean exit = false;
+        while (!exit) {
+
+            System.out.println(" === List of Top Participants by number of Projects === ");
+            Participant[] topParticipants = getTopParticipantsByParticipation();
+            if (topParticipants != null) {
+                try {
+                    int i = 0;
+                    for (Participant participant : topParticipants) {
+                        System.out.println(++i + ". " + participant.getName() + "(" + participant.getEmail() + ")");
+                    }
+                    System.out.println(" ---------------------------------------------\n");
+                    System.out.println((i + 1) + ". Back");
+                    System.out.println("Select the Back number: ");
+                    int option = Integer.parseInt(reader.readLine());
+                    if (option == i + 1) {
+                        exit = true;
+                    } else {
+                        System.out.println("Invalid Selection.");
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error reading input.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number.\n\n");
+                }
+            } else {
+                System.out.println("No participants found!\n");
+                exit = true;
+            }
+        }
+    }
+
     public static void main(String[] args) {
 
         //    try{
@@ -1376,10 +1952,10 @@ public class Menu {
         CBL cbl = new CBLImp();
         InstituitionsManager im = new InstituitionsManager();
 
-        Contact c = new ContactImp("Street", "city", "state", "zipCode", "country", "phone");
-        Instituition estg = new InstituitionImp("ESTG", "estg@estg.ipp.pt", "estg.ipp.pt", "Escola de Tecnologia e Gestão de Felgueiras", c, InstituitionType.UNIVERSITY);
-        Student p1 = new StudentImp("David Santos", "david@estg.ipp.pt", c, estg);
-//            try {
+//        Contact c = new ContactImp("Street", "city", "state", "zipCode", "country", "phone");
+//        Instituition estg = new InstituitionImp("ESTG", "estg@estg.ipp.pt", "estg.ipp.pt", "Escola de Tecnologia e Gestão de Felgueiras", c, InstituitionType.UNIVERSITY);
+//        Student p1 = new StudentImp("David Santos", "david@estg.ipp.pt", c, estg);
+////            try {
 //                cbl.addEdition(new EditionImp("Test edition", LocalDate.of(2023, Month.MARCH, 13), LocalDate.of(2023, Month.JUNE, 17)));
 //            } catch (EditionAlreadyInCBL ex) {
 //                System.out.println(ex.getMessage());
@@ -1388,14 +1964,14 @@ public class Menu {
 //            cbl.getEdition("Test edition").addProject("Project test", "testando projeto", tags);
 //            cbl.getEdition("Test edition").getProject("Project test").addParticipant(p1);
 //
-        try {
-            pm.addParticipant(p1);
-            im.addInstituition(estg);
-        } catch (AlreadyExistsInArray | InstituitionAlreadyExistException ex) {
-            System.out.println(ex.toString());
-        }
-        // Create menu and import data
-        if (pm.importData("src/Files/users.json")/* && im.importData("src/Files/instituitions.json")*/) {
+//        try {
+//            pm.addParticipant(p1);
+//            im.addInstituition(estg);
+//        } catch (AlreadyExistsInArray | InstituitionAlreadyExistException ex) {
+//            System.out.println(ex.toString());
+//        }
+        // import data
+        if (pm.importData("src/Files/users.json") && im.importData("src/Files/instituitions.json")) {
             System.out.println("Success importing program users");
         }
         if (cbl.importData("src/Files/cbl.json")) {

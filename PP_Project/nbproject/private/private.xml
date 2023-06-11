@@ -3,6 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/Carol/Documents/PP2023/PP_MA02/PP_Project/src/CBLStructure/TaskImp.java</file>
             <file>file:/C:/Users/Carol/Documents/PP2023/PP_MA02/PP_Project/src/Menu/Menu.java</file>
             <file>file:/C:/Users/Carol/Documents/PP2023/PP_MA02/PP_Project/src/CBLStructure/EditionImp.java</file>
@@ -10,6 +11,15 @@
             <file>file:/C:/Users/Carol/Documents/PP2023/PP_MA02/PP_Project/src/CBLStructure/ProjectImp.java</file>
             <file>file:/C:/Users/Carol/Documents/PP2023/PP_MA02/PP_Project/src/CBLStructure/CBLImp.java</file>
             <file>file:/C:/Users/Carol/Documents/PP2023/PP_MA02/PP_Project/src/CBLStructure/SubmissionImp.java</file>
+=======
+            <file>file:/C:/Users/David%20Santos/Desktop/PP_TP/PP_Project/src/CBLStructure/SubmissionImp.java</file>
+            <file>file:/C:/Users/David%20Santos/Desktop/PP_TP/PP_Project/src/CBLStructure/CBLImp.java</file>
+            <file>file:/C:/Users/David%20Santos/Desktop/PP_TP/PP_Project/src/CBLStructure/EditionImp.java</file>
+            <file>file:/C:/Users/David%20Santos/Desktop/PP_TP/PP_Project/src/CBLStructure/ProjectImp.java</file>
+            <file>file:/C:/Users/David%20Santos/Desktop/PP_TP/PP_Project/src/Menu/Menu.java</file>
+            <file>file:/C:/Users/David%20Santos/Desktop/PP_TP/PP_Project/src/Managers/ParticipantsManager.java</file>
+            <file>file:/C:/Users/David%20Santos/Desktop/PP_TP/PP_Project/src/Managers/InstituitionsManager.java</file>
+>>>>>>> a3624c0bdda222b3a494dbc1d47129d31ad5281e
         </group>
     </open-files>
 </project-private>

@@ -10,15 +10,13 @@
 package CBLStructure;
 
 import Exceptions.AlreadyExistsInArray;
-import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import ma02_resources.participants.Facilitator;
 import ma02_resources.participants.Participant;
 import ma02_resources.participants.Partner;
 import ma02_resources.participants.Student;
 import ma02_resources.project.Project;
+import ma02_resources.project.Submission;
 import ma02_resources.project.Task;
 import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
 import ma02_resources.project.exceptions.IllegalNumberOfTasks;
@@ -32,7 +30,7 @@ public class ProjectImp implements Project {
 
     /**
      * @param name Name of the project.
-     * @param descriptions Description of the project.
+     * @param description Description of the project.
      * @param numberOfFacilitators Number of facilitators in a project.
      * @param numberOfStudents Number of students in a project.
      * @param numberOfPartners Number of partners in a project.
@@ -58,7 +56,9 @@ public class ProjectImp implements Project {
     private String[] tags;
 
     /**
-     * This is the constructor method of Project.
+     * This is the constructor method of Project. It is used to create a project
+     * object based on the Project Template. All the information not found in
+     * the project template is retrieved from the parameters of this method.
      *
      * @param name Name of the project.
      * @param description Description of the project.
@@ -194,30 +194,22 @@ public class ProjectImp implements Project {
      */
     @Override
     public Task[] getTasks() {
-        int counter = 0;
+
         Task[] temp = new Task[numberOfTasks];
 
         for (int i = 0; i < numberOfTasks; i++) {
             if (tasks != null) {
-                temp[counter++] = tasks[i];
+                temp[i] = tasks[i];
             }
         }
-        if (counter == numberOfTasks) {
-            return temp;
-        }
 
-        Task trimmedTemp[] = new Task[counter];
-        for (int i = 0; i < counter; i++) {
-            trimmedTemp[i] = temp[i];
-        }
-        return trimmedTemp;
+        return temp;
+
     }
 
     /**
      * {@inheritDoc}
      *
-     * This method overrides the superclass method to provide additional
-     * functionality.
      */
     @Override
     public int getNumberOfParticipants() {
@@ -225,7 +217,8 @@ public class ProjectImp implements Project {
     }
 
     /**
-     * This method checks if a project has a participant.
+     * This method checks if a project has a participant. The participant is 
+     * given by argumment.
      *
      * @param p Participant to be searched.
      * @return true if found.
@@ -246,6 +239,11 @@ public class ProjectImp implements Project {
      * This method adds a participant to the project. It checks if the participant to be added already exists and if the list is full. 
      * 
      * @throws IllegalNumberOfParticipantType - If list is full.
+     * This method adds a participant to the participants array. Firstly, it verifies
+     * the participant's type and checks if the maximum amount of that type of
+     * participant is reached. Then, it verifies if the participant given is not already
+     * in the participants array. If it isn't, the given participant is added and the counters
+     * are updated.
      */
     @Override
     public void addParticipant(Participant p) throws IllegalNumberOfParticipantType, ParticipantAlreadyInProject {
@@ -301,6 +299,7 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
+     * 
      */
     @Override
     public Participant removeParticipant(String string) {
@@ -353,9 +352,11 @@ public class ProjectImp implements Project {
     }
 
     /**
-     * This method returns a list of all Participants ordered by Facilitators, Students and Partners.
-     * 
-     * @return trimmedTemp A list of all Participants ordered by Facilitators, Students and Partners.
+     * This method returns a list of all Participants ordered by Facilitators,
+     * Students and Partners.
+     *
+     * @return trimmedTemp A list of all Participants ordered by Facilitators,
+     * Students and Partners.
      */
     public Participant[] getParticipants() {
         int counter = 0;
@@ -404,8 +405,7 @@ public class ProjectImp implements Project {
     }
 
     /**
-     * This method adds space to the tags list.
-     *
+     * This method adds space to the tags list duplicating the current lenght of the list.
      */
     private void reallocTags() {
         String[] temp = new String[tags.length * 2];
@@ -417,11 +417,13 @@ public class ProjectImp implements Project {
     }
 
     /**
-     * This method adds tags to the tags list.
+     * This method adds a tag to the tags list. The tag is added only if it's not 
+     * null or if it doesn't already exists on the list.
      *
      * @param t Tag to be added.
      * @throws AlreadyExistsInArray - If the tag to be added already exists in
      * the list.
+     * @throws IllegalArgumentException - If the tag is null or empty
      */
     public void addTags(String t) throws AlreadyExistsInArray {
         if (t == null) {
@@ -449,7 +451,6 @@ public class ProjectImp implements Project {
         for (i = 0; i < numberOfTags; i++) {
             temp[i] = tags[i];
         }
-
         return temp;
     }
 
@@ -467,7 +468,7 @@ public class ProjectImp implements Project {
     }
 
     /**
-     * This method verifies if task exists.
+     * This method verifies if a given task exists in the task list.
      *
      * @param task Task to be verified.
      * @return true if exists.
@@ -532,6 +533,12 @@ public class ProjectImp implements Project {
         return true;
     }
 
+    
+    /**
+     * This method is used to export the information about a project to a JSON file.
+     * A JSON object is created containing all the project's data and then it is returned.
+     * @return JSON object of the project
+     */
     public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
 
@@ -571,6 +578,14 @@ public class ProjectImp implements Project {
         return jsonObject;
     }
 
+    /**
+     * This method is used to retrieve information from a JSON file to create a 
+     * project object. All the data is retrieved and organized to create a project
+     * and add its tasks, participants and tags. 
+     * 
+     * @param jsonObject JSON object containing the data to be retrieved.
+     * @return The project created from the JSON Object.
+     */
     public static Project fromJsonObj(JSONObject jsonObject) {
 
         String name = (String) jsonObject.get("name");
@@ -613,21 +628,49 @@ public class ProjectImp implements Project {
         return project;
     }
 
-    //to do
+    
+    /**
+     * This method returns the textual representation of the project's progress,
+     * considering the submissions made so far.
+     *
+     * @return The textual representation of the project's progress.
+     */
     @Override
     public String toString() {
-        return "ProjectImp{" + "name=" + name + ", description=" + description
-                + ", numberOfFacilitators=" + numberOfFacilitators
-                + ", numberOfStudents=" + numberOfStudents + ", numberOfPartners="
-                + numberOfPartners + ", numberOfParticipants=" + numberOfParticipants
-                + ", numberOfTasks=" + numberOfTasks + ", maximumNumberOfTasks="
-                + maximumNumberOfTasks + ", maximumNumberOfStudents="
-                + maximumNumberOfStudents + ", maximumNumberOfPartners="
-                + maximumNumberOfPartners + ", maximumNumberOfFacilitators="
-                + maximumNumberOfFacilitators + ", numberOfTags=" + numberOfTags
-                + ", maximumNumberOfParticipants=" + maximumNumberOfParticipants
-                + ", tasks=" + Arrays.toString(tasks) + ", participants=" + Arrays.toString(participants) + ", tags="
-                + Arrays.toString(tags) + '}';
+        
+        int completedTasks = 0;
+        for (int i=0; i< numberOfTasks;i++) {
+            if (tasks[i].getNumberOfSubmissions() > 0) {
+                completedTasks++;
+            }
+        }
+        
+        int progressPercentage = (int) ((double) completedTasks / maximumNumberOfTasks * 100);
+        String progressText = "Project progress: " + progressPercentage + "%\n\n";
+        
+        
+        
+        
+        progressText += "Tasks considered Completed: " + completedTasks + "/" + maximumNumberOfTasks + "\n\n";
+        progressText += "Submissions Detail:\n";
+
+        for (int i=0; i< numberOfTasks;i++) {
+            progressText += "Task: " + tasks[i].getTitle() + "\n";
+            progressText += "Number of Submissions: " + tasks[i].getNumberOfSubmissions() + "\n";
+
+            if (tasks[i].getNumberOfSubmissions() > 0) {
+                progressText += "Last Submission:\n";
+                Submission lastSubmission = tasks[i].getSubmissions()[tasks[i].getNumberOfSubmissions() - 1];
+                progressText += "Date: " + lastSubmission.getDate() + "\n";
+                progressText += "Student: " + lastSubmission.getStudent().getEmail() + "\n";
+                progressText += "Text: " + lastSubmission.getText() + "\n";
+            }
+
+            progressText += "\n";
+        }
+
+        return progressText;
     }
+    
 
 }
