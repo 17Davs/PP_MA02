@@ -297,7 +297,7 @@ public class EditionImp implements Edition {
             }
         }
         if (counter == 0) {
-            return temp;
+            return null;
         }
 
         if (counter != numberOfProjects) {
@@ -330,10 +330,6 @@ public class EditionImp implements Edition {
             }
         }
 
-        if (counter == 0) {
-            return temp;
-        }
-
         if (counter != numberOfProjects) {
             Project[] trimmedTemp = new Project[counter];
 
@@ -343,8 +339,8 @@ public class EditionImp implements Edition {
             return trimmedTemp;
         }
         return temp;
-
     }
+    
 
     /**
      * This method returns all the uncompleted projects of the edition
@@ -352,14 +348,28 @@ public class EditionImp implements Edition {
      * @return an array of uncompleted projects
      */
     public Project[] getUncompletedProjects() {
+        int counter =0;
         Project[] temp = new Project[this.numberOfProjects];
-        int i = 0;
-        for (Project p : projects) {
-            if (!p.isCompleted()) {
-                temp[i++] = p;
+
+        for (int i = 0; i < numberOfProjects; i++) {
+            if (!projects[i].isCompleted()) {
+                temp[counter++] = projects[i];
             }
         }
+        if (counter == 0){
+            return null;
+        }
+        
+        if (counter != numberOfProjects) {
+            Project[] trimmedTemp = new Project[counter];
+
+            for (int i = 0; i < counter; i++) {
+                trimmedTemp[i] = temp[i];
+            }
+            return trimmedTemp;
+        }
         return temp;
+  
     }
 
     @Override
@@ -377,23 +387,6 @@ public class EditionImp implements Edition {
         return this.name.equals(other.getName());
     }
 
-//    public String toJson() {
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("name", name);
-//        jsonObject.put("start", start.toString());
-//        jsonObject.put("end", end.toString());
-//        jsonObject.put("status", status.toString());
-//        jsonObject.put("numberOfProjects", numberOfProjects);
-//        jsonObject.put("projectTemplate", projectTemplate);
-//
-//        JSONArray projectsArray = new JSONArray();
-//        for (int i=0; i<numberOfProjects; i++) {
-//            projectsArray.add(((ProjectImp)projects[i]).toJson());
-//        }
-//        jsonObject.put("projects", projectsArray);
-//
-//        return jsonObject.toJSONString();
-//    }
     public JSONObject toJsonObj() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
@@ -453,32 +446,6 @@ public class EditionImp implements Edition {
         projects[numberOfProjects++] = p;
     }
 
-    public Project[] getProjectsByParticipant(Participant p) {
-        int counter = 0;
-
-        Project[] temp = new Project[numberOfProjects];
-
-        for (int i = 0; i < numberOfProjects; i++) {
-
-            try {
-                Participant participant = projects[i].getParticipant(p.getEmail());
-
-                temp[counter++] = projects[i];
-
-            } catch (IllegalArgumentException e) {
-            }
-        }
-        //limit the array to just the not null positions
-        if (counter != numberOfProjects) {
-            Project[] projectsByParticipant = new Project[counter];
-
-            for (int i = 0; i < counter; i++) {
-                projectsByParticipant[i] = temp[i];
-            }
-            return projectsByParticipant;
-        }
-        return temp;
-    }
 
     @Override
     public String toString() {

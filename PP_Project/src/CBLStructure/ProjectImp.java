@@ -187,14 +187,23 @@ public class ProjectImp implements Project {
      */
     @Override
     public Task[] getTasks() {
+        int counter=0;
         Task[] temp = new Task[numberOfTasks];
-        int i = 0;
-        for (Task t : tasks) {
-            if (t != null) {
-                temp[i++] = t;
+       
+        for (int i = 0; i < numberOfTasks; i++) {
+            if (tasks != null) {
+                temp[counter++] = tasks[i];
             }
         }
-        return temp;
+         if (counter == numberOfTasks){
+            return temp;
+        }
+        
+        Task trimmedTemp[] = new Task[counter];
+        for (int i = 0; i < counter; i++){
+            trimmedTemp[i] = temp[i];
+        }
+        return trimmedTemp;
     }
 
     /**
@@ -321,6 +330,54 @@ public class ProjectImp implements Project {
         }
         throw new IllegalArgumentException("No Participant found!");
     }
+    
+       public Participant[] getParticipants() {
+        int counter=0;
+        Participant[] temp = new Participant[numberOfParticipants];
+       
+        for (int i = 0; i < numberOfParticipants; i++) {
+            if (participants != null) {
+                temp[counter++] = participants[i];
+            }
+        }
+        
+        Participant trimmedTemp[] = new Participant[counter];
+        int j=0;
+        counter =0;
+        
+        while (j < numberOfFacilitators && counter < trimmedTemp.length){
+            for (int i=0; i<trimmedTemp.length;i++){
+                if (temp[i] instanceof Facilitator){
+                    trimmedTemp[counter++] = temp[i];
+                    j++;
+                }
+            }
+        }
+        
+        j=0;
+        while (j < numberOfStudents && counter < trimmedTemp.length){
+            for (int i=0; i<trimmedTemp.length;i++){
+                if (temp[i] instanceof Student){
+                    trimmedTemp[counter++] = temp[i];
+                    j++;
+                }
+            }
+        }
+        
+        j=0;
+        while (j < numberOfPartners && counter < trimmedTemp.length){
+            for (int i=0; i<trimmedTemp.length;i++){
+                if (temp[i] instanceof Partner){
+                    trimmedTemp[counter++] = temp[i];
+                    j++;
+                }
+            }
+        }
+        
+        return trimmedTemp;
+    }
+
+    
 ///////////////////////////////////////////////////
 
     private void reallocTags() {
@@ -353,10 +410,10 @@ public class ProjectImp implements Project {
      */
     @Override
     public String[] getTags() {
-        String[] temp = new String[tags.length];
+        String[] temp = new String[numberOfTags];
         int i = 0;
-        for (String s : tags) {
-            temp[i++] = s;
+        for (i = 0; i<numberOfTags;i++) {
+            temp[i] = tags[i];
         }
 
         return temp;
@@ -406,6 +463,7 @@ public class ProjectImp implements Project {
      */
     @Override
     public Task getTask(String string) {
+        
         Task t = new TaskImp(string, null, null, null, 0);
 
         for (int i = 0; i < numberOfTasks; i++) {
