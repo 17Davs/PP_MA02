@@ -237,11 +237,12 @@ public class CBLImp implements CBL {
 
         for (int i = 0; i < numberOfEditions; i++) {
             hasIncompleteProject = false;
+            
             if (editions[i].getNumberOfProjects() == 0) {
                 hasIncompleteProject = true;
-            }
-            for (Project project : editions[i].getProjects()) {
-                if (project != null && !project.isCompleted() && !hasIncompleteProject) {
+            } else {
+                Project [] uncompletedProjects =((EditionImp) editions[i]).getUncompletedProjects();
+                if (uncompletedProjects != null){
                     hasIncompleteProject = true;
                 }
             }
@@ -265,10 +266,7 @@ public class CBLImp implements CBL {
         return uncompletedEditions;
     }
 
-//    @Override
-//    public String simpleToString() {
-//        return "CBL {" + "numberOfEditions=" + numberOfEditions + ", editions=" + Arrays.toString(editions) + '}';
-//    }
+
     /**
      * This method returns a list of editions in which the participant is part
      * of.

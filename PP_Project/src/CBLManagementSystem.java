@@ -1,6 +1,7 @@
 
 import CBLStructure.CBL;
 import CBLStructure.CBLImp;
+import java.util.Arrays;
 import java.util.Scanner;
 
 //public class CBLManagementSystem {
@@ -97,5 +98,21 @@ import java.util.Scanner;
 //    public static void manageParticipants() {
 //        System.out.println("=== Manage Participants ===");
 //        // Implement participant management options here
+//    }
+//public static void main(String[] args) {
+//        String tagsString = "tag1,tag2,tag3";
+//        
+//        // Removendo espaços em branco extras antes de dividir a string
+//        tagsString = tagsString.trim();
+//        
+//        // Dividindo a string usando vírgula como separador
+//        String[] tagsArray = tagsString.split(",");
+//        
+//        // Removendo espaços em branco extras após a divisão
+////        for (int i = 0; i < tagsArray.length; i++) {
+////            tagsArray[i] = tagsArray[i].trim();
+////        }
+//        
+//        System.out.println("Tags array: " + Arrays.toString(tagsArray));
 //    }
 //}

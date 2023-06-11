@@ -9,17 +9,18 @@
  */
 package Managers;
 
-import CBLStructure.EditionImp;
 import Exceptions.AlreadyExistsInArray;
-import Exceptions.EditionAlreadyInCBL;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import ma02_resources.participants.Instituition;
+import ma02_resources.participants.Facilitator;
+
 import ma02_resources.participants.Participant;
-import ma02_resources.project.exceptions.IllegalNumberOfParticipantType;
-import ma02_resources.project.exceptions.ParticipantAlreadyInProject;
+import ma02_resources.participants.Partner;
+import ma02_resources.participants.Student;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -115,26 +116,104 @@ public class ParticipantsManager {
                 return p;
             }
         }
-            throw new IllegalArgumentException("No Participant found!");
-              
+        throw new IllegalArgumentException("No Participant found!");
+
+    }
+
+//    public Participant[] getParticipants() {
+//        int counter = 0;
+//        Participant temp[] = new Participant[participantsCounter];
+//
+//        for (int i = 0; i < participantsCounter; i++) {
+//            temp[counter++] = participantsList[i];
+//        }
+//        if (counter == participantsCounter) {
+//            return temp;
+//        }
+//
+//        Participant trimmedTemp[] = new Participant[counter];
+//        for (int i = 0; i < counter; i++) {
+//            trimmedTemp[i] = temp[i];
+//        }
+//        return trimmedTemp;
+//    }
+    public int getNumberOfFacilitators() {
+        int numberOfFacilitators = 0;
+        for (int i = 0; i < participantsCounter; i++) {
+            if (participantsList[i] instanceof Facilitator) {
+                numberOfFacilitators++;
+            }
+        }
+        return numberOfFacilitators;
     }
     
+     public int getNumberOfStudents() {
+        int numberOfStudents = 0;
+        for (int i = 0; i < participantsCounter; i++) {
+            if (participantsList[i] instanceof Student) {
+                numberOfStudents++;
+            }
+        }
+        return numberOfStudents;
+    }
+     
+     public int getNumberOfPartners() {
+        int numberOfPartners = 0;
+        for (int i = 0; i < participantsCounter; i++) {
+            if (participantsList[i] instanceof Partner) {
+                numberOfPartners++;
+            }
+        }
+        return numberOfPartners;
+    }
     
-      public Participant[] getParticipants() {
-        int counter=0;
-        Participant temp[] = new Participant[participantsCounter];
+     
+   
+    public Participant[] getParticipants() {
+        int counter = 0;
+
+        Participant[] temp = new Participant[participantsCounter];
+        
 
         for (int i = 0; i < participantsCounter; i++) {
-            temp[counter++] = participantsList[i];
+            if (participantsList != null) {
+                temp[counter++] = participantsList[i];
+            }
         }
-        if (counter == participantsCounter){
-            return temp;
-        }
-        
+
         Participant trimmedTemp[] = new Participant[counter];
-        for (int i = 0; i < counter; i++){
-            trimmedTemp[i] = temp[i];
+        int j = 0;
+        counter = 0;
+
+        while (j < getNumberOfFacilitators() && counter < trimmedTemp.length) {
+            for (int i = 0; i < trimmedTemp.length; i++) {
+                if (temp[i] instanceof Facilitator) {
+                    trimmedTemp[counter++] = temp[i];
+                    j++;
+                }
+            }
         }
+
+        j = 0;
+        while (j < getNumberOfStudents() && counter < trimmedTemp.length) {
+            for (int i = 0; i < trimmedTemp.length; i++) {
+                if (temp[i] instanceof Student) {
+                    trimmedTemp[counter++] = temp[i];
+                    j++;
+                }
+            }
+        }
+
+        j = 0;
+        while (j < getNumberOfPartners() && counter < trimmedTemp.length) {
+            for (int i = 0; i < trimmedTemp.length; i++) {
+                if (temp[i] instanceof Partner) {
+                    trimmedTemp[counter++] = temp[i];
+                    j++;
+                }
+            }
+        }
+
         return trimmedTemp;
     }
 
@@ -154,7 +233,7 @@ public class ParticipantsManager {
 
         try ( FileWriter fileWriter = new FileWriter(filePath)) {
             fileWriter.write(jsonObject.toJSONString());
-             fileWriter.close();
+            fileWriter.close();
         } catch (IOException e) {
 
             return false;

@@ -41,7 +41,8 @@ public class ProjectImp implements Project {
      * @param maximumNumberOfTasks Max number of tasks in a project.
      * @param maximumNumberOfStudents Max number of students in a project.
      * @param maximumNumberOfPartners Max number of partners in a project.
-     * @param maximumNumberOfFacilitators Max number of facilitators in a project.
+     * @param maximumNumberOfFacilitators Max number of facilitators in a
+     * project.
      * @param numberOfTags Number of tags in a project.
      * @param tasks List of tasks associated with the project.
      * @param participants List of participants associated with the project.
@@ -58,10 +59,11 @@ public class ProjectImp implements Project {
 
     /**
      * This is the constructor method of Project.
-     * 
+     *
      * @param name Name of the project.
      * @param description Description of the project.
-     * @param maximumNumberOfFacilitators Max number of facilitators in a project.
+     * @param maximumNumberOfFacilitators Max number of facilitators in a
+     * project.
      * @param maximumNumberOfStudents Max number of students in a project.
      * @param maximumNumberOfPartners Max number of partners in a project.
      * @param maximumNumberOfTasks Max number of tasks in a project.
@@ -137,7 +139,7 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      */
     @Override
     public int getNumberOfTasks() {
@@ -186,25 +188,36 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
-     * 
-     * This method overrides the superclass method to provide additional functionality.
+     *
+     * This method overrides the superclass method to provide additional
+     * functionality.
      */
     @Override
     public Task[] getTasks() {
+        int counter = 0;
         Task[] temp = new Task[numberOfTasks];
-        int i = 0;
-        for (Task t : tasks) {
-            if (t != null) {
-                temp[i++] = t;
+
+        for (int i = 0; i < numberOfTasks; i++) {
+            if (tasks != null) {
+                temp[counter++] = tasks[i];
             }
         }
-        return temp;
+        if (counter == numberOfTasks) {
+            return temp;
+        }
+
+        Task trimmedTemp[] = new Task[counter];
+        for (int i = 0; i < counter; i++) {
+            trimmedTemp[i] = temp[i];
+        }
+        return trimmedTemp;
     }
 
     /**
      * {@inheritDoc}
-     * 
-     * This method overrides the superclass method to provide additional functionality.
+     *
+     * This method overrides the superclass method to provide additional
+     * functionality.
      */
     @Override
     public int getNumberOfParticipants() {
@@ -213,7 +226,7 @@ public class ProjectImp implements Project {
 
     /**
      * This method checks if a project has a participant.
-     * 
+     *
      * @param p Participant to be searched.
      * @return true if found.
      * @return false if not found.
@@ -336,8 +349,59 @@ public class ProjectImp implements Project {
     }
 
     /**
-     * This method adds space to the tags list.
+     * This method returns a list of all Participants ordered by Facilitators, Students and Partners.
      * 
+     * @return trimmedTemp A list of all Participants ordered by Facilitators, Students and Partners.
+     */
+    public Participant[] getParticipants() {
+        int counter = 0;
+        Participant[] temp = new Participant[numberOfParticipants];
+
+        for (int i = 0; i < numberOfParticipants; i++) {
+            if (participants != null) {
+                temp[counter++] = participants[i];
+            }
+        }
+
+        Participant trimmedTemp[] = new Participant[counter];
+        int j = 0;
+        counter = 0;
+
+        while (j < numberOfFacilitators && counter < trimmedTemp.length) {
+            for (int i = 0; i < trimmedTemp.length; i++) {
+                if (temp[i] instanceof Facilitator) {
+                    trimmedTemp[counter++] = temp[i];
+                    j++;
+                }
+            }
+        }
+
+        j = 0;
+        while (j < numberOfStudents && counter < trimmedTemp.length) {
+            for (int i = 0; i < trimmedTemp.length; i++) {
+                if (temp[i] instanceof Student) {
+                    trimmedTemp[counter++] = temp[i];
+                    j++;
+                }
+            }
+        }
+
+        j = 0;
+        while (j < numberOfPartners && counter < trimmedTemp.length) {
+            for (int i = 0; i < trimmedTemp.length; i++) {
+                if (temp[i] instanceof Partner) {
+                    trimmedTemp[counter++] = temp[i];
+                    j++;
+                }
+            }
+        }
+
+        return trimmedTemp;
+    }
+
+    /**
+     * This method adds space to the tags list.
+     *
      */
     private void reallocTags() {
         String[] temp = new String[tags.length * 2];
@@ -350,9 +414,10 @@ public class ProjectImp implements Project {
 
     /**
      * This method adds tags to the tags list.
-     * 
+     *
      * @param t Tag to be added.
-     * @throws AlreadyExistsInArray - If the tag to be added already exists in the list.
+     * @throws AlreadyExistsInArray - If the tag to be added already exists in
+     * the list.
      */
     public void addTags(String t) throws AlreadyExistsInArray {
         if (t == null) {
@@ -375,10 +440,10 @@ public class ProjectImp implements Project {
      */
     @Override
     public String[] getTags() {
-        String[] temp = new String[tags.length];
+        String[] temp = new String[numberOfTags];
         int i = 0;
-        for (String s : tags) {
-            temp[i++] = s;
+        for (i = 0; i < numberOfTags; i++) {
+            temp[i] = tags[i];
         }
 
         return temp;
@@ -399,7 +464,7 @@ public class ProjectImp implements Project {
 
     /**
      * This method verifies if task exists.
-     * 
+     *
      * @param task Task to be verified.
      * @return true if exists.
      * @return false if doesn't exist.
@@ -434,6 +499,7 @@ public class ProjectImp implements Project {
      */
     @Override
     public Task getTask(String string) {
+
         Task t = new TaskImp(string, null, null, null, 0);
 
         for (int i = 0; i < numberOfTasks; i++) {
