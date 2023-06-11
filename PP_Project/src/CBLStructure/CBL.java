@@ -14,10 +14,6 @@ import ma02_resources.participants.Participant;
 import ma02_resources.project.Edition;
 import ma02_resources.project.Project;
 
-/**
- *
- * @author David Santos
- */
 public interface CBL {
 
     /**

@@ -1,6 +1,11 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Nome: Carolina Bonito Queiroga De Almeida
+ * Número: 8180091 
+ * Turna: LSIRCT1
+ *
+ * Nome: David Leandro Spencer Conceição dos Santos
+ * Número: 8220651
+ * Turna: LSIRCT1
  */
 package Managers;
 
@@ -19,12 +24,12 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import pack.InstituitionImp;
 
-/**
- *
- * @author David Santos
- */
 public class InstituitionsManager {
 
+    /**
+     * @param instituitionsList 
+     * @param instituitionsCounter This counter increases the number of institutions.
+     */
     private static Instituition[] instituitionsList;
     private static int instituitionsCounter;
 
