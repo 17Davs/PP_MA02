@@ -27,19 +27,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-/**
- *
- * @author David Santos
- */
 public class CBLImp implements CBL {
 
     /**
-     *
-     * @param numberOfEditions Variable that defines how many editions have been
-     * made
-     * @param editions[] List of editions
+     * Variable that stores number Of editions in the editions array
      */
     private static int numberOfEditions;
+    /**
+     * Array variable that stores the editions of a CBL
+     */
     private static Edition editions[];
 
     /**
@@ -389,6 +385,15 @@ public class CBLImp implements CBL {
         return participantProjects;
     }
 
+    /**
+     * Retrieves all submissions of a given student by serching for the student 
+     * in all the editions' projects and then, searching for submissions made by
+     * him in all the projects' tasks.
+     *
+     * @param student The student whose submissions are to be retrieved.
+     * @return An array of Submission objects representing the submissions of
+     * the student. Returns null if the student has no submissions.
+     */
     public Submission[] getSubmissionsOf(Student student) {
         int submissionCount = 0;
 
@@ -429,7 +434,4 @@ public class CBLImp implements CBL {
 
         return studentSubmissions;
     }
-    
-    
-
 }
