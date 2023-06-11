@@ -30,24 +30,32 @@ import org.json.simple.parser.JSONParser;
 public class EditionImp implements Edition {
 
     /**
-     *
-     * @param name Edition name
-     * @param start Edition's start date
-     * @param end Edition's end date
-     * @param status Edition's status
-     * @param numberOfProjects Variable that defines how many Editions are in a
-     * list
-     * @param projectTemplate Project template defined by user.
-     * @param defaultProjectTemplate Default structure of project when one isn't chosen.
-     * @param projects[] List of Editions
+     * Variable that defines Edition name.
      */
-    
     private String name;
+    /**
+     * Variables that defines Edition's start and end date.
+     */
     private LocalDate start, end;
+    /**
+     * Variable that defines the Edition's status from ACTIVE, INACTIVE, CANCELED, CLOSED.
+     */
     private Status status;
+    /**
+     * Variable that defines how many Editions are in a list.
+     */
     private int numberOfProjects;
+    /**
+     * Project template defined by user.
+     */
     private String projectTemplate;
+    /**
+     * Default structure of project when one isn't chosen.
+     */
     private static final String defaultProjectTemplate = "src/Files/project_template.json";
+    /**
+     * List of Projects.
+     */
     private Project projects[];
 
     /**

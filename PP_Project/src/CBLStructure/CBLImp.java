@@ -41,7 +41,7 @@ public class CBLImp implements CBL {
     /**
      * This is the Constructor of the CBL.
      *
-     * @param size The inicial lenght of the editions array
+     * @param size The initial length of the editions array
      */
     public CBLImp(int size) {
         editions = new Edition[size];

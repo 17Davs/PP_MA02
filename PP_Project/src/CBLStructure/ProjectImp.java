@@ -29,30 +29,32 @@ import pack.ParticipantImp;
 public class ProjectImp implements Project {
 
     /**
-     * @param name Name of the project.
-     * @param description Description of the project.
-     * @param numberOfFacilitators Number of facilitators in a project.
-     * @param numberOfStudents Number of students in a project.
-     * @param numberOfPartners Number of partners in a project.
-     * @param numberOfParticipants Number of participants in a project.
-     * @param numberOfTasks Number of tasks in a project.
-     * @param maximumNumberOfTasks Max number of tasks in a project.
-     * @param maximumNumberOfStudents Max number of students in a project.
-     * @param maximumNumberOfPartners Max number of partners in a project.
-     * @param maximumNumberOfFacilitators Max number of facilitators in a
-     * project.
-     * @param numberOfTags Number of tags in a project.
-     * @param tasks List of tasks associated with the project.
-     * @param participants List of participants associated with the project.
-     * @param tags List of tags associated with the project.
+     * Variables that defines Name and Description of the project.
      */
     private String name, description;
+    /**
+     * Variables that define the Number of facilitators, Number of students, Number of partners,
+     * Number of participants, Number of tasks, Max number of tasks, Max number of students, 
+     * Max number of partners, Max number of facilitators, Number of tags in a project.
+     */
     private int numberOfFacilitators, numberOfStudents, numberOfPartners, numberOfParticipants,
             numberOfTasks, maximumNumberOfTasks, maximumNumberOfStudents,
             maximumNumberOfPartners, maximumNumberOfFacilitators, numberOfTags;
+    /**
+     * Variable that defines the Max number of Participants in a Project.
+     */
     private long maximumNumberOfParticipants;
+    /**
+     * Array variable that stores tasks.
+     */
     private Task tasks[];
+    /**
+     * Array variable that stores participants.
+     */
     private Participant participants[];
+    /**
+     * Array variable that stores tags.
+     */
     private String[] tags;
 
     /**

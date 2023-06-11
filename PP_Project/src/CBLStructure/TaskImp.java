@@ -18,18 +18,20 @@ import org.json.simple.JSONObject;
 public class TaskImp implements Task {
 
     /**
-     *
-     * @param title
-     * @param description
-     * @param start
-     * @param end
-     * @param duration
-     * @param numberOfSubmissions
-     * @param submissions[]
+     * Variables that define Task title and description.
      */
     private String title, description;
+    /**
+     * Variables that define Task start and end date.
+     */
     private LocalDate start, end;
+    /**
+     * Variables that define the duration and number of submissions.
+     */
     private int duration, numberOfSubmissions;
+    /**
+     * Array that stores submissions.
+     */
     private Submission submissions[];
 
     /**

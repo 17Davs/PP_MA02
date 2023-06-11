@@ -27,17 +27,26 @@ import pack.InstituitionImp;
 public class InstituitionsManager {
 
     /**
-     * @param instituitionsList 
-     * @param instituitionsCounter This counter increases the number of institutions.
+     * Array variable that stores Institutions.
      */
     private static Instituition[] instituitionsList;
+    /**
+     * This counter variable increases the number of institutions.
+     */
     private static int instituitionsCounter;
-
+    
+    /**
+     * This is the constructor method for Institutions Manager.
+     */
     public InstituitionsManager() {
         instituitionsCounter = 0;
         instituitionsList = new Instituition[10];
     }
 
+    /**
+     * This method is a getter for Institutions Manager.
+     * @return 
+     */
     public int getInstituitionsCounter() {
         return instituitionsCounter;
     }
@@ -61,8 +70,10 @@ public class InstituitionsManager {
     }
 
     /**
-     *
-     * @param p
+     * This method adds an institution to the list. It checks if Institution to be added
+     * already exists and if the array is full.
+     * 
+     * @param p Institution to be added.
      * @throws InstituitionAlreadyExistException
      */
     public void addInstituition(Instituition p) throws InstituitionAlreadyExistException {

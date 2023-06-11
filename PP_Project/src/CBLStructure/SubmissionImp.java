@@ -19,13 +19,16 @@ import pack.StudentImp;
 public class SubmissionImp implements Submission {
 
     /**
-     * 
-     * @param date Date of submission.
-     * @param student The student that submitted the work.
-     * @param text The description of the submission/work
+     * Variable that defines date of submission.
      */
     private LocalDateTime date;
+    /**
+     * The student that submitted the work.
+     */
     private Student student;
+    /**
+     * The description of the submission/work.
+     */
     private String text;
 
     /**
