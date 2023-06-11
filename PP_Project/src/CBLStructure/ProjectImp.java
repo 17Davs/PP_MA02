@@ -41,7 +41,8 @@ public class ProjectImp implements Project {
      * @param maximumNumberOfTasks Max number of tasks in a project.
      * @param maximumNumberOfStudents Max number of students in a project.
      * @param maximumNumberOfPartners Max number of partners in a project.
-     * @param maximumNumberOfFacilitators Max number of facilitators in a project.
+     * @param maximumNumberOfFacilitators Max number of facilitators in a
+     * project.
      * @param numberOfTags Number of tags in a project.
      * @param tasks List of tasks associated with the project.
      * @param participants List of participants associated with the project.
@@ -58,12 +59,14 @@ public class ProjectImp implements Project {
 
     /**
      * This is the constructor method of Project.
+     *
      * @param name Name of the project.
      * @param description Description of the project.
-     * @param numberOfFacilitators Number of facilitators in a project.
-     * @param numberOfStudents Number of students in a project.
-     * @param numberOfPartners Number of partners in a project.
-     * @param taskArraySize Size of the array.
+     * @param maximumNumberOfFacilitators Max number of facilitators in a
+     * project.
+     * @param maximumNumberOfStudents Max number of students in a project.
+     * @param maximumNumberOfPartners Max number of partners in a project.
+     * @param maximumNumberOfTasks Max number of tasks in a project.
      * @param tags Tags associated with the project.
      */
     public ProjectImp(String name, String description, int maximumNumberOfFacilitators, int maximumNumberOfStudents, int maximumNumberOfPartners, int maximumNumberOfTasks, String[] tags) {
@@ -136,6 +139,7 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
+     *
      */
     @Override
     public int getNumberOfTasks() {
@@ -184,23 +188,26 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
+     *
+     * This method overrides the superclass method to provide additional
+     * functionality.
      */
     @Override
     public Task[] getTasks() {
-        int counter=0;
+        int counter = 0;
         Task[] temp = new Task[numberOfTasks];
-       
+
         for (int i = 0; i < numberOfTasks; i++) {
             if (tasks != null) {
                 temp[counter++] = tasks[i];
             }
         }
-         if (counter == numberOfTasks){
+        if (counter == numberOfTasks) {
             return temp;
         }
-        
+
         Task trimmedTemp[] = new Task[counter];
-        for (int i = 0; i < counter; i++){
+        for (int i = 0; i < counter; i++) {
             trimmedTemp[i] = temp[i];
         }
         return trimmedTemp;
@@ -208,12 +215,22 @@ public class ProjectImp implements Project {
 
     /**
      * {@inheritDoc}
+     *
+     * This method overrides the superclass method to provide additional
+     * functionality.
      */
     @Override
     public int getNumberOfParticipants() {
         return numberOfParticipants;
     }
 
+    /**
+     * This method checks if a project has a participant.
+     *
+     * @param p Participant to be searched.
+     * @return true if found.
+     * @return false if not found.
+     */
     private boolean hasParticipant(Participant p) {
         for (Participant participant : participants) {
             if (participant != null && participant.equals(p)) {
@@ -330,56 +347,62 @@ public class ProjectImp implements Project {
         }
         throw new IllegalArgumentException("No Participant found!");
     }
-    
-       public Participant[] getParticipants() {
-        int counter=0;
+
+    /**
+     * This method returns a list of all Participants ordered by Facilitators, Students and Partners.
+     * 
+     * @return trimmedTemp A list of all Participants ordered by Facilitators, Students and Partners.
+     */
+    public Participant[] getParticipants() {
+        int counter = 0;
         Participant[] temp = new Participant[numberOfParticipants];
-       
+
         for (int i = 0; i < numberOfParticipants; i++) {
             if (participants != null) {
                 temp[counter++] = participants[i];
             }
         }
-        
+
         Participant trimmedTemp[] = new Participant[counter];
-        int j=0;
-        counter =0;
-        
-        while (j < numberOfFacilitators && counter < trimmedTemp.length){
-            for (int i=0; i<trimmedTemp.length;i++){
-                if (temp[i] instanceof Facilitator){
+        int j = 0;
+        counter = 0;
+
+        while (j < numberOfFacilitators && counter < trimmedTemp.length) {
+            for (int i = 0; i < trimmedTemp.length; i++) {
+                if (temp[i] instanceof Facilitator) {
                     trimmedTemp[counter++] = temp[i];
                     j++;
                 }
             }
         }
-        
-        j=0;
-        while (j < numberOfStudents && counter < trimmedTemp.length){
-            for (int i=0; i<trimmedTemp.length;i++){
-                if (temp[i] instanceof Student){
+
+        j = 0;
+        while (j < numberOfStudents && counter < trimmedTemp.length) {
+            for (int i = 0; i < trimmedTemp.length; i++) {
+                if (temp[i] instanceof Student) {
                     trimmedTemp[counter++] = temp[i];
                     j++;
                 }
             }
         }
-        
-        j=0;
-        while (j < numberOfPartners && counter < trimmedTemp.length){
-            for (int i=0; i<trimmedTemp.length;i++){
-                if (temp[i] instanceof Partner){
+
+        j = 0;
+        while (j < numberOfPartners && counter < trimmedTemp.length) {
+            for (int i = 0; i < trimmedTemp.length; i++) {
+                if (temp[i] instanceof Partner) {
                     trimmedTemp[counter++] = temp[i];
                     j++;
                 }
             }
         }
-        
+
         return trimmedTemp;
     }
 
-    
-///////////////////////////////////////////////////
-
+    /**
+     * This method adds space to the tags list.
+     *
+     */
     private void reallocTags() {
         String[] temp = new String[tags.length * 2];
         int i = 0;
@@ -389,6 +412,13 @@ public class ProjectImp implements Project {
         tags = temp;
     }
 
+    /**
+     * This method adds tags to the tags list.
+     *
+     * @param t Tag to be added.
+     * @throws AlreadyExistsInArray - If the tag to be added already exists in
+     * the list.
+     */
     public void addTags(String t) throws AlreadyExistsInArray {
         if (t == null) {
             throw new IllegalArgumentException("Null argument");
@@ -412,7 +442,7 @@ public class ProjectImp implements Project {
     public String[] getTags() {
         String[] temp = new String[numberOfTags];
         int i = 0;
-        for (i = 0; i<numberOfTags;i++) {
+        for (i = 0; i < numberOfTags; i++) {
             temp[i] = tags[i];
         }
 
@@ -431,8 +461,14 @@ public class ProjectImp implements Project {
         }
         return false;
     }
-//////////////////////////////////////////
 
+    /**
+     * This method verifies if task exists.
+     *
+     * @param task Task to be verified.
+     * @return true if exists.
+     * @return false if doesn't exist.
+     */
     private boolean hasTask(Task task) {
         for (Task t : tasks) {
             if (t != null && t.equals(task)) {
@@ -463,7 +499,7 @@ public class ProjectImp implements Project {
      */
     @Override
     public Task getTask(String string) {
-        
+
         Task t = new TaskImp(string, null, null, null, 0);
 
         for (int i = 0; i < numberOfTasks; i++) {
