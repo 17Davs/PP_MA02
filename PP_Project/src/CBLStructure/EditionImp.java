@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ma02_resources.participants.Participant;

@@ -9,13 +9,10 @@
  */
 package Managers;
 
-import Exceptions.AlreadyExistsInArray;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import ma02_resources.participants.Instituition;
-import ma02_resources.project.Project;
 import ma02_resources.project.exceptions.InstituitionAlreadyExistException;
 
 import org.json.simple.JSONArray;

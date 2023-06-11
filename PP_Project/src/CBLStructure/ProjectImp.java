@@ -10,7 +10,6 @@
 package CBLStructure;
 
 import Exceptions.AlreadyExistsInArray;
-import java.util.Arrays;
 import ma02_resources.participants.Facilitator;
 import ma02_resources.participants.Participant;
 import ma02_resources.participants.Partner;
